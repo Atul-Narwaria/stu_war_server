@@ -1,0 +1,242 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["public", "users", "locations", "students", "teacher", "institute", "website", "blogs"]
+}
+
+model designation {
+  id        String   @id @default(uuid()) @db.Uuid
+  roles     String   @unique
+  status    Boolean  @default(true)
+  createAt  DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@schema("public")
+}
+
+model country {
+  id               String             @id @default(uuid()) @db.Uuid
+  CounrtyName      String             @unique
+  status           Boolean            @default(true)
+  createAt         DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  state            state[]
+  studentAddress   studentAddress[]
+  teacherAddress   teacherAddress[]
+  instituteAddress instituteAddress[]
+  city             city[]
+
+  @@schema("locations")
+}
+
+model state {
+  id               String             @id @default(uuid()) @db.Uuid
+  stateName        String             @unique
+  country          country            @relation(fields: [fkCountryId], references: [id])
+  fkCountryId      String             @db.Uuid
+  status           Boolean            @default(true)
+  createAt         DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  city             city[]
+  studentAddress   studentAddress[]
+  teacherAddress   teacherAddress[]
+  instituteAddress instituteAddress[]
+
+  @@index([fkCountryId])
+  @@schema("locations")
+}
+
+model city {
+  id               String             @id @default(uuid()) @db.Uuid
+  cityName         String
+  country          country            @relation(fields: [fkCountryId], references: [id])
+  fkCountryId      String             @db.Uuid
+  state            state              @relation(fields: [fkstateId], references: [id])
+  fkstateId        String             @db.Uuid
+  status           Boolean            @default(true)
+  createAt         DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  studentAddress   studentAddress[]
+  teacherAddress   teacherAddress[]
+  instituteAddress instituteAddress[]
+
+  @@index([fkstateId])
+  @@schema("locations")
+}
+
+model admin {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String
+  email     String   @unique
+  phone     String   @unique
+  password  String
+  status    Boolean  @default(true)
+  createAt  DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@schema("users")
+}
+
+model studentMaster {
+  id             String             @id @default(uuid()) @db.Uuid
+  firstName      String
+  lastName       String
+  email          String             @unique
+  phone          String             @unique
+  password       String
+  dob            DateTime           @db.Date
+  admissionId    String             @unique
+  rollNo         String
+  profileImg     String
+  status         Boolean            @default(true)
+  createAt       DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  studentDetail  studentDocuments[]
+  studentAddress studentAddress[]
+
+  @@schema("students")
+}
+
+model studentDocuments {
+  id          String        @id @default(uuid()) @db.Uuid
+  StudentId   studentMaster @relation(fields: [fkStudentId], references: [id])
+  fkStudentId String        @db.Uuid
+  category    String
+  docUrl      String
+  status      Boolean       @default(true)
+  createAt    DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@schema("students")
+}
+
+model studentAddress {
+  id          String        @id @default(uuid()) @db.Uuid
+  StudentId   studentMaster @relation(fields: [fkStudentId], references: [id])
+  fkStudentId String        @db.Uuid
+  country     country       @relation(fields: [fkcountryId], references: [id])
+  fkcountryId String        @db.Uuid
+  state       state         @relation(fields: [fkstateId], references: [id])
+  fkstateId   String        @db.Uuid
+  city        city          @relation(fields: [fkcityId], references: [id])
+  fkcityId    String        @db.Uuid
+  Address     String
+  status      Boolean       @default(true)
+  createAt    DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@schema("students")
+}
+
+model teacherMaster {
+  id               String             @id @default(uuid()) @db.Uuid
+  firstName        String
+  lastName         String
+  email            String             @unique
+  phone            String             @unique
+  gender           String
+  dob              DateTime           @db.Date
+  profileImg       String
+  joiningDate      DateTime           @db.Date
+  status           Boolean            @default(true)
+  onMaintaince     Boolean            @default(false)
+  createAt         DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  teacherDocuments teacherDocuments[]
+  teacherAddress   teacherAddress[]
+  teacherExprience teacherExprience[]
+
+  @@schema("teacher")
+}
+
+model teacherExprience {
+  id          String        @id @default(uuid()) @db.Uuid
+  TeacherId   teacherMaster @relation(fields: [fkTeacherId], references: [id])
+  fkTeacherId String        @db.Uuid
+  skills      Json[]
+  experience  String
+  status      Boolean       @default(true)
+  createAt    DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@schema("teacher")
+}
+
+model teacherDocuments {
+  id          String        @id @default(uuid()) @db.Uuid
+  TeacherId   teacherMaster @relation(fields: [fkTeacherId], references: [id])
+  fkTeacherId String        @db.Uuid
+  category    String
+  docUrl      String
+  status      Boolean       @default(true)
+  createAt    DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@schema("teacher")
+}
+
+model teacherAddress {
+  id          String        @id @default(uuid()) @db.Uuid
+  TeacherId   teacherMaster @relation(fields: [fkTeacherId], references: [id])
+  fkTeacherId String        @db.Uuid
+  country     country       @relation(fields: [fkcountryId], references: [id])
+  fkcountryId String        @db.Uuid
+  state       state         @relation(fields: [fkstateId], references: [id])
+  fkstateId   String        @db.Uuid
+  city        city          @relation(fields: [fkcityId], references: [id])
+  fkcityId    String        @db.Uuid
+  Address     String
+  status      Boolean       @default(true)
+  createAt    DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@schema("teacher")
+}
+
+model instituteMaster {
+  id           String   @id @default(uuid()) @db.Uuid
+  name         String
+  email        String   @unique
+  phone        String   @unique
+  profileImg   String
+  status       Boolean  @default(true)
+  onMaintaince Boolean  @default(false)
+  createAt     DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@schema("institute")
+}
+
+model instituteAddress {
+  id          String   @id @default(uuid()) @db.Uuid
+  country     country  @relation(fields: [fkcountryId], references: [id])
+  fkcountryId String   @db.Uuid
+  state       state    @relation(fields: [fkstateId], references: [id])
+  fkstateId   String   @db.Uuid
+  city        city     @relation(fields: [fkcityId], references: [id])
+  fkcityId    String   @db.Uuid
+  Address     String
+  pin         String
+  status      Boolean  @default(true)
+  createAt    DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@schema("teacher")
+}
+
+model instituteLogin {
+  id                  String   @id @default(uuid()) @db.Uuid
+  fk_institute_id     String   @db.Uuid
+  password            String
+  maintaince_password String
+  status              Boolean  @default(true)
+  createAt            DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@schema("institute")
+}
