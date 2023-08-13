@@ -40,13 +40,13 @@ cityRoutes.get("/get/All", [validateToken, isAdmin], async (req: Request, res: R
         return res.status(500).json({ status: "error", message: e.message });
     }
 })
-cityRoutes.get("/get/active", [validateToken], async (req: Request, res: Response) => {
+cityRoutes.get("/get/active/:countryId/:stateId", [validateToken], async (req: Request, res: Response) => {
     try {
-        const reqError = cityGetSchema.validate(req.body);
+        const reqError = cityGetSchema.validate(req.params);
         if (reqError?.error) {
             return res.status(200).json({ status: "error", message: reqError.error?.message });
         }
-        const { countryId, stateId, city } = req.body;
+        const { countryId, stateId } = req.params;
         let { code, status, message } = await getActiveCity(countryId, stateId)
         return res.status(code).json({ status, message })
     } catch (e: any) {

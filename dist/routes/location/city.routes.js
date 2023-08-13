@@ -55,14 +55,14 @@ exports.cityRoutes.get("/get/All", [authMiddleware_1.validateToken, authMiddlewa
         return res.status(500).json({ status: "error", message: e.message });
     }
 }));
-exports.cityRoutes.get("/get/active", [authMiddleware_1.validateToken], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.cityRoutes.get("/get/active/:countryId/:stateId", [authMiddleware_1.validateToken], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _c;
     try {
-        const reqError = requestValidation_1.cityGetSchema.validate(req.body);
+        const reqError = requestValidation_1.cityGetSchema.validate(req.params);
         if (reqError === null || reqError === void 0 ? void 0 : reqError.error) {
             return res.status(200).json({ status: "error", message: (_c = reqError.error) === null || _c === void 0 ? void 0 : _c.message });
         }
-        const { countryId, stateId, city } = req.body;
+        const { countryId, stateId } = req.params;
         let { code, status, message } = yield (0, city_1.getActiveCity)(countryId, stateId);
         return res.status(code).json({ status, message });
     }

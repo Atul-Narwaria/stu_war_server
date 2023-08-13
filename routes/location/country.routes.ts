@@ -19,7 +19,7 @@ countryRoutes.post("/create", [validateToken, isAdmin], async (req: Request, res
     }
 })
 
-countryRoutes.get("/get", [validateToken, isAdmin], async (req: Request, res: Response) => {
+countryRoutes.get("/get", [validateToken], async (req: Request, res: Response) => {
     try {
         let { code, status, message } = await getCountry();
         return res.status(code).json({ status, message })

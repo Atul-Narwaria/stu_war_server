@@ -57,3 +57,25 @@ export const cityUpdateSchema = Joi.object({
 export const cityIdSchema = Joi.object({
     id: Joi.string().uuid().required(),
 })
+
+export const InstituteCreateSchema = Joi.object({
+    name: Joi.string().required(),
+    email: Joi.string().email().required(),
+    phone: Joi.string().length(10).required(),
+    password: Joi.string().required(),
+    confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
+    country: Joi.string().uuid().required(),
+    state: Joi.string().uuid().required(),
+    city: Joi.string().uuid().required(),
+    profileImg: Joi.string().optional(),
+    address: Joi.string().required(),
+    pin: Joi.string().length(6).required()
+})
+
+export const InstituteUpdateStatusSchema = Joi.object({
+    id: Joi.string().uuid().required(),
+    status: Joi.boolean().required()
+})
+export const InstituteDeleteSchema = Joi.object({
+    id: Joi.string().uuid().required(),
+})

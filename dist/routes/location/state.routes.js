@@ -127,7 +127,7 @@ exports.StateRoutes.delete("/delete/:id", [authMiddleware_1.validateToken, authM
         return res.status(500).json({ status: "error", message: e.message });
     }
 }));
-exports.StateRoutes.get("/get/active/country/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.StateRoutes.get("/get/active/country/:id", [authMiddleware_1.validateToken], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _h;
     try {
         const reqError = requestValidation_1.stateIdSchema.validate(req.params);

@@ -199,44 +199,50 @@ model teacherAddress {
 }
 
 model instituteMaster {
-  id           String   @id @default(uuid()) @db.Uuid
-  name         String
-  email        String   @unique
-  phone        String   @unique
-  profileImg   String
-  status       Boolean  @default(true)
-  onMaintaince Boolean  @default(false)
-  createAt     DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id               String             @id @default(uuid()) @db.Uuid
+  name             String
+  code             String             @unique
+  email            String             @unique
+  phone            String             @unique
+  profileImg       String?
+  status           Boolean            @default(true)
+  onMaintaince     Boolean            @default(false)
+  createAt         DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  instituteAddress instituteAddress[]
+  instituteLogin   instituteLogin[]
 
   @@schema("institute")
 }
 
 model instituteAddress {
-  id          String   @id @default(uuid()) @db.Uuid
-  country     country  @relation(fields: [fkcountryId], references: [id])
-  fkcountryId String   @db.Uuid
-  state       state    @relation(fields: [fkstateId], references: [id])
-  fkstateId   String   @db.Uuid
-  city        city     @relation(fields: [fkcityId], references: [id])
-  fkcityId    String   @db.Uuid
-  Address     String
-  pin         String
-  status      Boolean  @default(true)
-  createAt    DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id              String          @id @default(uuid()) @db.Uuid
+  fk_institute_id String          @db.Uuid
+  instituteMaster instituteMaster @relation(fields: [fk_institute_id], references: [id])
+  country         country         @relation(fields: [fkcountryId], references: [id])
+  fkcountryId     String          @db.Uuid
+  state           state           @relation(fields: [fkstateId], references: [id])
+  fkstateId       String          @db.Uuid
+  city            city            @relation(fields: [fkcityId], references: [id])
+  fkcityId        String          @db.Uuid
+  Address         String
+  pin             String
+  status          Boolean         @default(true)
+  createAt        DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
 
-  @@schema("teacher")
+  @@schema("institute")
 }
 
 model instituteLogin {
-  id                  String   @id @default(uuid()) @db.Uuid
-  fk_institute_id     String   @db.Uuid
+  id                  String          @id @default(uuid()) @db.Uuid
+  fk_institute_id     String          @db.Uuid
+  instituteMaster     instituteMaster @relation(fields: [fk_institute_id], references: [id])
   password            String
   maintaince_password String
-  status              Boolean  @default(true)
-  createAt            DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  status              Boolean         @default(true)
+  createAt            DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
 
   @@schema("institute")
 }

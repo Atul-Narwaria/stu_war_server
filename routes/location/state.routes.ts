@@ -105,7 +105,7 @@ StateRoutes.delete("/delete/:id", [validateToken, isAdmin], async (req: Request,
     }
 })
 
-StateRoutes.get("/get/active/country/:id", async (req: Request, res: Response) => {
+StateRoutes.get("/get/active/country/:id", [validateToken], async (req: Request, res: Response) => {
     try {
         const reqError = stateIdSchema.validate(req.params);
         if (reqError?.error) {
