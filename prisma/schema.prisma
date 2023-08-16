@@ -126,6 +126,7 @@ model studentAddress {
   city        city          @relation(fields: [fkcityId], references: [id])
   fkcityId    String        @db.Uuid
   Address     String
+  pin         String
   status      Boolean       @default(true)
   createAt    DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
