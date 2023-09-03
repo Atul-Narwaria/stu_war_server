@@ -83,21 +83,23 @@ model admin {
 }
 
 model studentMaster {
-  id             String             @id @default(uuid()) @db.Uuid
-  firstName      String
-  lastName       String
-  email          String             @unique
-  phone          String             @unique
-  password       String
-  dob            DateTime           @db.Date
-  admissionId    String             @unique
-  rollNo         String
-  profileImg     String
-  status         Boolean            @default(true)
-  createAt       DateTime           @default(now())
-  updatedAt      DateTime           @updatedAt
-  studentDetail  studentDocuments[]
-  studentAddress studentAddress[]
+  id                String             @id @default(uuid()) @db.Uuid
+  firstName         String
+  lastName          String
+  email             String             @unique
+  phone             String             @unique
+  password          String
+  gender            String
+  dob               DateTime           @db.Date
+  admissionId       String             @unique
+  profileImg        String?
+  status            Boolean            @default(true)
+  instituteMasterId instituteMaster    @relation(fields: [fk_institute_id], references: [id])
+  fk_institute_id   String             @db.Uuid
+  createAt          DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  studentDetail     studentDocuments[]
+  studentAddress    studentAddress[]
 
   @@schema("students")
 }
@@ -212,6 +214,7 @@ model instituteMaster {
   updatedAt        DateTime           @updatedAt
   instituteAddress instituteAddress[]
   instituteLogin   instituteLogin[]
+  studentMaster    studentMaster[]
 
   @@schema("institute")
 }

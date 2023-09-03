@@ -9,14 +9,15 @@ export const createStudentWithAddress = async (data: {
     phone: string,
     password: string,
     dob: Date,
+    gender: string,
     admissionId: string,
-    rollNo: string,
     profileImg: string,
     country: string,
     state: string,
     city: string,
     address: string,
     pin: string
+    instituteId: string
 }) => {
     try {
         await prisma.studentMaster.create({
@@ -26,10 +27,11 @@ export const createStudentWithAddress = async (data: {
                 email: data.email,
                 phone: data.phone,
                 password: data.password,
-                dob: data.dob,
+                dob: new Date(data.dob),
+                gender: data.gender,
                 admissionId: data.admissionId,
-                rollNo: data.rollNo,
                 profileImg: data.profileImg,
+                fk_institute_id: data.instituteId,
                 studentAddress: {
                     create: {
                         fkcountryId: data.country,
@@ -41,9 +43,9 @@ export const createStudentWithAddress = async (data: {
                 }
             }
         })
-        return { status: "success", message: "student created successfully" }
+        return { code: 200, status: "success", message: "student created successfully" }
     } catch (prismaError: any) {
-        return { status: "error", message: prismaError.message }
+        return { code: 500, status: "error", message: prismaError.message }
     }
 }
 export const getstundet = async (id: string) => {
@@ -164,5 +166,35 @@ export const studentDelete = async (id: string) => {
         return { status: "success", message: `${user.firstname} ${user.lastname}   student delete   ` }
     } catch (prismaError: any) {
         return { status: "error", message: prismaError.message }
+    }
+}
+
+export const getstudentAddmissionIds = async (id: string) => {
+    try {
+
+        return {
+            code: 200, status: "success",
+            message: await prisma.studentMaster.findMany({
+                select: {
+                    admissionId: true
+                },
+                where: {
+                    admissionId: {
+                        contains: id
+                    }
+                }
+            })
+        }
+    } catch (e: any) {
+        return { code: 500, status: 'error', message: e.message }
+    }
+}
+export const getStudents = async () => {
+    try {
+        return {
+            code: 200, status: "success", message: await prisma.studentMaster.findMany()
+        }
+    } catch (e: any) {
+        return { code: 500, status: 'error', message: e.message }
     }
 }

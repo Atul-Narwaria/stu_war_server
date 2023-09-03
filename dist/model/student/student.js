@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.studentDelete = exports.StudentStatusUpdate = exports.editStudentAddress = exports.editStudent = exports.getstundet = exports.createStudentWithAddress = void 0;
+exports.getStudents = exports.getstudentAddmissionIds = exports.studentDelete = exports.StudentStatusUpdate = exports.editStudentAddress = exports.editStudent = exports.getstundet = exports.createStudentWithAddress = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const createStudentWithAddress = (data) => __awaiter(void 0, void 0, void 0, function* () {
@@ -21,10 +21,11 @@ const createStudentWithAddress = (data) => __awaiter(void 0, void 0, void 0, fun
                 email: data.email,
                 phone: data.phone,
                 password: data.password,
-                dob: data.dob,
+                dob: new Date(data.dob),
+                gender: data.gender,
                 admissionId: data.admissionId,
-                rollNo: data.rollNo,
                 profileImg: data.profileImg,
+                fk_institute_id: data.instituteId,
                 studentAddress: {
                     create: {
                         fkcountryId: data.country,
@@ -36,10 +37,10 @@ const createStudentWithAddress = (data) => __awaiter(void 0, void 0, void 0, fun
                 }
             }
         });
-        return { status: "success", message: "student created successfully" };
+        return { code: 200, status: "success", message: "student created successfully" };
     }
     catch (prismaError) {
-        return { status: "error", message: prismaError.message };
+        return { code: 500, status: "error", message: prismaError.message };
     }
 });
 exports.createStudentWithAddress = createStudentWithAddress;
@@ -151,3 +152,35 @@ const studentDelete = (id) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.studentDelete = studentDelete;
+const getstudentAddmissionIds = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        return {
+            code: 200, status: "success",
+            message: yield prisma.studentMaster.findMany({
+                select: {
+                    admissionId: true
+                },
+                where: {
+                    admissionId: {
+                        contains: id
+                    }
+                }
+            })
+        };
+    }
+    catch (e) {
+        return { code: 500, status: 'error', message: e.message };
+    }
+});
+exports.getstudentAddmissionIds = getstudentAddmissionIds;
+const getStudents = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        return {
+            code: 200, status: "success", message: yield prisma.studentMaster.findMany()
+        };
+    }
+    catch (e) {
+        return { code: 500, status: 'error', message: e.message };
+    }
+});
+exports.getStudents = getStudents;

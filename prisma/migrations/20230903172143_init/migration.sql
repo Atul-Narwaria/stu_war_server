@@ -57,6 +57,7 @@ CREATE TABLE "locations"."state" (
 CREATE TABLE "locations"."city" (
     "id" UUID NOT NULL,
     "cityName" TEXT NOT NULL,
+    "fkCountryId" UUID NOT NULL,
     "fkstateId" UUID NOT NULL,
     "status" BOOLEAN NOT NULL DEFAULT true,
     "createAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -87,11 +88,12 @@ CREATE TABLE "students"."studentMaster" (
     "email" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
     "password" TEXT NOT NULL,
+    "gender" TEXT NOT NULL,
     "dob" DATE NOT NULL,
     "admissionId" TEXT NOT NULL,
-    "rollNo" TEXT NOT NULL,
-    "profileImg" TEXT NOT NULL,
+    "profileImg" TEXT,
     "status" BOOLEAN NOT NULL DEFAULT true,
+    "fk_institute_id" UUID NOT NULL,
     "createAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -119,6 +121,7 @@ CREATE TABLE "students"."studentAddress" (
     "fkstateId" UUID NOT NULL,
     "fkcityId" UUID NOT NULL,
     "Address" TEXT NOT NULL,
+    "pin" TEXT NOT NULL,
     "status" BOOLEAN NOT NULL DEFAULT true,
     "createAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -190,17 +193,32 @@ CREATE TABLE "teacher"."teacherAddress" (
 CREATE TABLE "institute"."instituteMaster" (
     "id" UUID NOT NULL,
     "name" TEXT NOT NULL,
+    "code" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
-    "gender" TEXT NOT NULL,
-    "dob" DATE NOT NULL,
-    "profileImg" TEXT NOT NULL,
+    "profileImg" TEXT,
     "status" BOOLEAN NOT NULL DEFAULT true,
     "onMaintaince" BOOLEAN NOT NULL DEFAULT false,
     "createAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "instituteMaster_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "institute"."instituteAddress" (
+    "id" UUID NOT NULL,
+    "fk_institute_id" UUID NOT NULL,
+    "fkcountryId" UUID NOT NULL,
+    "fkstateId" UUID NOT NULL,
+    "fkcityId" UUID NOT NULL,
+    "Address" TEXT NOT NULL,
+    "pin" TEXT NOT NULL,
+    "status" BOOLEAN NOT NULL DEFAULT true,
+    "createAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "instituteAddress_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -253,6 +271,9 @@ CREATE UNIQUE INDEX "teacherMaster_email_key" ON "teacher"."teacherMaster"("emai
 CREATE UNIQUE INDEX "teacherMaster_phone_key" ON "teacher"."teacherMaster"("phone");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "instituteMaster_code_key" ON "institute"."instituteMaster"("code");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "instituteMaster_email_key" ON "institute"."instituteMaster"("email");
 
 -- CreateIndex
@@ -262,7 +283,13 @@ CREATE UNIQUE INDEX "instituteMaster_phone_key" ON "institute"."instituteMaster"
 ALTER TABLE "locations"."state" ADD CONSTRAINT "state_fkCountryId_fkey" FOREIGN KEY ("fkCountryId") REFERENCES "locations"."country"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "locations"."city" ADD CONSTRAINT "city_fkCountryId_fkey" FOREIGN KEY ("fkCountryId") REFERENCES "locations"."country"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "locations"."city" ADD CONSTRAINT "city_fkstateId_fkey" FOREIGN KEY ("fkstateId") REFERENCES "locations"."state"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "students"."studentMaster" ADD CONSTRAINT "studentMaster_fk_institute_id_fkey" FOREIGN KEY ("fk_institute_id") REFERENCES "institute"."instituteMaster"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "students"."studentDocuments" ADD CONSTRAINT "studentDocuments_fkStudentId_fkey" FOREIGN KEY ("fkStudentId") REFERENCES "students"."studentMaster"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -296,3 +323,18 @@ ALTER TABLE "teacher"."teacherAddress" ADD CONSTRAINT "teacherAddress_fkstateId_
 
 -- AddForeignKey
 ALTER TABLE "teacher"."teacherAddress" ADD CONSTRAINT "teacherAddress_fkcityId_fkey" FOREIGN KEY ("fkcityId") REFERENCES "locations"."city"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "institute"."instituteAddress" ADD CONSTRAINT "instituteAddress_fk_institute_id_fkey" FOREIGN KEY ("fk_institute_id") REFERENCES "institute"."instituteMaster"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "institute"."instituteAddress" ADD CONSTRAINT "instituteAddress_fkcountryId_fkey" FOREIGN KEY ("fkcountryId") REFERENCES "locations"."country"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "institute"."instituteAddress" ADD CONSTRAINT "instituteAddress_fkstateId_fkey" FOREIGN KEY ("fkstateId") REFERENCES "locations"."state"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "institute"."instituteAddress" ADD CONSTRAINT "instituteAddress_fkcityId_fkey" FOREIGN KEY ("fkcityId") REFERENCES "locations"."city"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "institute"."instituteLogin" ADD CONSTRAINT "instituteLogin_fk_institute_id_fkey" FOREIGN KEY ("fk_institute_id") REFERENCES "institute"."instituteMaster"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

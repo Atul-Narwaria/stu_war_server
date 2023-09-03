@@ -12,9 +12,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isAdmin = exports.validateToken = void 0;
+exports.isInstitute = exports.isAdmin = exports.validateToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const admin_1 = require("../model/admin/admin");
+const institute_1 = require("../model/institute/institute");
 const secret_key = process.env.APP_KEY;
 const validateToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const token = req.headers.authorization;
@@ -45,3 +46,17 @@ const isAdmin = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
     next();
 });
 exports.isAdmin = isAdmin;
+const isInstitute = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    let id = req.userid;
+    console.log(req.userid);
+    if (!id) {
+        return res.status(401).json({ message: 'Invalid token' });
+    }
+    const check = yield (0, institute_1.CheckinstituteExistance)(id);
+    console.log(check);
+    if (check == 0) {
+        return res.status(401).json({ message: 'institute role required' });
+    }
+    next();
+});
+exports.isInstitute = isInstitute;

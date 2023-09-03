@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.InstituteDeleteSchema = exports.InstituteUpdateStatusSchema = exports.InstituteCreateSchema = exports.cityIdSchema = exports.cityUpdateSchema = exports.cityGetSchema = exports.cityCreateSchema = exports.stateIdSchema = exports.stateUpdateSchema = exports.stateGetSchema = exports.stateCreateSchema = exports.countryUpdateSchema = exports.countryIdSchema = exports.countryCreateSchema = exports.AdminLogin = exports.AdminRegistration = void 0;
+exports.instituteCreateStudentSchema = exports.InstituteDeleteSchema = exports.InstituteUpdateStatusSchema = exports.InstituteCreateSchema = exports.cityIdSchema = exports.cityUpdateSchema = exports.cityGetSchema = exports.cityCreateSchema = exports.stateIdSchema = exports.stateUpdateSchema = exports.stateGetSchema = exports.stateCreateSchema = exports.countryUpdateSchema = exports.countryIdSchema = exports.countryCreateSchema = exports.AdminLogin = exports.AdminRegistration = void 0;
 const joi_1 = __importDefault(require("joi"));
 exports.AdminRegistration = joi_1.default.object({
     name: joi_1.default.string().required().min(3),
@@ -75,4 +75,18 @@ exports.InstituteUpdateStatusSchema = joi_1.default.object({
 });
 exports.InstituteDeleteSchema = joi_1.default.object({
     id: joi_1.default.string().uuid().required(),
+});
+exports.instituteCreateStudentSchema = joi_1.default.object({
+    firstname: joi_1.default.string().required(),
+    lastname: joi_1.default.string().required(),
+    email: joi_1.default.string().email().required(),
+    phone: joi_1.default.string().length(10).required(),
+    dob: joi_1.default.date().required(),
+    gender: joi_1.default.string().valid('male', 'female', 'other').required(),
+    country: joi_1.default.string().uuid().required(),
+    state: joi_1.default.string().uuid().required(),
+    city: joi_1.default.string().uuid().required(),
+    profileImg: joi_1.default.string().optional(),
+    address: joi_1.default.string().required(),
+    pin: joi_1.default.string().length(6).required()
 });

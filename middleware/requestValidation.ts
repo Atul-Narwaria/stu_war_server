@@ -79,3 +79,17 @@ export const InstituteUpdateStatusSchema = Joi.object({
 export const InstituteDeleteSchema = Joi.object({
     id: Joi.string().uuid().required(),
 })
+export const instituteCreateStudentSchema = Joi.object({
+    firstname: Joi.string().required(),
+    lastname: Joi.string().required(),
+    email: Joi.string().email().required(),
+    phone: Joi.string().length(10).required(),
+    dob: Joi.date().required(),
+    gender: Joi.string().valid('male', 'female', 'other').required(),
+    country: Joi.string().uuid().required(),
+    state: Joi.string().uuid().required(),
+    city: Joi.string().uuid().required(),
+    profileImg: Joi.string().optional(),
+    address: Joi.string().required(),
+    pin: Joi.string().length(6).required()
+})

@@ -241,3 +241,12 @@ export const getInstitutePassword = async (id: string) => {
         return { code: 200, status: 'error', message: e.message }
     }
 }
+export const CheckinstituteExistance = async (id: string) => {
+    try {
+        return await prisma.instituteMaster.count({
+            where: { id: id }
+        })
+    } catch (e: any) {
+        return { code: 500, status: "error", message: e.message }
+    }
+}

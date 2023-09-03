@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getInstitutePassword = exports.getInstitute = exports.deleteInstitute = exports.updateInstituteStatus = exports.getInstituesById = exports.getInstitutes = exports.getAllCode = exports.createInstitue = void 0;
+exports.CheckinstituteExistance = exports.getInstitutePassword = exports.getInstitute = exports.deleteInstitute = exports.updateInstituteStatus = exports.getInstituesById = exports.getInstitutes = exports.getAllCode = exports.createInstitue = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const createInstitue = (datas) => __awaiter(void 0, void 0, void 0, function* () {
@@ -248,3 +248,14 @@ const getInstitutePassword = (id) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.getInstitutePassword = getInstitutePassword;
+const CheckinstituteExistance = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        return yield prisma.instituteMaster.count({
+            where: { id: id }
+        });
+    }
+    catch (e) {
+        return { code: 500, status: "error", message: e.message };
+    }
+});
+exports.CheckinstituteExistance = CheckinstituteExistance;
