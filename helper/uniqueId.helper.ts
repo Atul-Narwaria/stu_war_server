@@ -12,15 +12,17 @@ export const studentAddmissionId = async (code: string) => {
                 let allids: any = [];
                 getIds?.message?.map((e: any) => {
 
-                    allids.push(removePrefix(e.admissionId, prefix));
+                    allids.push(parseInt(removePrefix(e.admissionId, prefix)));
+
                 })
                 maxnum = parseInt(_.max(allids)) + 1;
+                console.log(allids)
             }
         } else {
             maxnum = 0;
         }
 
-        return { status: "success", message: `${prefix}-${maxnum}` };
+        return { status: "success", message: `${prefix}${maxnum}` };
     }
     catch (e: any) {
         return { status: "error", message: e.message }

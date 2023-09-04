@@ -146,9 +146,9 @@ export const StudentStatusUpdate = async (id: string, status: boolean) => {
                 id: id
             }
         })
-        return { status: "success", message: `${user.firstname} ${user.lastname}   student status  updated` }
+        return { code: 200, status: "success", message: `${user.firstname} ${user.lastname}   student status  updated` }
     } catch (prismaError: any) {
-        return { status: "error", message: prismaError.message }
+        return { code: 500, status: "error", message: prismaError.message }
     }
 }
 
@@ -163,9 +163,9 @@ export const studentDelete = async (id: string) => {
                 id: id
             }
         })
-        return { status: "success", message: `${user.firstname} ${user.lastname}   student delete   ` }
+        return { code: 200, status: "success", message: `${user.firstname} ${user.lastname}   student delete   ` }
     } catch (prismaError: any) {
-        return { status: "error", message: prismaError.message }
+        return { code: 500, status: "error", message: prismaError.message }
     }
 }
 
@@ -189,10 +189,145 @@ export const getstudentAddmissionIds = async (id: string) => {
         return { code: 500, status: 'error', message: e.message }
     }
 }
-export const getStudents = async () => {
+export const getInstituteStudents = async (page: number, insID: string) => {
     try {
+        const skip = (page - 1) * 10;
+        let totalPage = await prisma.studentMaster.count({
+            where: {
+                fk_institute_id: insID
+            }
+        });
+        let totalRow = totalPage;
+        totalPage = Math.ceil(totalPage / 10);
         return {
-            code: 200, status: "success", message: await prisma.studentMaster.findMany()
+            code: 200, status: "success", message: await prisma.studentMaster.findMany({
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    phone: true,
+                    gender: true,
+                    dob: true,
+                    admissionId: true,
+                    status: true,
+                    createAt: true,
+                    updatedAt: true
+                },
+                skip: skip,
+                take: 10,
+                where: {
+                    fk_institute_id: insID
+                }
+            }),
+            totalPage: totalPage,
+            totalRow: totalRow
+        }
+    } catch (e: any) {
+        return { code: 500, status: 'error', message: e.message }
+    }
+
+
+}
+export const InstituteStudentSeach = async (page: number, query: string, insID: string) => {
+    try {
+        const skip = (page - 1) * 10;
+        let totalPage = await prisma.studentMaster.count({
+            where: {
+                fk_institute_id: insID,
+                OR:
+                    [
+                        {
+                            firstName: {
+                                contains: query
+                            }
+                        },
+                        {
+                            lastName: {
+                                contains: query
+                            }
+                        },
+                        {
+                            email: {
+                                contains: query
+                            }
+                        },
+                        {
+                            phone: {
+                                contains: query
+                            }
+                        },
+                        {
+                            gender: {
+                                contains: query
+                            }
+                        }
+
+
+                    ],
+
+
+            }
+        });
+        let totalRow = totalPage;
+        totalPage = Math.ceil(totalPage / 10);
+        return {
+            code: 200, status: "success", message: await prisma.studentMaster.findMany({
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    phone: true,
+                    gender: true,
+                    dob: true,
+                    admissionId: true,
+                    status: true,
+                    createAt: true,
+                    updatedAt: true
+                },
+                skip: skip,
+                take: 10,
+                where: {
+                    fk_institute_id: insID,
+                    OR:
+                        [
+                            {
+                                firstName: {
+                                    contains: query
+                                }
+                            },
+                            {
+                                lastName: {
+                                    contains: query
+                                }
+                            },
+                            {
+                                email: {
+                                    contains: query
+                                }
+                            },
+                            {
+                                phone: {
+                                    contains: query
+                                }
+                            },
+                            {
+                                gender: {
+                                    contains: query
+                                }
+                            }
+
+
+                        ],
+
+
+                }
+
+
+            }),
+            totalPage: totalPage,
+            totalRow: totalRow
         }
     } catch (e: any) {
         return { code: 500, status: 'error', message: e.message }

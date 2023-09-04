@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getStudents = exports.getstudentAddmissionIds = exports.studentDelete = exports.StudentStatusUpdate = exports.editStudentAddress = exports.editStudent = exports.getstundet = exports.createStudentWithAddress = void 0;
+exports.InstituteStudentSeach = exports.getInstituteStudents = exports.getstudentAddmissionIds = exports.studentDelete = exports.StudentStatusUpdate = exports.editStudentAddress = exports.editStudent = exports.getstundet = exports.createStudentWithAddress = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const createStudentWithAddress = (data) => __awaiter(void 0, void 0, void 0, function* () {
@@ -127,10 +127,10 @@ const StudentStatusUpdate = (id, status) => __awaiter(void 0, void 0, void 0, fu
                 id: id
             }
         });
-        return { status: "success", message: `${user.firstname} ${user.lastname}   student status  updated` };
+        return { code: 200, status: "success", message: `${user.firstname} ${user.lastname}   student status  updated` };
     }
     catch (prismaError) {
-        return { status: "error", message: prismaError.message };
+        return { code: 500, status: "error", message: prismaError.message };
     }
 });
 exports.StudentStatusUpdate = StudentStatusUpdate;
@@ -145,10 +145,10 @@ const studentDelete = (id) => __awaiter(void 0, void 0, void 0, function* () {
                 id: id
             }
         });
-        return { status: "success", message: `${user.firstname} ${user.lastname}   student delete   ` };
+        return { code: 200, status: "success", message: `${user.firstname} ${user.lastname}   student delete   ` };
     }
     catch (prismaError) {
-        return { status: "error", message: prismaError.message };
+        return { code: 500, status: "error", message: prismaError.message };
     }
 });
 exports.studentDelete = studentDelete;
@@ -173,14 +173,137 @@ const getstudentAddmissionIds = (id) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.getstudentAddmissionIds = getstudentAddmissionIds;
-const getStudents = () => __awaiter(void 0, void 0, void 0, function* () {
+const getInstituteStudents = (page, insID) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const skip = (page - 1) * 10;
+        let totalPage = yield prisma.studentMaster.count({
+            where: {
+                fk_institute_id: insID
+            }
+        });
+        let totalRow = totalPage;
+        totalPage = Math.ceil(totalPage / 10);
         return {
-            code: 200, status: "success", message: yield prisma.studentMaster.findMany()
+            code: 200, status: "success", message: yield prisma.studentMaster.findMany({
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    phone: true,
+                    gender: true,
+                    dob: true,
+                    admissionId: true,
+                    status: true,
+                    createAt: true,
+                    updatedAt: true
+                },
+                skip: skip,
+                take: 10,
+                where: {
+                    fk_institute_id: insID
+                }
+            }),
+            totalPage: totalPage,
+            totalRow: totalRow
         };
     }
     catch (e) {
         return { code: 500, status: 'error', message: e.message };
     }
 });
-exports.getStudents = getStudents;
+exports.getInstituteStudents = getInstituteStudents;
+const InstituteStudentSeach = (page, query, insID) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const skip = (page - 1) * 10;
+        let totalPage = yield prisma.studentMaster.count({
+            where: {
+                fk_institute_id: insID,
+                OR: [
+                    {
+                        firstName: {
+                            contains: query
+                        }
+                    },
+                    {
+                        lastName: {
+                            contains: query
+                        }
+                    },
+                    {
+                        email: {
+                            contains: query
+                        }
+                    },
+                    {
+                        phone: {
+                            contains: query
+                        }
+                    },
+                    {
+                        gender: {
+                            contains: query
+                        }
+                    }
+                ],
+            }
+        });
+        let totalRow = totalPage;
+        totalPage = Math.ceil(totalPage / 10);
+        return {
+            code: 200, status: "success", message: yield prisma.studentMaster.findMany({
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    phone: true,
+                    gender: true,
+                    dob: true,
+                    admissionId: true,
+                    status: true,
+                    createAt: true,
+                    updatedAt: true
+                },
+                skip: skip,
+                take: 10,
+                where: {
+                    fk_institute_id: insID,
+                    OR: [
+                        {
+                            firstName: {
+                                contains: query
+                            }
+                        },
+                        {
+                            lastName: {
+                                contains: query
+                            }
+                        },
+                        {
+                            email: {
+                                contains: query
+                            }
+                        },
+                        {
+                            phone: {
+                                contains: query
+                            }
+                        },
+                        {
+                            gender: {
+                                contains: query
+                            }
+                        }
+                    ],
+                }
+            }),
+            totalPage: totalPage,
+            totalRow: totalRow
+        };
+    }
+    catch (e) {
+        return { code: 500, status: 'error', message: e.message };
+    }
+});
+exports.InstituteStudentSeach = InstituteStudentSeach;

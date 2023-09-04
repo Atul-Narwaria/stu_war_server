@@ -26,15 +26,16 @@ const studentAddmissionId = (code) => __awaiter(void 0, void 0, void 0, function
             if (((_a = getIds === null || getIds === void 0 ? void 0 : getIds.message) === null || _a === void 0 ? void 0 : _a.length) != 0) {
                 let allids = [];
                 (_b = getIds === null || getIds === void 0 ? void 0 : getIds.message) === null || _b === void 0 ? void 0 : _b.map((e) => {
-                    allids.push(removePrefix(e.admissionId, prefix));
+                    allids.push(parseInt(removePrefix(e.admissionId, prefix)));
                 });
                 maxnum = parseInt(_.max(allids)) + 1;
+                console.log(allids);
             }
         }
         else {
             maxnum = 0;
         }
-        return { status: "success", message: `${prefix}-${maxnum}` };
+        return { status: "success", message: `${prefix}${maxnum}` };
     }
     catch (e) {
         return { status: "error", message: e.message };
