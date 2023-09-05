@@ -1,8 +1,8 @@
 import bcrypt from "bcrypt";
 import { getInstituesById } from "../../model/institute/institute";
 import { studentAddmissionId } from "../../helper/uniqueId.helper";
-import { createStudentWithAddress } from "../../model/student/student";
-
+import { createBulkStudent, createStudentWithAddress } from "../../model/student/student";
+import moment from "moment";
 export const institutecreateStudent = async (data: {
     firstname: string,
     lastname: string,
@@ -29,7 +29,6 @@ export const institutecreateStudent = async (data: {
         }
     }
     let getAddmissionid: any = await studentAddmissionId(inscode.message.code);
-    console.log(getAddmissionid.status);
     if (getAddmissionid.status != "success") {
         return {
             code: 400,
@@ -60,4 +59,62 @@ export const institutecreateStudent = async (data: {
 
     return { code, status, message }
 
+}
+
+export const createBulkStundentController = async (data: any, instid: string) => {
+    if (!data || data.length === 0) {
+        return {
+            code: 422,
+            status: "error",
+            message: "data not define"
+        }
+    }
+    let inscode = await getInstituesById(instid);
+
+    if (!inscode) {
+        return {
+            code: 403,
+            status: "error",
+            message: "Invalid Institute Id"
+        }
+    }
+    let bulkData: any = [];
+    let maintancepassword: string = process?.env?.MAINTANCE_PASSWORD ? process?.env?.MAINTANCE_PASSWORD : "12345678";
+    let admissionId = 0;
+    let prefix: string = `${inscode.message.code}FY${moment().format('YY')}-${moment().add(1, 'year').format('YY')}`
+    let getAddmissionid: any = await studentAddmissionId(inscode.message.code);
+    data.map(async (e: any) => {
+        let adId: any = removePrefix(getAddmissionid.message, prefix)
+        if (getAddmissionid.status != "success") {
+            return {
+                code: 400,
+                status: "error",
+                message: "internal error"
+            }
+        }
+
+        bulkData.push({
+            firstName: e.firstName,
+            lastName: e.lastName,
+            email: e.email,
+            phone: e.phone.toString(),
+            password: bcrypt.hashSync(maintancepassword, 10),
+            dob: new Date(e.dob),
+            gender: e.gender,
+            admissionId: `${prefix}${parseInt(adId) + admissionId}`,
+            fk_institute_id: instid,
+        })
+        admissionId++;
+    })
+    const { code, status, message } = await createBulkStudent(bulkData)
+    return { code, status, message }
+}
+
+
+
+function removePrefix(inputString: any, prefix: any) {
+    if (inputString.startsWith(prefix)) {
+        return inputString.slice(prefix.length);
+    }
+    return inputString;
 }

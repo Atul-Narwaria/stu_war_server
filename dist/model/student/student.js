@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.InstituteStudentSeach = exports.getInstituteStudents = exports.getstudentAddmissionIds = exports.studentDelete = exports.StudentStatusUpdate = exports.editStudentAddress = exports.editStudent = exports.getstundet = exports.createStudentWithAddress = void 0;
+exports.InstituteStudentSeach = exports.getInstituteStudents = exports.getstudentAddmissionIds = exports.studentDelete = exports.StudentStatusUpdate = exports.editStudentAddress = exports.editStudent = exports.getstundet = exports.createBulkStudent = exports.createStudentWithAddress = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const createStudentWithAddress = (data) => __awaiter(void 0, void 0, void 0, function* () {
@@ -44,6 +44,20 @@ const createStudentWithAddress = (data) => __awaiter(void 0, void 0, void 0, fun
     }
 });
 exports.createStudentWithAddress = createStudentWithAddress;
+const createBulkStudent = (bulkData) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        console.log(bulkData);
+        yield prisma.studentMaster.createMany({
+            data: bulkData,
+            skipDuplicates: true,
+        });
+        return { code: 200, status: "success", message: "student created successfully" };
+    }
+    catch (prismaError) {
+        return { code: 500, status: "error", message: prismaError.message };
+    }
+});
+exports.createBulkStudent = createBulkStudent;
 const getstundet = (id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         return {

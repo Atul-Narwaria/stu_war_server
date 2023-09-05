@@ -31,6 +31,21 @@ exports.InstitueStudentRoutes.post("/create", [authMiddleware_1.validateToken, a
         return res.status(500).json({ status: "error", message: e.message });
     }
 }));
+exports.InstitueStudentRoutes.post("/create/bulk", [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _b;
+    try {
+        // const reqError = instituteCreateStudentSchema.validate(req.body);
+        // if (reqError?.error) {
+        //     return res.status(422).json({ status: "error", message: reqError.error?.message });
+        // }
+        let instituteCode = req.userid;
+        let { code, status, message } = yield (0, studentController_1.createBulkStundentController)((_b = req.body) === null || _b === void 0 ? void 0 : _b.data, instituteCode);
+        return res.status(code).json({ status, message });
+    }
+    catch (e) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+}));
 exports.InstitueStudentRoutes.get("/get/all", [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const page = req.query.page || 1;
@@ -55,14 +70,14 @@ exports.InstitueStudentRoutes.get("/get/search", [authMiddleware_1.validateToken
     }
 }));
 exports.InstitueStudentRoutes.put("/update/:id", [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _b;
+    var _c;
     try {
         const reqError = requestValidation_1.InstituteUpdateStatusSchema.validate({
             id: req.params.id,
             status: req.body.status
         });
         if (reqError === null || reqError === void 0 ? void 0 : reqError.error) {
-            return res.status(422).json({ status: "error", message: (_b = reqError.error) === null || _b === void 0 ? void 0 : _b.message });
+            return res.status(422).json({ status: "error", message: (_c = reqError.error) === null || _c === void 0 ? void 0 : _c.message });
         }
         const { code, status, message } = yield (0, student_1.StudentStatusUpdate)(req.params.id, req.body.status);
         return res.status(200).json({ status, message });
@@ -72,11 +87,11 @@ exports.InstitueStudentRoutes.put("/update/:id", [authMiddleware_1.validateToken
     }
 }));
 exports.InstitueStudentRoutes.delete("/delete/:id", [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c;
+    var _d;
     try {
         const reqError = requestValidation_1.InstituteDeleteSchema.validate(req.params);
         if (reqError === null || reqError === void 0 ? void 0 : reqError.error) {
-            return res.status(422).json({ status: "error", message: (_c = reqError.error) === null || _c === void 0 ? void 0 : _c.message });
+            return res.status(422).json({ status: "error", message: (_d = reqError.error) === null || _d === void 0 ? void 0 : _d.message });
         }
         const { code, status, message } = yield (0, student_1.studentDelete)(req.params.id);
         return res.status(200).json({ status, message });

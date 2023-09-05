@@ -48,6 +48,20 @@ export const createStudentWithAddress = async (data: {
         return { code: 500, status: "error", message: prismaError.message }
     }
 }
+
+export const createBulkStudent = async (bulkData: any) => {
+    try {
+        console.log(bulkData)
+        await prisma.studentMaster.createMany({
+            data: bulkData,
+            skipDuplicates: true,
+        })
+        return { code: 200, status: "success", message: "student created successfully" }
+    } catch (prismaError: any) {
+        return { code: 500, status: "error", message: prismaError.message }
+    }
+}
+
 export const getstundet = async (id: string) => {
 
     try {

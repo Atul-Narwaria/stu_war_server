@@ -29,7 +29,6 @@ const studentAddmissionId = (code) => __awaiter(void 0, void 0, void 0, function
                     allids.push(parseInt(removePrefix(e.admissionId, prefix)));
                 });
                 maxnum = parseInt(_.max(allids)) + 1;
-                console.log(allids);
             }
         }
         else {

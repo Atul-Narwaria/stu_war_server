@@ -16,7 +16,6 @@ export const studentAddmissionId = async (code: string) => {
 
                 })
                 maxnum = parseInt(_.max(allids)) + 1;
-                console.log(allids)
             }
         } else {
             maxnum = 0;
