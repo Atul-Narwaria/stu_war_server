@@ -6,7 +6,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  schemas  = ["public", "users", "locations", "students", "teacher", "institute", "website", "blogs"]
+  schemas  = ["public", "users", "locations", "students", "teacher", "institute"]
 }
 
 model designation {
@@ -215,6 +215,7 @@ model instituteMaster {
   instituteAddress instituteAddress[]
   instituteLogin   instituteLogin[]
   studentMaster    studentMaster[]
+  batchMaster      batchMaster[]
 
   @@schema("institute")
 }
@@ -247,6 +248,17 @@ model instituteLogin {
   status              Boolean         @default(true)
   createAt            DateTime        @default(now())
   updatedAt           DateTime        @updatedAt
+
+  @@schema("institute")
+}
+
+model batchMaster {
+  id              String          @id @default(uuid()) @db.Uuid
+  fk_institute_id String          @db.Uuid
+  instituteMaster instituteMaster @relation(fields: [fk_institute_id], references: [id])
+  status          Boolean         @default(true)
+  createAt        DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
 
   @@schema("institute")
 }

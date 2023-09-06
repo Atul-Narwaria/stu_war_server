@@ -75,6 +75,16 @@ export const getstundet = async (id: string) => {
                     email: true,
                     phone: true,
                     dob: true,
+                    gender:true,
+                    studentAddress:{
+                        select:{
+                           fkcityId:true,
+                           fkcountryId:true,
+                           fkstateId:true,
+                           Address:true,
+                           pin:true
+                        }
+                    }
 
                 },
                 where: {
@@ -109,7 +119,7 @@ export const editStudent = async (data: {
                 id: data.id
             }
         })
-        return { status: "success", message: `${data.firstname} ${data.lastname}   student updated` }
+        return { status: "success", message: ` student updated` }
     } catch (prismaError: any) {
         return { status: "error", message: prismaError.message }
     }
@@ -160,7 +170,7 @@ export const StudentStatusUpdate = async (id: string, status: boolean) => {
                 id: id
             }
         })
-        return { code: 200, status: "success", message: `${user.firstname} ${user.lastname}   student status  updated` }
+        return { code: 200, status: "success", message: `${user.firstName} ${user.lastName}   student status  updated` }
     } catch (prismaError: any) {
         return { code: 500, status: "error", message: prismaError.message }
     }
@@ -177,7 +187,7 @@ export const studentDelete = async (id: string) => {
                 id: id
             }
         })
-        return { code: 200, status: "success", message: `${user.firstname} ${user.lastname}   student delete   ` }
+        return { code: 200, status: "success", message: `${user.firstName} ${user.lastName}   student delete   ` }
     } catch (prismaError: any) {
         return { code: 500, status: "error", message: prismaError.message }
     }
@@ -346,4 +356,48 @@ export const InstituteStudentSeach = async (page: number, query: string, insID: 
     } catch (e: any) {
         return { code: 500, status: 'error', message: e.message }
     }
+}
+
+export const editInstituteStudent=async (userid:string,data:{
+    firstname: string,
+    lastname: string,
+    email: string,
+    phone: string,
+    dob: Date,
+    gender: string,
+    country: string,
+    state: string,
+    city: string,
+    address: string,
+    pin: string
+}) => {
+        try {
+             await prisma.studentMaster.update({
+                data: {
+                    firstName: data.firstname,
+                    lastName: data.lastname,
+                    email: data.email,
+                    phone: data.phone,
+                    dob: new Date(data.dob),
+                    gender: data.gender,
+                    studentAddress: {
+                        create: {
+                            fkcountryId: data.country,
+                            fkstateId: data.state,
+                            fkcityId: data.city,
+                            Address: data.address,
+                            pin: data.pin
+                        }
+                    }
+                },
+                where:{
+                    id:userid
+                }
+            })
+            return {code:200,status:"success",message:"student updated"}
+        }
+        catch (e: any) {
+            return { code: 500, status: 'error', message: e.message }
+        }
+
 }

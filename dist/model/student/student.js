@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.InstituteStudentSeach = exports.getInstituteStudents = exports.getstudentAddmissionIds = exports.studentDelete = exports.StudentStatusUpdate = exports.editStudentAddress = exports.editStudent = exports.getstundet = exports.createBulkStudent = exports.createStudentWithAddress = void 0;
+exports.editInstituteStudent = exports.InstituteStudentSeach = exports.getInstituteStudents = exports.getstudentAddmissionIds = exports.studentDelete = exports.StudentStatusUpdate = exports.editStudentAddress = exports.editStudent = exports.getstundet = exports.createBulkStudent = exports.createStudentWithAddress = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const createStudentWithAddress = (data) => __awaiter(void 0, void 0, void 0, function* () {
@@ -69,6 +69,16 @@ const getstundet = (id) => __awaiter(void 0, void 0, void 0, function* () {
                     email: true,
                     phone: true,
                     dob: true,
+                    gender: true,
+                    studentAddress: {
+                        select: {
+                            fkcityId: true,
+                            fkcountryId: true,
+                            fkstateId: true,
+                            Address: true,
+                            pin: true
+                        }
+                    }
                 },
                 where: {
                     id: id
@@ -96,7 +106,7 @@ const editStudent = (data) => __awaiter(void 0, void 0, void 0, function* () {
                 id: data.id
             }
         });
-        return { status: "success", message: `${data.firstname} ${data.lastname}   student updated` };
+        return { status: "success", message: ` student updated` };
     }
     catch (prismaError) {
         return { status: "error", message: prismaError.message };
@@ -141,7 +151,7 @@ const StudentStatusUpdate = (id, status) => __awaiter(void 0, void 0, void 0, fu
                 id: id
             }
         });
-        return { code: 200, status: "success", message: `${user.firstname} ${user.lastname}   student status  updated` };
+        return { code: 200, status: "success", message: `${user.firstName} ${user.lastName}   student status  updated` };
     }
     catch (prismaError) {
         return { code: 500, status: "error", message: prismaError.message };
@@ -159,7 +169,7 @@ const studentDelete = (id) => __awaiter(void 0, void 0, void 0, function* () {
                 id: id
             }
         });
-        return { code: 200, status: "success", message: `${user.firstname} ${user.lastname}   student delete   ` };
+        return { code: 200, status: "success", message: `${user.firstName} ${user.lastName}   student delete   ` };
     }
     catch (prismaError) {
         return { code: 500, status: "error", message: prismaError.message };
@@ -321,3 +331,34 @@ const InstituteStudentSeach = (page, query, insID) => __awaiter(void 0, void 0, 
     }
 });
 exports.InstituteStudentSeach = InstituteStudentSeach;
+const editInstituteStudent = (userid, data) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield prisma.studentMaster.update({
+            data: {
+                firstName: data.firstname,
+                lastName: data.lastname,
+                email: data.email,
+                phone: data.phone,
+                dob: new Date(data.dob),
+                gender: data.gender,
+                studentAddress: {
+                    create: {
+                        fkcountryId: data.country,
+                        fkstateId: data.state,
+                        fkcityId: data.city,
+                        Address: data.address,
+                        pin: data.pin
+                    }
+                }
+            },
+            where: {
+                id: userid
+            }
+        });
+        return { code: 200, status: "success", message: "student updated" };
+    }
+    catch (e) {
+        return { code: 500, status: 'error', message: e.message };
+    }
+});
+exports.editInstituteStudent = editInstituteStudent;
