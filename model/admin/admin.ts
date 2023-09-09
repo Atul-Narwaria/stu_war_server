@@ -51,13 +51,13 @@ export const getAdmin =async (email:string) => {
     }catch(e:any){
         return {code:500,status:"error",message:e.message}
     }
-}
-
+} 
+ 
 export const CheckAdminExistance =async (id:string) => {
     try{
         return await prisma.admin.count({
             where:{id:id}
-        })
+        }) 
     }catch(e:any){
         return {code:500, status:"error",message:e.message}
     }
