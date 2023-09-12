@@ -4,7 +4,7 @@ import { InstituteCreateSchema, InstituteDeleteSchema, InstituteUpdateStatusSche
 import { createInstitute } from '../../controller/institute/instituteContoller';
 import { deleteInstitute, getInstitutes, updateInstituteStatus } from '../../model/institute/institute';
 
-export const InstitueRoutes = Router();
+export const InstitueRoutes = Router(); 
 
 InstitueRoutes.post("/create", [validateToken, isAdmin], async (req: Request, res: Response) => {
     try {

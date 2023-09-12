@@ -389,17 +389,26 @@ export const editInstituteStudent=async (userid:string,data:{
                     id:userid
                 }
             })
-            await prisma.studentAddress.updateMany({
-                data:{
+            await prisma.studentAddress.upsert({
+               where:{
+                fkStudentId:userid
+               },
+               update:{
+                
                     fkcountryId: data.country,
-                            fkstateId: data.state,
-                            fkcityId: data.city,
-                            Address: data.address,
-                            pin: data.pin
-                },
-                where:{
-                    fkStudentId:userid
-                }
+                    fkstateId: data.state,
+                    fkcityId: data.city,
+                    Address: data.address,
+                    pin: data.pin
+               },
+               create:{
+                fkcountryId: data.country,
+                fkstateId: data.state,
+                fkcityId: data.city,
+                Address: data.address,
+                pin: data.pin,
+                fkStudentId:userid
+               }
             })
             return {code:200,status:"success",message:"student updated"}
         }

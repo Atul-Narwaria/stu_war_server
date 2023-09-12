@@ -350,15 +350,23 @@ const editInstituteStudent = (userid, data) => __awaiter(void 0, void 0, void 0,
                 id: userid
             }
         });
-        yield prisma.studentAddress.updateMany({
-            data: {
+        yield prisma.studentAddress.upsert({
+            where: {
+                fkStudentId: userid
+            },
+            update: {
                 fkcountryId: data.country,
                 fkstateId: data.state,
                 fkcityId: data.city,
                 Address: data.address,
                 pin: data.pin
             },
-            where: {
+            create: {
+                fkcountryId: data.country,
+                fkstateId: data.state,
+                fkcityId: data.city,
+                Address: data.address,
+                pin: data.pin,
                 fkStudentId: userid
             }
         });

@@ -96,6 +96,7 @@ model studentMaster {
   status            Boolean            @default(true)
   instituteMasterId instituteMaster    @relation(fields: [fk_institute_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   fk_institute_id   String             @db.Uuid
+  password_reset    Boolean            @default(false)
   createAt          DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
   studentDetail     studentDocuments[]
@@ -134,26 +135,31 @@ model studentAddress {
   createAt    DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
+  @@unique([fkStudentId])
   @@schema("students")
 }
 
 model teacherMaster {
-  id               String             @id @default(uuid()) @db.Uuid
-  firstName        String
-  lastName         String
-  email            String             @unique
-  phone            String             @unique
-  gender           String
-  dob              DateTime           @db.Date
-  profileImg       String
-  joiningDate      DateTime           @db.Date
-  status           Boolean            @default(true)
-  onMaintaince     Boolean            @default(false)
-  createAt         DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
-  teacherDocuments teacherDocuments[]
-  teacherAddress   teacherAddress[]
-  teacherExprience teacherExprience[]
+  id                String             @id @default(uuid()) @db.Uuid
+  firstName         String
+  lastName          String
+  email             String             @unique
+  phone             String             @unique
+  gender            String
+  dob               DateTime           @db.Date
+  profileImg        String
+  joiningDate       DateTime           @default(now()) @db.Date
+  password          String
+  password_reset    Boolean            @default(false)
+  instituteMasterId instituteMaster    @relation(fields: [fk_institute_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  fk_institute_id   String             @db.Uuid
+  status            Boolean            @default(true)
+  onMaintaince      Boolean            @default(false)
+  createAt          DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  teacherDocuments  teacherDocuments[]
+  teacherAddress    teacherAddress[]
+  teacherExprience  teacherExprience[]
 
   @@schema("teacher")
 }
@@ -195,10 +201,12 @@ model teacherAddress {
   city        city          @relation(fields: [fkcityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   fkcityId    String        @db.Uuid
   Address     String
+  pin         String
   status      Boolean       @default(true)
   createAt    DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
+  @@unique([fkTeacherId])
   @@schema("teacher")
 }
 
@@ -218,6 +226,7 @@ model instituteMaster {
   studentMaster    studentMaster[]
   batchMaster      batchMaster[]
   batchStudent     batchStudent[]
+  teacherMaster    teacherMaster[]
 
   @@schema("institute")
 }
