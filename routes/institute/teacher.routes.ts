@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express';
 import { isAdmin, isInstitute, validateToken } from '../../middleware/authMiddleware';
 import { InstituteCreateSchema, InstituteDeleteSchema, InstituteUpdateStatusSchema, instituteCreateStudentSchema } from '../../middleware/requestValidation';
-import { institutecreateTeacher } from '../../controller/institute/teacherController';
+import { createBulkTeacherController, institutecreateTeacher } from '../../controller/institute/teacherController';
 import { createBulkStundentController } from '../../controller/institute/studentController';
 import { InstituteteacherSeach, TeacherStatusUpdate, editInstituteTeache, getInstituteTeacher, getTeacher, teacherDelete } from '../../model/teacher/teacher';
 
@@ -31,7 +31,7 @@ InstitueTeacherRoutes.post("/create/bulk", [validateToken, isInstitute], async (
         //     return res.status(422).json({ status: "error", message: reqError.error?.message });
         // }
         let instituteCode: any = req.userid;
-        let { code, status, message } = await createBulkStundentController(req.body?.data, instituteCode)
+        let { code, status, message } = await createBulkTeacherController(req.body?.data, instituteCode)
         return res.status(code).json({ status, message })
     } catch (e: any) {
         return res.status(500).json({ status: "error", message: e.message });

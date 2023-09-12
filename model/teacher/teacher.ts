@@ -386,7 +386,7 @@ export const editInstituteTeache=async (userid:string,data:{
                     fkTeacherId:userid
                    }
             })
-            return {code:200,status:"success",message:"student updated"}
+            return {code:200,status:"success",message:"teacher updated"}
         }
         catch (e: any) {
             return { code: 500, status: 'error', message: e.message }

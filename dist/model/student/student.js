@@ -46,7 +46,6 @@ const createStudentWithAddress = (data) => __awaiter(void 0, void 0, void 0, fun
 exports.createStudentWithAddress = createStudentWithAddress;
 const createBulkStudent = (bulkData) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log(bulkData);
         yield prisma.studentMaster.createMany({
             data: bulkData,
             skipDuplicates: true,

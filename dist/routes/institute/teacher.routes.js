@@ -14,7 +14,6 @@ const express_1 = require("express");
 const authMiddleware_1 = require("../../middleware/authMiddleware");
 const requestValidation_1 = require("../../middleware/requestValidation");
 const teacherController_1 = require("../../controller/institute/teacherController");
-const studentController_1 = require("../../controller/institute/studentController");
 const teacher_1 = require("../../model/teacher/teacher");
 exports.InstitueTeacherRoutes = (0, express_1.Router)();
 exports.InstitueTeacherRoutes.post("/create", [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -40,7 +39,7 @@ exports.InstitueTeacherRoutes.post("/create/bulk", [authMiddleware_1.validateTok
         //     return res.status(422).json({ status: "error", message: reqError.error?.message });
         // }
         let instituteCode = req.userid;
-        let { code, status, message } = yield (0, studentController_1.createBulkStundentController)((_b = req.body) === null || _b === void 0 ? void 0 : _b.data, instituteCode);
+        let { code, status, message } = yield (0, teacherController_1.createBulkTeacherController)((_b = req.body) === null || _b === void 0 ? void 0 : _b.data, instituteCode);
         return res.status(code).json({ status, message });
     }
     catch (e) {

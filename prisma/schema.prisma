@@ -147,7 +147,7 @@ model teacherMaster {
   phone             String             @unique
   gender            String
   dob               DateTime           @db.Date
-  profileImg        String
+  profileImg        String?
   joiningDate       DateTime           @default(now()) @db.Date
   password          String
   password_reset    Boolean            @default(false)

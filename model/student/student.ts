@@ -51,7 +51,7 @@ export const createStudentWithAddress = async (data: {
 
 export const createBulkStudent = async (bulkData: any) => {
     try {
-        console.log(bulkData)
+
         await prisma.studentMaster.createMany({
             data: bulkData,
             skipDuplicates: true,

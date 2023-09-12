@@ -345,7 +345,7 @@ const editInstituteTeache = (userid, data) => __awaiter(void 0, void 0, void 0, 
                 fkTeacherId: userid
             }
         });
-        return { code: 200, status: "success", message: "student updated" };
+        return { code: 200, status: "success", message: "teacher updated" };
     }
     catch (e) {
         return { code: 500, status: 'error', message: e.message };
