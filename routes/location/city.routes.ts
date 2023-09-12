@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express';
 import { isAdmin, validateToken } from '../../middleware/authMiddleware';
 import { cityCreateSchema, cityGetSchema, cityIdSchema, cityUpdateSchema } from '../../middleware/requestValidation';
-import { cityDelete, createCity, getActiveCity, getCity, getCityWithStateCountry, updatecity } from '../../model/location/city';
+import { cityDelete, createCity, getActiveCity, getCity, getCityWithStateCountry, getCitybyId, updatecity } from '../../model/location/city';
 
 export const cityRoutes = Router();
 
@@ -48,6 +48,16 @@ cityRoutes.get("/get/active/:countryId/:stateId", [validateToken], async (req: R
         }
         const { countryId, stateId } = req.params;
         let { code, status, message } = await getActiveCity(countryId, stateId)
+        return res.status(code).json({ status, message })
+    } catch (e: any) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+})
+cityRoutes.get("/get/city/:city", [validateToken], async (req: Request, res: Response) => {
+    try {
+       
+        const { city } = req.params;
+        let { code, status, message } = await getCitybyId(city)
         return res.status(code).json({ status, message })
     } catch (e: any) {
         return res.status(500).json({ status: "error", message: e.message });

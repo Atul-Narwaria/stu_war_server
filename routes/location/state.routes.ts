@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express';
 import { isAdmin, validateToken } from '../../middleware/authMiddleware';
 import { stateCreateSchema, stateGetSchema, stateIdSchema, stateUpdateSchema } from '../../middleware/requestValidation';
-import { AllState, createState, getActiveStateByCountry, getActiveStateCityByCountry, getStateByCountry, getStateCityByCountry, stateDelete, updateState } from '../../model/location/state';
+import { AllState, createState, getActiveStateByCountry, getActiveStateCityByCountry, getStateByCountry, getStateCityByCountry, getStatebyId, stateDelete, updateState } from '../../model/location/state';
 
 export const StateRoutes = Router();
 
@@ -112,6 +112,18 @@ StateRoutes.get("/get/active/country/:id", [validateToken], async (req: Request,
             return res.status(200).json({ status: "error", message: reqError.error?.message });
         }
         let { code, status, message } = await getActiveStateByCountry(req.params.id)
+        return res.status(code).json({ status, message })
+    } catch (e: any) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+})
+StateRoutes.get("/get/state/:id", [validateToken], async (req: Request, res: Response) => {
+    try {
+        const reqError = stateIdSchema.validate(req.params);
+        if (reqError?.error) {
+            return res.status(200).json({ status: "error", message: reqError.error?.message });
+        }
+        let { code, status, message } = await getStatebyId(req.params.id)
         return res.status(code).json({ status, message })
     } catch (e: any) {
         return res.status(500).json({ status: "error", message: e.message });

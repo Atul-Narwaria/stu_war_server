@@ -70,6 +70,16 @@ exports.cityRoutes.get("/get/active/:countryId/:stateId", [authMiddleware_1.vali
         return res.status(500).json({ status: "error", message: e.message });
     }
 }));
+exports.cityRoutes.get("/get/city/:city", [authMiddleware_1.validateToken], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { city } = req.params;
+        let { code, status, message } = yield (0, city_1.getCitybyId)(city);
+        return res.status(code).json({ status, message });
+    }
+    catch (e) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+}));
 exports.cityRoutes.put("/update/status", [authMiddleware_1.validateToken, authMiddleware_1.isAdmin], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _d;
     try {

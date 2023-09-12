@@ -87,7 +87,7 @@ const getstundet = (id) => __awaiter(void 0, void 0, void 0, function* () {
         };
     }
     catch (prismaError) {
-        return { status: "error", message: prismaError.message };
+        return { code: 500, status: "error", message: prismaError.message };
     }
 });
 exports.getstundet = getstundet;
@@ -138,6 +138,7 @@ const editStudentAddress = (data) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.editStudentAddress = editStudentAddress;
 const StudentStatusUpdate = (id, status) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
     try {
         let user = yield (0, exports.getstundet)(id);
         if (!user) {
@@ -151,7 +152,7 @@ const StudentStatusUpdate = (id, status) => __awaiter(void 0, void 0, void 0, fu
                 id: id
             }
         });
-        return { code: 200, status: "success", message: `${user.firstName} ${user.lastName}   student status  updated` };
+        return { code: 200, status: "success", message: `${(_a = user.message) === null || _a === void 0 ? void 0 : _a.firstName} ${(_b = user.message) === null || _b === void 0 ? void 0 : _b.lastName}   student status  updated` };
     }
     catch (prismaError) {
         return { code: 500, status: "error", message: prismaError.message };
@@ -169,7 +170,7 @@ const studentDelete = (id) => __awaiter(void 0, void 0, void 0, function* () {
                 id: id
             }
         });
-        return { code: 200, status: "success", message: `${user.firstName} ${user.lastName}   student delete   ` };
+        return { code: 200, status: "success", message: `${user.message.firstName} ${user.message.lastName}   student delete   ` };
     }
     catch (prismaError) {
         return { code: 500, status: "error", message: prismaError.message };
@@ -220,12 +221,14 @@ const getInstituteStudents = (page, insID) => __awaiter(void 0, void 0, void 0, 
                     admissionId: true,
                     status: true,
                     createAt: true,
-                    updatedAt: true
                 },
                 skip: skip,
                 take: 10,
                 where: {
                     fk_institute_id: insID
+                },
+                orderBy: {
+                    createAt: 'desc'
                 }
             }),
             totalPage: totalPage,
@@ -341,18 +344,22 @@ const editInstituteStudent = (userid, data) => __awaiter(void 0, void 0, void 0,
                 phone: data.phone,
                 dob: new Date(data.dob),
                 gender: data.gender,
-                studentAddress: {
-                    create: {
-                        fkcountryId: data.country,
-                        fkstateId: data.state,
-                        fkcityId: data.city,
-                        Address: data.address,
-                        pin: data.pin
-                    }
-                }
+                studentAddress: {}
             },
             where: {
                 id: userid
+            }
+        });
+        yield prisma.studentAddress.updateMany({
+            data: {
+                fkcountryId: data.country,
+                fkstateId: data.state,
+                fkcityId: data.city,
+                Address: data.address,
+                pin: data.pin
+            },
+            where: {
+                fkStudentId: userid
             }
         });
         return { code: 200, status: "success", message: "student updated" };

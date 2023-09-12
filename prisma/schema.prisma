@@ -37,7 +37,7 @@ model country {
 model state {
   id               String             @id @default(uuid()) @db.Uuid
   stateName        String             @unique
-  country          country            @relation(fields: [fkCountryId], references: [id])
+  country          country            @relation(fields: [fkCountryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   fkCountryId      String             @db.Uuid
   status           Boolean            @default(true)
   createAt         DateTime           @default(now())
@@ -54,9 +54,9 @@ model state {
 model city {
   id               String             @id @default(uuid()) @db.Uuid
   cityName         String
-  country          country            @relation(fields: [fkCountryId], references: [id])
+  country          country            @relation(fields: [fkCountryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   fkCountryId      String             @db.Uuid
-  state            state              @relation(fields: [fkstateId], references: [id])
+  state            state              @relation(fields: [fkstateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   fkstateId        String             @db.Uuid
   status           Boolean            @default(true)
   createAt         DateTime           @default(now())
@@ -94,7 +94,7 @@ model studentMaster {
   admissionId       String             @unique
   profileImg        String?
   status            Boolean            @default(true)
-  instituteMasterId instituteMaster    @relation(fields: [fk_institute_id], references: [id])
+  instituteMasterId instituteMaster    @relation(fields: [fk_institute_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   fk_institute_id   String             @db.Uuid
   createAt          DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
@@ -107,7 +107,7 @@ model studentMaster {
 
 model studentDocuments {
   id          String        @id @default(uuid()) @db.Uuid
-  StudentId   studentMaster @relation(fields: [fkStudentId], references: [id])
+  StudentId   studentMaster @relation(fields: [fkStudentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   fkStudentId String        @db.Uuid
   category    String
   docUrl      String
@@ -120,13 +120,13 @@ model studentDocuments {
 
 model studentAddress {
   id          String        @id @default(uuid()) @db.Uuid
-  StudentId   studentMaster @relation(fields: [fkStudentId], references: [id])
+  StudentId   studentMaster @relation(fields: [fkStudentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   fkStudentId String        @db.Uuid
-  country     country       @relation(fields: [fkcountryId], references: [id])
+  country     country       @relation(fields: [fkcountryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   fkcountryId String        @db.Uuid
-  state       state         @relation(fields: [fkstateId], references: [id])
+  state       state         @relation(fields: [fkstateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   fkstateId   String        @db.Uuid
-  city        city          @relation(fields: [fkcityId], references: [id])
+  city        city          @relation(fields: [fkcityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   fkcityId    String        @db.Uuid
   Address     String
   pin         String
@@ -160,7 +160,7 @@ model teacherMaster {
 
 model teacherExprience {
   id          String        @id @default(uuid()) @db.Uuid
-  TeacherId   teacherMaster @relation(fields: [fkTeacherId], references: [id])
+  TeacherId   teacherMaster @relation(fields: [fkTeacherId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   fkTeacherId String        @db.Uuid
   skills      Json[]
   experience  String
@@ -173,7 +173,7 @@ model teacherExprience {
 
 model teacherDocuments {
   id          String        @id @default(uuid()) @db.Uuid
-  TeacherId   teacherMaster @relation(fields: [fkTeacherId], references: [id])
+  TeacherId   teacherMaster @relation(fields: [fkTeacherId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   fkTeacherId String        @db.Uuid
   category    String
   docUrl      String
@@ -186,13 +186,13 @@ model teacherDocuments {
 
 model teacherAddress {
   id          String        @id @default(uuid()) @db.Uuid
-  TeacherId   teacherMaster @relation(fields: [fkTeacherId], references: [id])
+  TeacherId   teacherMaster @relation(fields: [fkTeacherId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   fkTeacherId String        @db.Uuid
-  country     country       @relation(fields: [fkcountryId], references: [id])
+  country     country       @relation(fields: [fkcountryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   fkcountryId String        @db.Uuid
-  state       state         @relation(fields: [fkstateId], references: [id])
+  state       state         @relation(fields: [fkstateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   fkstateId   String        @db.Uuid
-  city        city          @relation(fields: [fkcityId], references: [id])
+  city        city          @relation(fields: [fkcityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   fkcityId    String        @db.Uuid
   Address     String
   status      Boolean       @default(true)
@@ -225,12 +225,12 @@ model instituteMaster {
 model instituteAddress {
   id              String          @id @default(uuid()) @db.Uuid
   fk_institute_id String          @db.Uuid
-  instituteMaster instituteMaster @relation(fields: [fk_institute_id], references: [id])
-  country         country         @relation(fields: [fkcountryId], references: [id])
+  instituteMaster instituteMaster @relation(fields: [fk_institute_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  country         country         @relation(fields: [fkcountryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   fkcountryId     String          @db.Uuid
-  state           state           @relation(fields: [fkstateId], references: [id])
+  state           state           @relation(fields: [fkstateId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   fkstateId       String          @db.Uuid
-  city            city            @relation(fields: [fkcityId], references: [id])
+  city            city            @relation(fields: [fkcityId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   fkcityId        String          @db.Uuid
   Address         String
   pin             String
@@ -244,7 +244,7 @@ model instituteAddress {
 model instituteLogin {
   id                  String          @id @default(uuid()) @db.Uuid
   fk_institute_id     String          @db.Uuid
-  instituteMaster     instituteMaster @relation(fields: [fk_institute_id], references: [id])
+  instituteMaster     instituteMaster @relation(fields: [fk_institute_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   password            String
   maintaince_password String
   status              Boolean         @default(true)
@@ -257,7 +257,7 @@ model instituteLogin {
 model batchMaster {
   id              String          @id @default(uuid()) @db.Uuid
   fk_institute_id String          @db.Uuid
-  instituteMaster instituteMaster @relation(fields: [fk_institute_id], references: [id])
+  instituteMaster instituteMaster @relation(fields: [fk_institute_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   status          Boolean         @default(true)
   createAt        DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
@@ -268,9 +268,9 @@ model batchMaster {
 model batchStudent {
   id              String          @id @default(uuid()) @db.Uuid
   fk_institute_id String          @db.Uuid
-  instituteMaster instituteMaster @relation(fields: [fk_institute_id], references: [id])
+  instituteMaster instituteMaster @relation(fields: [fk_institute_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   fk_student_id   String          @db.Uuid
-  stundetmaster   studentMaster   @relation(fields: [fk_student_id], references: [id])
+  stundetmaster   studentMaster   @relation(fields: [fk_student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   status          Boolean         @default(true)
   createAt        DateTime        @default(now())
   updatedAt       DateTime        @updatedAt

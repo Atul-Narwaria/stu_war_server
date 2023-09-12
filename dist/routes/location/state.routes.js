@@ -141,3 +141,17 @@ exports.StateRoutes.get("/get/active/country/:id", [authMiddleware_1.validateTok
         return res.status(500).json({ status: "error", message: e.message });
     }
 }));
+exports.StateRoutes.get("/get/state/:id", [authMiddleware_1.validateToken], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _j;
+    try {
+        const reqError = requestValidation_1.stateIdSchema.validate(req.params);
+        if (reqError === null || reqError === void 0 ? void 0 : reqError.error) {
+            return res.status(200).json({ status: "error", message: (_j = reqError.error) === null || _j === void 0 ? void 0 : _j.message });
+        }
+        let { code, status, message } = yield (0, state_1.getStatebyId)(req.params.id);
+        return res.status(code).json({ status, message });
+    }
+    catch (e) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+}));

@@ -2,7 +2,7 @@ import { Request, Response, Router } from 'express';
 import { isAdmin, isInstitute, validateToken } from '../../middleware/authMiddleware';
 import { InstituteCreateSchema, InstituteDeleteSchema, InstituteUpdateStatusSchema, instituteCreateStudentSchema } from '../../middleware/requestValidation';
 import { createBulkStundentController, institutecreateStudent } from '../../controller/institute/studentController';
-import { InstituteStudentSeach, StudentStatusUpdate, getInstituteStudents, studentDelete } from '../../model/student/student';
+import { InstituteStudentSeach, StudentStatusUpdate, editInstituteStudent, getInstituteStudents, getstundet, studentDelete } from '../../model/student/student';
 
 
 export const InstitueStudentRoutes = Router();
@@ -84,3 +84,24 @@ InstitueStudentRoutes.delete("/delete/:id", [validateToken, isInstitute], async 
     }
 })
 
+InstitueStudentRoutes.put("/edit/:id", [validateToken, isInstitute], async (req: Request, res: Response) => {
+    try {
+        const reqError = instituteCreateStudentSchema.validate(req.body);
+        if (reqError?.error) {
+            return res.status(422).json({ status: "error", message: reqError.error?.message });
+        }
+        const { code, status, message } = await editInstituteStudent(req.params.id,req.body)
+        return res.status(code).json({ status, message })
+    } catch (e: any) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+})
+InstitueStudentRoutes.get("/get/student/:id", [validateToken, isInstitute], async (req: Request, res: Response) => {
+    try {
+        
+        const { code, status, message } = await getstundet(req.params.id);
+        return res.status(code).json({ status: status, message: message });
+    } catch (e: any) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+})

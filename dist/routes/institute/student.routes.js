@@ -100,3 +100,26 @@ exports.InstitueStudentRoutes.delete("/delete/:id", [authMiddleware_1.validateTo
         return res.status(500).json({ status: "error", message: e.message });
     }
 }));
+exports.InstitueStudentRoutes.put("/edit/:id", [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _e;
+    try {
+        const reqError = requestValidation_1.instituteCreateStudentSchema.validate(req.body);
+        if (reqError === null || reqError === void 0 ? void 0 : reqError.error) {
+            return res.status(422).json({ status: "error", message: (_e = reqError.error) === null || _e === void 0 ? void 0 : _e.message });
+        }
+        const { code, status, message } = yield (0, student_1.editInstituteStudent)(req.params.id, req.body);
+        return res.status(code).json({ status, message });
+    }
+    catch (e) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+}));
+exports.InstitueStudentRoutes.get("/get/student/:id", [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { code, status, message } = yield (0, student_1.getstundet)(req.params.id);
+        return res.status(code).json({ status: status, message: message });
+    }
+    catch (e) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+}));

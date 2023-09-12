@@ -93,7 +93,7 @@ export const getstundet = async (id: string) => {
             })
         }
     } catch (prismaError: any) {
-        return { status: "error", message: prismaError.message }
+        return {code:500, status: "error", message: prismaError.message }
     }
 }
 export const editStudent = async (data: {
@@ -170,7 +170,7 @@ export const StudentStatusUpdate = async (id: string, status: boolean) => {
                 id: id
             }
         })
-        return { code: 200, status: "success", message: `${user.firstName} ${user.lastName}   student status  updated` }
+        return { code: 200, status: "success", message: `${user.message?.firstName} ${user.message?.lastName}   student status  updated` }
     } catch (prismaError: any) {
         return { code: 500, status: "error", message: prismaError.message }
     }
@@ -187,7 +187,7 @@ export const studentDelete = async (id: string) => {
                 id: id
             }
         })
-        return { code: 200, status: "success", message: `${user.firstName} ${user.lastName}   student delete   ` }
+        return { code: 200, status: "success", message: `${user.message.firstName} ${user.message.lastName}   student delete   ` }
     } catch (prismaError: any) {
         return { code: 500, status: "error", message: prismaError.message }
     }
@@ -236,13 +236,15 @@ export const getInstituteStudents = async (page: number, insID: string) => {
                     admissionId: true,
                     status: true,
                     createAt: true,
-                    updatedAt: true
                 },
                 skip: skip,
                 take: 10,
                 where: {
                     fk_institute_id: insID
-                }
+                },
+                orderBy: {
+                    createAt: 'desc'
+                  }
             }),
             totalPage: totalPage,
             totalRow: totalRow
@@ -381,17 +383,22 @@ export const editInstituteStudent=async (userid:string,data:{
                     dob: new Date(data.dob),
                     gender: data.gender,
                     studentAddress: {
-                        create: {
-                            fkcountryId: data.country,
-                            fkstateId: data.state,
-                            fkcityId: data.city,
-                            Address: data.address,
-                            pin: data.pin
-                        }
                     }
                 },
                 where:{
                     id:userid
+                }
+            })
+            await prisma.studentAddress.updateMany({
+                data:{
+                    fkcountryId: data.country,
+                            fkstateId: data.state,
+                            fkcityId: data.city,
+                            Address: data.address,
+                            pin: data.pin
+                },
+                where:{
+                    fkStudentId:userid
                 }
             })
             return {code:200,status:"success",message:"student updated"}
