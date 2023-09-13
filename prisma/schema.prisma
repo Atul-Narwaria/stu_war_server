@@ -101,7 +101,7 @@ model studentMaster {
   updatedAt         DateTime           @updatedAt
   studentDetail     studentDocuments[]
   studentAddress    studentAddress[]
-  batchStudent      batchStudent[]
+  batchLink         batchLink[]
 
   @@schema("students")
 }
@@ -225,8 +225,9 @@ model instituteMaster {
   instituteLogin   instituteLogin[]
   studentMaster    studentMaster[]
   batchMaster      batchMaster[]
-  batchStudent     batchStudent[]
   teacherMaster    teacherMaster[]
+  batchLink        batchLink[]
+  courses          courses[]
 
   @@schema("institute")
 }
@@ -267,6 +268,9 @@ model batchMaster {
   id              String          @id @default(uuid()) @db.Uuid
   fk_institute_id String          @db.Uuid
   instituteMaster instituteMaster @relation(fields: [fk_institute_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  fk_course_id    String          @db.Uuid
+  courses         courses         @relation(fields: [fk_course_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  name            String
   status          Boolean         @default(true)
   createAt        DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
@@ -274,7 +278,7 @@ model batchMaster {
   @@schema("institute")
 }
 
-model batchStudent {
+model batchLink {
   id              String          @id @default(uuid()) @db.Uuid
   fk_institute_id String          @db.Uuid
   instituteMaster instituteMaster @relation(fields: [fk_institute_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -283,6 +287,40 @@ model batchStudent {
   status          Boolean         @default(true)
   createAt        DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
+
+  @@schema("institute")
+}
+
+model courses {
+  id              String          @id @default(uuid()) @db.Uuid
+  fk_institute_id String          @db.Uuid
+  instituteMaster instituteMaster @relation(fields: [fk_institute_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  name            String
+  amount          Int
+  image           String
+  description     String
+  durantion       Int
+  status          Boolean         @default(true)
+  createAt        DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  batchMaster     batchMaster[]
+  subCourses      subCourses[]
+
+  @@schema("institute")
+}
+
+model subCourses {
+  id           String   @id @default(uuid()) @db.Uuid
+  fk_course_id String   @db.Uuid
+  courses      courses  @relation(fields: [fk_course_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  name         String
+  amount       Int
+  image        String
+  description  String
+  duration     Int
+  status       Boolean  @default(true)
+  createAt     DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@schema("institute")
 }
