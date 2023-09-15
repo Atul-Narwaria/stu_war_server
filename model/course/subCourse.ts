@@ -2,34 +2,34 @@ import { PrismaClient } from "@prisma/client"
 
 const prisma = new PrismaClient();
 
-export const createCourse =async (data:{
-    
+export const createSubCourse =async (data:{
+    courseId:string
     name:string,
     amount:number,
     image:any,
     description:string,
     durantion:number,
-},instituteId:string) => {
+}) => {
     try{
-        await prisma.courses.create({
+        await prisma.subCourses.create({
             data:{
-                fk_institute_id:instituteId,
+                fk_course_id:data.courseId,
                 name:data.name,
                 amount:data.amount,
                 image:data.image,
                 description:data.description,
-                durantion:data.durantion,
+                duration:data.durantion,
                 status:true
             }
         })
-        return { code: 200, status: "success", message: `${data.name} course created successfully` }
+        return { code: 200, status: "success", message: `${data.name}   course created successfully` }
     }  catch (e: any) {
         return { code: 500, status: 'error', message: e.message }
     } 
 }
-export const updateCourseStatus = async (courseId:string, status:boolean)=>{
+export const updateSubCourseStatus = async (courseId:string, status:boolean)=>{
     try{
-        await prisma.courses.update({
+        await prisma.subCourses.update({
             data:{
                 status:status
             },
@@ -42,14 +42,14 @@ export const updateCourseStatus = async (courseId:string, status:boolean)=>{
         return { code: 500, status: 'error', message: e.message }
     } 
 } 
-export const getActiveCourse =async (InstituteId:string) => {
+export const getActiveSubCourse =async (CourseId:string) => {
     try{
         return {
             code: 200, status: "success", message:
-                await prisma.courses.findMany({
+                await prisma.subCourses.findMany({
                     where: {
                         status:true,
-                        fk_institute_id:InstituteId
+                        fk_course_id:CourseId
                     }
                 })
         }
@@ -57,13 +57,13 @@ export const getActiveCourse =async (InstituteId:string) => {
         return { code: 500, status: 'error', message: e.message }
     } 
 }
-export const getAllCourse =async (InstituteId:string) => {
+export const getAllSubCourse =async (courseId:string) => {
     try{
         return {
             code: 200, status: "success", message:
-                await prisma.courses.findMany({
+                await prisma.subCourses.findMany({
                     where:{
-                        fk_institute_id:InstituteId
+                        fk_course_id:courseId
                     }
                 })
         }
@@ -71,13 +71,13 @@ export const getAllCourse =async (InstituteId:string) => {
         return { code: 500, status: 'error', message: e.message }
     } 
 }
-export const getCourseById =async (courseId:string) => {
+export const getSubCourseById =async (id:string) => {
     try{
         return {
             code: 200, status: "success", message:
-                await prisma.courses.findMany({
+                await prisma.subCourses.findMany({
                     where:{
-                        id:courseId,
+                        id:id
                     }
                 })
         }
@@ -85,26 +85,28 @@ export const getCourseById =async (courseId:string) => {
         return { code: 500, status: 'error', message: e.message }
     } 
 }
-export const editCourse =async (data:{
+export const editSubCourse =async (data:{
+    courseId:string,
     name:string,
     amount:number,
     image:any,
     description:string,
     durantion:number,
     status:boolean,
-},courseId:string) => {
+},subCourseId:string) => {
     try{
-        await prisma.courses.update({
+        await prisma.subCourses.update({
             data:{
+                fk_course_id:data.courseId,
                 name:data.name,
                 amount:data.amount,
                 image:data.image,
                 description:data.description,
-                durantion:data.durantion,
+                duration:data.durantion,
                 status:data.status,   
             },
             where:{
-                id:courseId
+                id:subCourseId
             }
         })
         return { code: 200, status: "success", message: ` course updated successfully` }
@@ -113,12 +115,11 @@ export const editCourse =async (data:{
     } 
 }
 
-export const deleteCourse = async (id: string) => {
+export const deleteSubCourse = async (id: string) => {
     try {
-        await prisma.courses.delete({
+        await prisma.subCourses.delete({
             where: {
                 id: id,
-                
             }
 
         })

@@ -93,3 +93,25 @@ export const instituteCreateStudentSchema = Joi.object({
     address: Joi.string().required(),
     pin: Joi.string().length(6).required()
 })
+
+export const instituteCourseCreateSchema = Joi.object({
+    name:Joi.string().required(),
+    amount:Joi.number().required(),
+    image: Joi.string().optional(),
+    description: Joi.string().required(),
+    durantion: Joi.number().required(),
+})
+export const instituteCourseStatusSchema = Joi.object({
+    status:Joi.boolean().required()
+})
+export const instituteSubCourseCreateSchema = Joi.object({
+    name:Joi.string().required(),
+    ccourseId:Joi.string().uuid().required(),
+    amount:Joi.number().required(),
+    image: Joi.string().optional(),
+    description: Joi.string().required(),
+    durantion: Joi.number().required(),
+})
+export const instituteSubCourseStatusSchema = Joi.object({
+    status:Joi.boolean().required()
+})
