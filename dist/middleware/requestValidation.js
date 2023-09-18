@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.instituteCreateStudentSchema = exports.InstituteDeleteSchema = exports.InstituteUpdateStatusSchema = exports.InstituteCreateSchema = exports.cityIdSchema = exports.cityUpdateSchema = exports.cityGetSchema = exports.cityCreateSchema = exports.stateIdSchema = exports.stateUpdateSchema = exports.stateGetSchema = exports.stateCreateSchema = exports.countryUpdateSchema = exports.countryIdSchema = exports.countryCreateSchema = exports.AdminLogin = exports.AdminRegistration = void 0;
+exports.instituteBatchLinkCreateSchema = exports.instituteBatchStatusSchema = exports.instituteBatchCreateSchema = exports.instituteSubCourseStatusSchema = exports.instituteSubCourseCreateSchema = exports.instituteCourseStatusSchema = exports.instituteCourseCreateSchema = exports.instituteCreateStudentSchema = exports.InstituteDeleteSchema = exports.InstituteUpdateStatusSchema = exports.InstituteCreateSchema = exports.cityIdSchema = exports.cityUpdateSchema = exports.cityGetSchema = exports.cityCreateSchema = exports.stateIdSchema = exports.stateUpdateSchema = exports.stateGetSchema = exports.stateCreateSchema = exports.countryUpdateSchema = exports.countryIdSchema = exports.countryCreateSchema = exports.AdminLogin = exports.AdminRegistration = void 0;
 const joi_1 = __importDefault(require("joi"));
 exports.AdminRegistration = joi_1.default.object({
     name: joi_1.default.string().required().min(3),
@@ -89,4 +89,36 @@ exports.instituteCreateStudentSchema = joi_1.default.object({
     profileImg: joi_1.default.string().optional(),
     address: joi_1.default.string().required(),
     pin: joi_1.default.string().length(6).required()
+});
+exports.instituteCourseCreateSchema = joi_1.default.object({
+    name: joi_1.default.string().required(),
+    amount: joi_1.default.number().required(),
+    image: joi_1.default.string().optional(),
+    description: joi_1.default.string().required(),
+    durantion: joi_1.default.number().required(),
+});
+exports.instituteCourseStatusSchema = joi_1.default.object({
+    status: joi_1.default.boolean().required()
+});
+exports.instituteSubCourseCreateSchema = joi_1.default.object({
+    name: joi_1.default.string().required(),
+    courseId: joi_1.default.string().uuid().required(),
+    amount: joi_1.default.number().required(),
+    image: joi_1.default.string().optional(),
+    description: joi_1.default.string().required(),
+    durantion: joi_1.default.number().required(),
+});
+exports.instituteSubCourseStatusSchema = joi_1.default.object({
+    status: joi_1.default.boolean().required()
+});
+exports.instituteBatchCreateSchema = joi_1.default.object({
+    fk_course_id: joi_1.default.string().uuid().required(),
+    name: joi_1.default.string().required(),
+});
+exports.instituteBatchStatusSchema = joi_1.default.object({
+    status: joi_1.default.boolean().required()
+});
+exports.instituteBatchLinkCreateSchema = joi_1.default.object({
+    fk_student_id: joi_1.default.string().uuid().required(),
+    fk_batch_id: joi_1.default.string().uuid().required(),
 });

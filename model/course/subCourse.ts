@@ -5,20 +5,29 @@ const prisma = new PrismaClient();
 export const createSubCourse =async (data:{
     courseId:string
     name:string,
-    amount:number,
+    amount:any,
     image:any,
     description:string,
-    durantion:number,
+    durantion:any,
 }) => {
     try{
+        const check = await prisma.subCourses.count({
+            where:{
+                fk_course_id:data.courseId,
+                name:data.name,
+            }
+        })
+        if(check != 0){
+            return { code: 422, status: "success", message: `${data.name} is already created` }
+        }
         await prisma.subCourses.create({
             data:{
                 fk_course_id:data.courseId,
                 name:data.name,
-                amount:data.amount,
+                amount:parseInt(data.amount),
                 image:data.image,
                 description:data.description,
-                duration:data.durantion,
+                duration:parseInt(data.durantion),
                 status:true
             }
         })

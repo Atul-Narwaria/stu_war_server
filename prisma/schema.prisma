@@ -274,6 +274,7 @@ model batchMaster {
   status          Boolean         @default(true)
   createAt        DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
+  batchLink       batchLink[]
 
   @@schema("institute")
 }
@@ -284,10 +285,13 @@ model batchLink {
   instituteMaster instituteMaster @relation(fields: [fk_institute_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   fk_student_id   String          @db.Uuid
   stundetmaster   studentMaster   @relation(fields: [fk_student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  fk_bacth_id     String          @db.Uuid
+  bactch          batchMaster     @relation(fields: [fk_bacth_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   status          Boolean         @default(true)
   createAt        DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
 
+  @@unique([fk_bacth_id, fk_student_id])
   @@schema("institute")
 }
 
@@ -295,7 +299,7 @@ model courses {
   id              String          @id @default(uuid()) @db.Uuid
   fk_institute_id String          @db.Uuid
   instituteMaster instituteMaster @relation(fields: [fk_institute_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  name            String
+  name            String          @unique
   amount          Int
   image           String
   description     String
@@ -322,5 +326,6 @@ model subCourses {
   createAt     DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  @@unique([name, fk_course_id])
   @@schema("institute")
 }

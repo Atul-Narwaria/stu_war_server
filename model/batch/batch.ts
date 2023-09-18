@@ -3,15 +3,15 @@ import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient();
 
 export const createBatch = async (data:{
-    fk_institute_id:string,
+    
     fk_course_id:string,
     name:string,
-})=>{
+},fk_institute_id:string)=>{
     try{
         await prisma.batchMaster.create({
             data:{
                 fk_course_id:data.fk_course_id,
-                fk_institute_id:data.fk_institute_id,
+                fk_institute_id:fk_institute_id,
                 name:data.name,
                 status:true
             }
@@ -32,12 +32,12 @@ export const updateBatchStatus = async (id:string, status:boolean)=>{
                 id:id,
             }
         })
-        return { code: 200, status: "success", message: ` course updated successfully` }
+        return { code: 200, status: "success", message: ` batch updated successfully` }
     }catch (e: any) {
         return { code: 500, status: 'error', message: e.message }
     } 
 } 
-export const getActiveBatch =async (id:string,instituteId:string) => {
+export const getActiveBatch =async (instituteId:string) => {
     try{
         return {
             code: 200, status: "success", message:

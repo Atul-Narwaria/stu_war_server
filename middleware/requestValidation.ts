@@ -106,7 +106,7 @@ export const instituteCourseStatusSchema = Joi.object({
 })
 export const instituteSubCourseCreateSchema = Joi.object({
     name:Joi.string().required(),
-    ccourseId:Joi.string().uuid().required(),
+    courseId:Joi.string().uuid().required(),
     amount:Joi.number().required(),
     image: Joi.string().optional(),
     description: Joi.string().required(),
@@ -115,3 +115,14 @@ export const instituteSubCourseCreateSchema = Joi.object({
 export const instituteSubCourseStatusSchema = Joi.object({
     status:Joi.boolean().required()
 })
+export const instituteBatchCreateSchema = Joi.object({
+    fk_course_id: Joi.string().uuid().required(),
+    name:Joi.string().required(),
+});
+export const instituteBatchStatusSchema = Joi.object({
+    status:Joi.boolean().required()
+})
+export const instituteBatchLinkCreateSchema = Joi.object({
+    fk_student_id: Joi.string().uuid().required(),
+    fk_batch_id:Joi.string().uuid().required(),
+});

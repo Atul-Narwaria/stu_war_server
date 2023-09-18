@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express';
 import { isInstitute, validateToken } from '../../middleware/authMiddleware';
 import { instituteCourseCreateSchema, instituteCourseStatusSchema } from '../../middleware/requestValidation';
-import { createCourse, deleteCourse, editCourse, getActiveCourse, getAllCourse, getCourseById, updateCourseStatus } from '../../model/course/course';
+import { InstituteCourseSeach, createCourse, deleteCourse, editCourse, getActiveCourse, getAllCourse, getCourseById, updateCourseStatus } from '../../model/course/course';
 
 
 
@@ -53,8 +53,11 @@ CourseRoutes.get('/get/active',[validateToken, isInstitute],async (req: Request,
 })
 CourseRoutes.get('/get/all',[validateToken, isInstitute],async (req: Request, res: Response) => {
     try {
-        let { code, status, message } = await getAllCourse(req.userid)
-        return res.status(code).json({ status, message })
+        const page: any = req.query.page || 1;
+        const insID: string = req.userid;
+       
+        const { code, status, message, totalPage, totalRow } = await getAllCourse(page,req.userid)
+        return res.status(code).json({ status: status, message: message, totalPage: totalPage, totalRow });
     } catch (e: any) {
         return res.status(500).json({ status: "error", message: e.message });
     }
@@ -71,6 +74,17 @@ CourseRoutes.delete('/delete/:id',[validateToken, isInstitute],async (req: Reque
     try {
         let { code, status, message } = await deleteCourse(req.params.id)
         return res.status(code).json({ status, message })
+    } catch (e: any) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+})
+CourseRoutes.get("/get/search", [validateToken, isInstitute], async (req: Request, res: Response) => {
+    try {
+        const page: any = req.query.page || 1;
+        const insID: string = req.userid;
+        const query: any = req.query.query || null;
+        const { code, status, message, totalPage, totalRow } = await InstituteCourseSeach(page, query, insID);
+        return res.status(code).json({ status: status, message: message, totalPage: totalPage, totalRow: totalRow });
     } catch (e: any) {
         return res.status(500).json({ status: "error", message: e.message });
     }
