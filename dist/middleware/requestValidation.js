@@ -102,7 +102,6 @@ exports.instituteCourseStatusSchema = joi_1.default.object({
 });
 exports.instituteSubCourseCreateSchema = joi_1.default.object({
     name: joi_1.default.string().required(),
-    courseId: joi_1.default.string().uuid().required(),
     amount: joi_1.default.number().required(),
     image: joi_1.default.string().optional(),
     description: joi_1.default.string().required(),

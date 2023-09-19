@@ -10,13 +10,13 @@ export const createSubCourse =async (data:{
     durantion:any,
 },fk_institute_id:string) => {
     try{
-        const check = await prisma.subCourses.count({
+        const check = await prisma.subCourses.findFirst({
             where:{
                 name:data.name,
             }
         })
-        if(check != 0){
-            return { code: 422, status: "success", message: `${data.name} is already created` }
+        if(check){
+            return { code: 422, status: "error", message: `${data.name} is already created` }
         }
         await prisma.subCourses.create({
             data:{
@@ -64,15 +64,63 @@ export const getActiveSubCourse =async (fk_institute_id:string) => {
         return { code: 500, status: 'error', message: e.message }
     } 
 }
-export const getAllSubCourse =async (fk_institute_id:string) => {
+export const getAllSubCourse =async (page: number,fk_institute_id:string) => {
     try{
+        const skip = (page - 1) * 10;
+        let totalPage = await prisma.subCourses.count({
+            where: {
+                fk_institute_id: fk_institute_id
+            }
+        });
+        let totalRow = totalPage;
+        totalPage = Math.ceil(totalPage / 10);
         return {
             code: 200, status: "success", message:
                 await prisma.subCourses.findMany({
                     where:{
                         fk_institute_id:fk_institute_id
+                    },
+                    orderBy:{
+                        updatedAt:"desc"
                     }
-                })
+                }),
+                totalPage: totalPage,
+                totalRow: totalRow
+        }
+    }catch (e: any) {
+        return { code: 500, status: 'error', message: e.message }
+    } 
+}
+export const getAllSubCourseWithCourse =async (page: number,fk_institute_id:string) => {
+    try{
+        const skip = (page - 1) * 10;
+        let totalPage = await prisma.subCourses.count({
+            where: {
+                fk_institute_id: fk_institute_id
+            }
+        });
+        let totalRow = totalPage;
+        totalPage = Math.ceil(totalPage / 10);
+        return {
+            code: 200, status: "success", message:
+                await prisma.subCourses.findMany({
+                    select:{
+                        id:true,
+                        name:true,
+                        duration:true,
+                        amount:true,
+                        status:true,
+                        
+                    },
+                    where:{
+                        fk_institute_id:fk_institute_id
+                    },
+                    orderBy:{
+                        updatedAt:"desc"
+                    }
+                }),
+                totalPage: totalPage,
+                totalRow: totalRow
         }
     }catch (e: any) {
         return { code: 500, status: 'error', message: e.message }
@@ -82,7 +130,7 @@ export const getSubCourseById =async (id:string) => {
     try{
         return {
             code: 200, status: "success", message:
-                await prisma.subCourses.findMany({
+                await prisma.subCourses.findFirst({
                     where:{
                         id:id
                     }
@@ -95,21 +143,21 @@ export const getSubCourseById =async (id:string) => {
 export const editSubCourse =async (data:{
     courseId:string,
     name:string,
-    amount:number,
+    amount:string,
     image:any,
     description:string,
-    durantion:number,
+    durantion:string,
     status:boolean,
 },subCourseId:string) => {
     try{
         await prisma.subCourses.update({
             data:{
                 name:data.name,
-                amount:data.amount,
+                amount:parseInt(data.amount),
                 image:data.image,
                 description:data.description,
-                duration:data.durantion,
-                status:data.status,   
+                duration:parseInt(data.durantion),
+                status:true  
             },
             where:{
                 id:subCourseId

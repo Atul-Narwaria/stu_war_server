@@ -106,7 +106,6 @@ export const instituteCourseStatusSchema = Joi.object({
 })
 export const instituteSubCourseCreateSchema = Joi.object({
     name:Joi.string().required(),
-    courseId:Joi.string().uuid().required(),
     amount:Joi.number().required(),
     image: Joi.string().optional(),
     description: Joi.string().required(),

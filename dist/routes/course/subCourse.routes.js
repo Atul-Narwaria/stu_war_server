@@ -20,8 +20,9 @@ exports.SubCourseRoutes.post('/create', [authMiddleware_1.validateToken, authMid
     try {
         const reqError = requestValidation_1.instituteSubCourseCreateSchema.validate(req.body);
         if (reqError === null || reqError === void 0 ? void 0 : reqError.error) {
-            return res.status(200).json({ status: "error", message: (_a = reqError.error) === null || _a === void 0 ? void 0 : _a.message });
+            return res.status(422).json({ status: "error", message: (_a = reqError.error) === null || _a === void 0 ? void 0 : _a.message });
         }
+        console.log(req.userid);
         let { code, status, message } = yield (0, subCourse_1.createSubCourse)(req.body, req.userid);
         return res.status(code).json({ status, message });
     }
@@ -68,7 +69,9 @@ exports.SubCourseRoutes.get('/get/active/', [authMiddleware_1.validateToken, aut
 }));
 exports.SubCourseRoutes.get('/get/all/', [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let { code, status, message } = yield (0, subCourse_1.getAllSubCourse)(req.params.id);
+        const page = req.query.page || 1;
+        const insID = req.userid;
+        let { code, status, message } = yield (0, subCourse_1.getAllSubCourse)(page, req.userid);
         return res.status(code).json({ status, message });
     }
     catch (e) {
@@ -88,6 +91,18 @@ exports.SubCourseRoutes.delete('/delete/:id', [authMiddleware_1.validateToken, a
     try {
         let { code, status, message } = yield (0, subCourse_1.deleteSubCourse)(req.params.id);
         return res.status(code).json({ status, message });
+    }
+    catch (e) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+}));
+exports.SubCourseRoutes.get("/get/search", [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const page = req.query.page || 1;
+        const insID = req.userid;
+        const query = req.query.query || null;
+        const { code, status, message, totalPage, totalRow } = yield (0, subCourse_1.InstituteSubCourseSeach)(page, query, insID);
+        return res.status(code).json({ status: status, message: message, totalPage: totalPage, totalRow: totalRow });
     }
     catch (e) {
         return res.status(500).json({ status: "error", message: e.message });

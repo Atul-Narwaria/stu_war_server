@@ -9,18 +9,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.InstituteSubCourseSeach = exports.deleteSubCourse = exports.editSubCourse = exports.getSubCourseById = exports.getAllSubCourse = exports.getActiveSubCourse = exports.updateSubCourseStatus = exports.createSubCourse = void 0;
+exports.InstituteSubCourseSeach = exports.deleteSubCourse = exports.editSubCourse = exports.getSubCourseById = exports.getAllSubCourseWithCourse = exports.getAllSubCourse = exports.getActiveSubCourse = exports.updateSubCourseStatus = exports.createSubCourse = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const createSubCourse = (data, fk_institute_id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const check = yield prisma.subCourses.count({
+        const check = yield prisma.subCourses.findFirst({
             where: {
                 name: data.name,
             }
         });
-        if (check != 0) {
-            return { code: 422, status: "success", message: `${data.name} is already created` };
+        if (check) {
+            return { code: 422, status: "error", message: `${data.name} is already created` };
         }
         yield prisma.subCourses.create({
             data: {
@@ -73,14 +73,27 @@ const getActiveSubCourse = (fk_institute_id) => __awaiter(void 0, void 0, void 0
     }
 });
 exports.getActiveSubCourse = getActiveSubCourse;
-const getAllSubCourse = (fk_institute_id) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllSubCourse = (page, fk_institute_id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const skip = (page - 1) * 10;
+        let totalPage = yield prisma.subCourses.count({
+            where: {
+                fk_institute_id: fk_institute_id
+            }
+        });
+        let totalRow = totalPage;
+        totalPage = Math.ceil(totalPage / 10);
         return {
             code: 200, status: "success", message: yield prisma.subCourses.findMany({
                 where: {
                     fk_institute_id: fk_institute_id
+                },
+                orderBy: {
+                    updatedAt: "desc"
                 }
-            })
+            }),
+            totalPage: totalPage,
+            totalRow: totalRow
         };
     }
     catch (e) {
@@ -88,10 +101,45 @@ const getAllSubCourse = (fk_institute_id) => __awaiter(void 0, void 0, void 0, f
     }
 });
 exports.getAllSubCourse = getAllSubCourse;
+const getAllSubCourseWithCourse = (page, fk_institute_id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const skip = (page - 1) * 10;
+        let totalPage = yield prisma.subCourses.count({
+            where: {
+                fk_institute_id: fk_institute_id
+            }
+        });
+        let totalRow = totalPage;
+        totalPage = Math.ceil(totalPage / 10);
+        return {
+            code: 200, status: "success", message: yield prisma.subCourses.findMany({
+                select: {
+                    id: true,
+                    name: true,
+                    duration: true,
+                    amount: true,
+                    status: true,
+                },
+                where: {
+                    fk_institute_id: fk_institute_id
+                },
+                orderBy: {
+                    updatedAt: "desc"
+                }
+            }),
+            totalPage: totalPage,
+            totalRow: totalRow
+        };
+    }
+    catch (e) {
+        return { code: 500, status: 'error', message: e.message };
+    }
+});
+exports.getAllSubCourseWithCourse = getAllSubCourseWithCourse;
 const getSubCourseById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         return {
-            code: 200, status: "success", message: yield prisma.subCourses.findMany({
+            code: 200, status: "success", message: yield prisma.subCourses.findFirst({
                 where: {
                     id: id
                 }
@@ -108,11 +156,11 @@ const editSubCourse = (data, subCourseId) => __awaiter(void 0, void 0, void 0, f
         yield prisma.subCourses.update({
             data: {
                 name: data.name,
-                amount: data.amount,
+                amount: parseInt(data.amount),
                 image: data.image,
                 description: data.description,
-                duration: data.durantion,
-                status: data.status,
+                duration: parseInt(data.durantion),
+                status: true
             },
             where: {
                 id: subCourseId
