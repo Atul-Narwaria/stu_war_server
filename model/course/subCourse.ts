@@ -3,17 +3,15 @@ import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient();
 
 export const createSubCourse =async (data:{
-    courseId:string
     name:string,
     amount:any,
     image:any,
     description:string,
     durantion:any,
-}) => {
+},fk_institute_id:string) => {
     try{
         const check = await prisma.subCourses.count({
             where:{
-                fk_course_id:data.courseId,
                 name:data.name,
             }
         })
@@ -22,7 +20,7 @@ export const createSubCourse =async (data:{
         }
         await prisma.subCourses.create({
             data:{
-                fk_course_id:data.courseId,
+                fk_institute_id:fk_institute_id,
                 name:data.name,
                 amount:parseInt(data.amount),
                 image:data.image,
@@ -51,14 +49,14 @@ export const updateSubCourseStatus = async (courseId:string, status:boolean)=>{
         return { code: 500, status: 'error', message: e.message }
     } 
 } 
-export const getActiveSubCourse =async (CourseId:string) => {
+export const getActiveSubCourse =async (fk_institute_id:string) => {
     try{
         return {
             code: 200, status: "success", message:
                 await prisma.subCourses.findMany({
                     where: {
                         status:true,
-                        fk_course_id:CourseId
+                        fk_institute_id:fk_institute_id
                     }
                 })
         }
@@ -66,13 +64,13 @@ export const getActiveSubCourse =async (CourseId:string) => {
         return { code: 500, status: 'error', message: e.message }
     } 
 }
-export const getAllSubCourse =async (courseId:string) => {
+export const getAllSubCourse =async (fk_institute_id:string) => {
     try{
         return {
             code: 200, status: "success", message:
                 await prisma.subCourses.findMany({
                     where:{
-                        fk_course_id:courseId
+                        fk_institute_id:fk_institute_id
                     }
                 })
         }
@@ -106,7 +104,6 @@ export const editSubCourse =async (data:{
     try{
         await prisma.subCourses.update({
             data:{
-                fk_course_id:data.courseId,
                 name:data.name,
                 amount:data.amount,
                 image:data.image,
@@ -135,5 +132,59 @@ export const deleteSubCourse = async (id: string) => {
         return { code: 200, status: "success", message: `Course deleted successfully` }
     } catch (e: any) {
         return { code: 200, status: 'error', message: e.message }
+    }
+}
+
+export const InstituteSubCourseSeach = async (page: number, query: string, insID: string) => {
+    try {
+        const skip = (page - 1) * 10;
+        let totalPage = await prisma.subCourses.count({
+            where: {
+                fk_institute_id:insID,
+                OR:
+                    [
+                        {
+                            name: {
+                                contains: query
+                            }
+                        },
+                    ],
+
+
+            }
+        });
+        let totalRow = totalPage;
+        totalPage = Math.ceil(totalPage / 10);
+        return {
+            code: 200, status: "success", message: await prisma.subCourses.findMany({
+                select: {
+                    id: true,
+                    name: true,
+                    amount: true,
+                    duration: true,
+                    image: true,
+                    status: true,
+                },
+                skip: skip,
+                take: 10,
+                where: {
+                    fk_institute_id:insID,
+                    OR:
+                        [
+                            {
+                                name: {
+                                    contains: query
+                                }
+                            },
+                        ],
+                }
+
+
+            }),
+            totalPage: totalPage,
+            totalRow: totalRow
+        }
+    } catch (e: any) {
+        return { code: 500, status: 'error', message: e.message }
     }
 }

@@ -9,14 +9,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteSubCourse = exports.editSubCourse = exports.getSubCourseById = exports.getAllSubCourse = exports.getActiveSubCourse = exports.updateSubCourseStatus = exports.createSubCourse = void 0;
+exports.InstituteSubCourseSeach = exports.deleteSubCourse = exports.editSubCourse = exports.getSubCourseById = exports.getAllSubCourse = exports.getActiveSubCourse = exports.updateSubCourseStatus = exports.createSubCourse = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
-const createSubCourse = (data) => __awaiter(void 0, void 0, void 0, function* () {
+const createSubCourse = (data, fk_institute_id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const check = yield prisma.subCourses.count({
             where: {
-                fk_course_id: data.courseId,
                 name: data.name,
             }
         });
@@ -25,7 +24,7 @@ const createSubCourse = (data) => __awaiter(void 0, void 0, void 0, function* ()
         }
         yield prisma.subCourses.create({
             data: {
-                fk_course_id: data.courseId,
+                fk_institute_id: fk_institute_id,
                 name: data.name,
                 amount: parseInt(data.amount),
                 image: data.image,
@@ -58,13 +57,13 @@ const updateSubCourseStatus = (courseId, status) => __awaiter(void 0, void 0, vo
     }
 });
 exports.updateSubCourseStatus = updateSubCourseStatus;
-const getActiveSubCourse = (CourseId) => __awaiter(void 0, void 0, void 0, function* () {
+const getActiveSubCourse = (fk_institute_id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         return {
             code: 200, status: "success", message: yield prisma.subCourses.findMany({
                 where: {
                     status: true,
-                    fk_course_id: CourseId
+                    fk_institute_id: fk_institute_id
                 }
             })
         };
@@ -74,12 +73,12 @@ const getActiveSubCourse = (CourseId) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.getActiveSubCourse = getActiveSubCourse;
-const getAllSubCourse = (courseId) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllSubCourse = (fk_institute_id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         return {
             code: 200, status: "success", message: yield prisma.subCourses.findMany({
                 where: {
-                    fk_course_id: courseId
+                    fk_institute_id: fk_institute_id
                 }
             })
         };
@@ -108,7 +107,6 @@ const editSubCourse = (data, subCourseId) => __awaiter(void 0, void 0, void 0, f
     try {
         yield prisma.subCourses.update({
             data: {
-                fk_course_id: data.courseId,
                 name: data.name,
                 amount: data.amount,
                 image: data.image,
@@ -141,3 +139,52 @@ const deleteSubCourse = (id) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.deleteSubCourse = deleteSubCourse;
+const InstituteSubCourseSeach = (page, query, insID) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const skip = (page - 1) * 10;
+        let totalPage = yield prisma.subCourses.count({
+            where: {
+                fk_institute_id: insID,
+                OR: [
+                    {
+                        name: {
+                            contains: query
+                        }
+                    },
+                ],
+            }
+        });
+        let totalRow = totalPage;
+        totalPage = Math.ceil(totalPage / 10);
+        return {
+            code: 200, status: "success", message: yield prisma.subCourses.findMany({
+                select: {
+                    id: true,
+                    name: true,
+                    amount: true,
+                    duration: true,
+                    image: true,
+                    status: true,
+                },
+                skip: skip,
+                take: 10,
+                where: {
+                    fk_institute_id: insID,
+                    OR: [
+                        {
+                            name: {
+                                contains: query
+                            }
+                        },
+                    ],
+                }
+            }),
+            totalPage: totalPage,
+            totalRow: totalRow
+        };
+    }
+    catch (e) {
+        return { code: 500, status: 'error', message: e.message };
+    }
+});
+exports.InstituteSubCourseSeach = InstituteSubCourseSeach;

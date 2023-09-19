@@ -22,7 +22,7 @@ exports.SubCourseRoutes.post('/create', [authMiddleware_1.validateToken, authMid
         if (reqError === null || reqError === void 0 ? void 0 : reqError.error) {
             return res.status(200).json({ status: "error", message: (_a = reqError.error) === null || _a === void 0 ? void 0 : _a.message });
         }
-        let { code, status, message } = yield (0, subCourse_1.createSubCourse)(req.body);
+        let { code, status, message } = yield (0, subCourse_1.createSubCourse)(req.body, req.userid);
         return res.status(code).json({ status, message });
     }
     catch (e) {
@@ -57,7 +57,7 @@ exports.SubCourseRoutes.put('/update/:id', [authMiddleware_1.validateToken, auth
         return res.status(500).json({ status: "error", message: e.message });
     }
 }));
-exports.SubCourseRoutes.get('/get/active/:id', [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.SubCourseRoutes.get('/get/active/', [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let { code, status, message } = yield (0, subCourse_1.getActiveSubCourse)(req.params.id);
         return res.status(code).json({ status, message });
@@ -66,7 +66,7 @@ exports.SubCourseRoutes.get('/get/active/:id', [authMiddleware_1.validateToken, 
         return res.status(500).json({ status: "error", message: e.message });
     }
 }));
-exports.SubCourseRoutes.get('/get/all/:id', [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.SubCourseRoutes.get('/get/all/', [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let { code, status, message } = yield (0, subCourse_1.getAllSubCourse)(req.params.id);
         return res.status(code).json({ status, message });

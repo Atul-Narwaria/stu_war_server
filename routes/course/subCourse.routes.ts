@@ -14,7 +14,7 @@ SubCourseRoutes.post('/create',[validateToken, isInstitute],async (req: Request,
         if (reqError?.error) {
             return res.status(200).json({ status: "error", message: reqError.error?.message });
         }
-        let { code, status, message } = await createSubCourse(req.body)
+        let { code, status, message } = await createSubCourse(req.body,req.userid)
         return res.status(code).json({ status, message })
     } catch (e: any) {
         return res.status(500).json({ status: "error", message: e.message });
@@ -44,7 +44,7 @@ SubCourseRoutes.put('/update/:id',[validateToken, isInstitute],async (req: Reque
         return res.status(500).json({ status: "error", message: e.message });
     }
 })
-SubCourseRoutes.get('/get/active/:id',[validateToken, isInstitute],async (req: Request, res: Response) => {
+SubCourseRoutes.get('/get/active/',[validateToken, isInstitute],async (req: Request, res: Response) => {
     try {
         let { code, status, message } = await getActiveSubCourse(req.params.id)
         return res.status(code).json({ status, message })
@@ -52,7 +52,7 @@ SubCourseRoutes.get('/get/active/:id',[validateToken, isInstitute],async (req: R
         return res.status(500).json({ status: "error", message: e.message });
     }
 })
-SubCourseRoutes.get('/get/all/:id',[validateToken, isInstitute],async (req: Request, res: Response) => {
+SubCourseRoutes.get('/get/all/',[validateToken, isInstitute],async (req: Request, res: Response) => {
     try {
         let { code, status, message } = await getAllSubCourse(req.params.id)
         return res.status(code).json({ status, message })
