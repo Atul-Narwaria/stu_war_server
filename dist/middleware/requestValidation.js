@@ -113,6 +113,9 @@ exports.instituteSubCourseStatusSchema = joi_1.default.object({
 exports.instituteBatchCreateSchema = joi_1.default.object({
     fk_course_id: joi_1.default.string().uuid().required(),
     name: joi_1.default.string().required(),
+    start_time: joi_1.default.string().regex(/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/).required(),
+    end_time: joi_1.default.string().regex(/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/).required(),
+    weekdays: joi_1.default.string().required(),
 });
 exports.instituteBatchStatusSchema = joi_1.default.object({
     status: joi_1.default.boolean().required()

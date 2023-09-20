@@ -6,13 +6,21 @@ export const createBatch = async (data:{
     
     fk_course_id:string,
     name:string,
+    end_time:string,
+    weekdays:string,
+    start_time:string,
+
 },fk_institute_id:string)=>{
     try{
+        
         await prisma.batchMaster.create({
             data:{
-                fk_course_id:data.fk_course_id,
+                fk_sub_course_id:data.fk_course_id,
                 fk_institute_id:fk_institute_id,
                 name:data.name,
+                start_time:data.start_time,
+                end_time:data.end_time,
+                weekdays:data.weekdays,
                 status:true
             }
         });

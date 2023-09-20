@@ -20,7 +20,10 @@ exports.batchRoutes.post('/create', [authMiddleware_1.validateToken, authMiddlew
     try {
         const reqError = requestValidation_1.instituteBatchCreateSchema.validate(req.body);
         if (reqError === null || reqError === void 0 ? void 0 : reqError.error) {
-            return res.status(200).json({ status: "error", message: (_a = reqError.error) === null || _a === void 0 ? void 0 : _a.message });
+            return res.status(422).json({ status: "error", message: (_a = reqError.error) === null || _a === void 0 ? void 0 : _a.message });
+        }
+        if (req.body.start_time === req.body.end_time) {
+            return res.status(422).json({ status: "error", message: "start and end time can not be the same" });
         }
         let { code, status, message } = yield (0, batch_1.createBatch)(req.body, req.userid);
         return res.status(code).json({ status, message });

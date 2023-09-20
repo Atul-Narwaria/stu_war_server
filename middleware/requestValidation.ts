@@ -117,6 +117,9 @@ export const instituteSubCourseStatusSchema = Joi.object({
 export const instituteBatchCreateSchema = Joi.object({
     fk_course_id: Joi.string().uuid().required(),
     name:Joi.string().required(),
+    start_time:Joi.string().regex(/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/).required(),
+    end_time:Joi.string().regex(/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/).required(),
+    weekdays:Joi.string().required(),
 });
 export const instituteBatchStatusSchema = Joi.object({
     status:Joi.boolean().required()

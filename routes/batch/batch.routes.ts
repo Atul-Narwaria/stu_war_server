@@ -9,7 +9,10 @@ batchRoutes.post('/create',[validateToken, isInstitute],async (req: Request, res
     try {
         const reqError = instituteBatchCreateSchema.validate(req.body);
         if (reqError?.error) {
-            return res.status(200).json({ status: "error", message: reqError.error?.message });
+            return res.status(422).json({ status: "error", message: reqError.error?.message });
+        }
+        if(req.body.start_time === req.body.end_time) {
+            return res.status(422).json({ status: "error", message: "start and end time can not be the same"});
         }
         let { code, status, message } = await createBatch(req.body, req.userid)
         return res.status(code).json({ status, message })

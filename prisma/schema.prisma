@@ -266,16 +266,20 @@ model instituteLogin {
 }
 
 model batchMaster {
-  id              String          @id @default(uuid()) @db.Uuid
-  fk_institute_id String          @db.Uuid
-  instituteMaster instituteMaster @relation(fields: [fk_institute_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  fk_course_id    String          @db.Uuid
-  courses         courses         @relation(fields: [fk_course_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  name            String
-  status          Boolean         @default(true)
-  createAt        DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-  batchLink       batchLink[]
+  id               String          @id @default(uuid()) @db.Uuid
+  fk_institute_id  String          @db.Uuid
+  instituteMaster  instituteMaster @relation(fields: [fk_institute_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  fk_sub_course_id String          @db.Uuid
+  subCourses       subCourses      @relation(fields: [fk_sub_course_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  name             String
+  start_time       String
+  end_time         String
+  weekdays         String
+
+  status    Boolean     @default(true)
+  createAt  DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  batchLink batchLink[]
 
   @@schema("institute")
 }
@@ -308,7 +312,7 @@ model courses {
   status          Boolean         @default(true)
   createAt        DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
-  batchMaster     batchMaster[]
+  courselinks     courselinks[]
 
   @@schema("institute")
 }
@@ -325,7 +329,21 @@ model subCourses {
   status          Boolean         @default(true)
   createAt        DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
+  courselinks     courselinks[]
+  batchMaster     batchMaster[]
 
   @@unique([name])
+  @@schema("institute")
+}
+
+model courselinks {
+  id               String     @id @default(uuid()) @db.Uuid
+  fk_course_id     String     @db.Uuid
+  courses          courses    @relation(fields: [fk_course_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  fk_sub_course_id String     @db.Uuid
+  subCourses       subCourses @relation(fields: [fk_sub_course_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createAt         DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
   @@schema("institute")
 }
