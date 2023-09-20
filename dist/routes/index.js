@@ -23,6 +23,7 @@ const course_routes_1 = require("./course/course.routes");
 const subCourse_routes_1 = require("./course/subCourse.routes");
 const batch_routes_1 = require("./batch/batch.routes");
 const batchLink_routes_1 = require("./batch/batchLink.routes");
+const courseLink_routes_1 = require("./course/courseLink.routes");
 exports.APIRoutes = (0, express_1.Router)();
 exports.APIRoutes.get('/', (req, res) => {
     res.send("Inside API call");
@@ -38,6 +39,7 @@ exports.APIRoutes.use('/institute/course', course_routes_1.CourseRoutes);
 exports.APIRoutes.use('/institute/sub-course', subCourse_routes_1.SubCourseRoutes);
 exports.APIRoutes.use('/institute/batch', batch_routes_1.batchRoutes);
 exports.APIRoutes.use('/institute/batch-link', batchLink_routes_1.batchLinkRoutes);
+exports.APIRoutes.use('/institute/course-link', courseLink_routes_1.CourseLinkRoutes);
 exports.APIRoutes.get("/test", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let d = yield (0, instituteContoller_1.test)();
     return res.status(200).json(d);

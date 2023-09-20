@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express';
 import { isInstitute, validateToken } from '../../middleware/authMiddleware';
 import { instituteBatchCreateSchema, instituteBatchStatusSchema } from '../../middleware/requestValidation';
-import { createBatch, deleteBatch, getActiveBatch, getAllbatch, updateBatchStatus } from '../../model/batch/batch';
+import { createBatch, deleteBatch, editBatch, getActiveBatch, getAllbatch, updateBatchStatus } from '../../model/batch/batch';
 
 export const batchRoutes = Router();
 
@@ -15,6 +15,21 @@ batchRoutes.post('/create',[validateToken, isInstitute],async (req: Request, res
             return res.status(422).json({ status: "error", message: "start and end time can not be the same"});
         }
         let { code, status, message } = await createBatch(req.body, req.userid)
+        return res.status(code).json({ status, message })
+    } catch (e: any) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+})
+batchRoutes.put('/edit/:id',[validateToken, isInstitute],async (req: Request, res: Response) => {
+    try {
+        const reqError = instituteBatchCreateSchema.validate(req.body);
+        if (reqError?.error) {
+            return res.status(422).json({ status: "error", message: reqError.error?.message });
+        }
+        if(req.body.start_time === req.body.end_time) {
+            return res.status(422).json({ status: "error", message: "start and end time can not be the same"});
+        }
+        let { code, status, message } = await editBatch(req.body, req.params.id)
         return res.status(code).json({ status, message })
     } catch (e: any) {
         return res.status(500).json({ status: "error", message: e.message });

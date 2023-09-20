@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteBatch = exports.getAllbatch = exports.getActiveBatch = exports.updateBatchStatus = exports.createBatch = void 0;
+exports.editBatch = exports.deleteBatch = exports.getAllbatch = exports.getActiveBatch = exports.updateBatchStatus = exports.createBatch = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const createBatch = (data, fk_institute_id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -94,3 +94,24 @@ const deleteBatch = (id) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.deleteBatch = deleteBatch;
+const editBatch = (data, batch_id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield prisma.batchMaster.update({
+            data: {
+                fk_sub_course_id: data.fk_course_id,
+                name: data.name,
+                start_time: data.start_time,
+                end_time: data.end_time,
+                weekdays: data.weekdays,
+            },
+            where: {
+                id: batch_id
+            }
+        });
+        return { code: 200, status: "success", message: ` Batch updated successfully` };
+    }
+    catch (e) {
+        return { code: 500, status: 'error', message: e.message };
+    }
+});
+exports.editBatch = editBatch;

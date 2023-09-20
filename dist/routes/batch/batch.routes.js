@@ -32,12 +32,29 @@ exports.batchRoutes.post('/create', [authMiddleware_1.validateToken, authMiddlew
         return res.status(500).json({ status: "error", message: e.message });
     }
 }));
-exports.batchRoutes.put('/update/:id', [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.batchRoutes.put('/edit/:id', [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _b;
+    try {
+        const reqError = requestValidation_1.instituteBatchCreateSchema.validate(req.body);
+        if (reqError === null || reqError === void 0 ? void 0 : reqError.error) {
+            return res.status(422).json({ status: "error", message: (_b = reqError.error) === null || _b === void 0 ? void 0 : _b.message });
+        }
+        if (req.body.start_time === req.body.end_time) {
+            return res.status(422).json({ status: "error", message: "start and end time can not be the same" });
+        }
+        let { code, status, message } = yield (0, batch_1.editBatch)(req.body, req.params.id);
+        return res.status(code).json({ status, message });
+    }
+    catch (e) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+}));
+exports.batchRoutes.put('/update/:id', [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _c;
     try {
         const reqError = requestValidation_1.instituteBatchStatusSchema.validate(req.body);
         if (reqError === null || reqError === void 0 ? void 0 : reqError.error) {
-            return res.status(200).json({ status: "error", message: (_b = reqError.error) === null || _b === void 0 ? void 0 : _b.message });
+            return res.status(200).json({ status: "error", message: (_c = reqError.error) === null || _c === void 0 ? void 0 : _c.message });
         }
         let { code, status, message } = yield (0, batch_1.updateBatchStatus)(req.params.id, req.body.status);
         return res.status(code).json({ status, message });

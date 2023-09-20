@@ -88,3 +88,33 @@ export const deleteBatch = async (id: string) => {
         return { code: 200, status: 'error', message: e.message }
     }
 }
+export const editBatch = async(data:{
+    
+    fk_course_id:string,
+    name:string,
+    end_time:string,
+    weekdays:string,
+    start_time:string,
+
+},batch_id:string)=>{
+    try{
+        
+        await prisma.batchMaster.update({
+            data:{
+                fk_sub_course_id:data.fk_course_id,
+                name:data.name,
+                start_time:data.start_time,
+                end_time:data.end_time,
+                weekdays:data.weekdays,
+            },
+            where:{
+                id:batch_id
+            }
+        }
+       );
+        return { code: 200, status: "success", message: ` Batch updated successfully` }
+
+    } catch (e: any) {
+        return { code: 500, status: 'error', message: e.message }
+    } 
+}

@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.instituteBatchLinkCreateSchema = exports.instituteBatchStatusSchema = exports.instituteBatchCreateSchema = exports.instituteSubCourseStatusSchema = exports.instituteSubCourseCreateSchema = exports.instituteCourseStatusSchema = exports.instituteCourseCreateSchema = exports.instituteCreateStudentSchema = exports.InstituteDeleteSchema = exports.InstituteUpdateStatusSchema = exports.InstituteCreateSchema = exports.cityIdSchema = exports.cityUpdateSchema = exports.cityGetSchema = exports.cityCreateSchema = exports.stateIdSchema = exports.stateUpdateSchema = exports.stateGetSchema = exports.stateCreateSchema = exports.countryUpdateSchema = exports.countryIdSchema = exports.countryCreateSchema = exports.AdminLogin = exports.AdminRegistration = void 0;
+exports.instituteCourselink = exports.instituteBatchLinkCreateSchema = exports.instituteBatchStatusSchema = exports.instituteBatchCreateSchema = exports.instituteSubCourseStatusSchema = exports.instituteSubCourseCreateSchema = exports.instituteCourseStatusSchema = exports.instituteCourseCreateSchema = exports.instituteCreateStudentSchema = exports.InstituteDeleteSchema = exports.InstituteUpdateStatusSchema = exports.InstituteCreateSchema = exports.cityIdSchema = exports.cityUpdateSchema = exports.cityGetSchema = exports.cityCreateSchema = exports.stateIdSchema = exports.stateUpdateSchema = exports.stateGetSchema = exports.stateCreateSchema = exports.countryUpdateSchema = exports.countryIdSchema = exports.countryCreateSchema = exports.AdminLogin = exports.AdminRegistration = void 0;
 const joi_1 = __importDefault(require("joi"));
 exports.AdminRegistration = joi_1.default.object({
     name: joi_1.default.string().required().min(3),
@@ -123,4 +123,8 @@ exports.instituteBatchStatusSchema = joi_1.default.object({
 exports.instituteBatchLinkCreateSchema = joi_1.default.object({
     fk_student_id: joi_1.default.string().uuid().required(),
     fk_batch_id: joi_1.default.string().uuid().required(),
+});
+exports.instituteCourselink = joi_1.default.object({
+    fk_course_id: joi_1.default.string().uuid().required(),
+    fk_sub_course_id: joi_1.default.string().uuid().required(),
 });

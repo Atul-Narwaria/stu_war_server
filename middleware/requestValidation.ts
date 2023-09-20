@@ -128,3 +128,7 @@ export const instituteBatchLinkCreateSchema = Joi.object({
     fk_student_id: Joi.string().uuid().required(),
     fk_batch_id:Joi.string().uuid().required(),
 });
+export const instituteCourselink = Joi.object({
+    fk_course_id: Joi.string().uuid().required(),
+    fk_sub_course_id: Joi.string().uuid().required(),
+});
