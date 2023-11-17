@@ -16,7 +16,7 @@ exports.commonAccess = exports.isTeacher = exports.isInstitute = exports.isAdmin
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const admin_1 = require("../model/admin/admin");
 const institute_1 = require("../model/institute/institute");
-const teacher_1 = require("../model/teacher/teacher");
+const Teacher_1 = require("../model/Teacher/Teacher");
 const secret_key = process.env.APP_KEY;
 const validateToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const token = req.headers.authorization;
@@ -67,7 +67,7 @@ const isTeacher = (req, res, next) => __awaiter(void 0, void 0, void 0, function
     if (!id) {
         return res.status(401).json({ message: "Invalid token" });
     }
-    const check = yield (0, teacher_1.isTeacherExist)(id);
+    const check = yield (0, Teacher_1.isTeacherExist)(id);
     if (check.message == 0) {
         return res.status(401).json({ message: "teacher role required" });
     }
@@ -80,7 +80,7 @@ const commonAccess = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
         req.userid = req.userid;
     }
     else if (role === "teacher") {
-        let id = yield (0, teacher_1.getTeacherInstituteId)(req.userid);
+        let id = yield (0, Teacher_1.getTeacherInstituteId)(req.userid);
         req.userid = id.message;
     }
     next();

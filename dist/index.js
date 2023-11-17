@@ -38,6 +38,7 @@ const app = (0, express_1.default)();
 app.use((0, helmet_1.default)());
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
+// quque management
 // queueEvents.on("completed", () => {});
 const PORT = process.env.PORT || 8000;
 app.get("/", (req, res) => {

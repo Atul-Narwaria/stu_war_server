@@ -14,7 +14,7 @@ const express_1 = require("express");
 const authMiddleware_1 = require("../../middleware/authMiddleware");
 const requestValidation_1 = require("../../middleware/requestValidation");
 const teacherController_1 = require("../../controller/institute/teacherController");
-const teacher_1 = require("../../model/teacher/teacher");
+const Teacher_1 = require("../../model/Teacher/Teacher");
 const Teacher_controller_1 = require("../../controller/teacher/Teacher.controller");
 exports.InstitueTeacherRoutes = (0, express_1.Router)();
 exports.InstitueTeacherRoutes.post("/create", [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -54,7 +54,7 @@ exports.InstitueTeacherRoutes.get("/get/all/active", [authMiddleware_1.validateT
     try {
         const page = req.query.page || 1;
         const insID = req.userid;
-        const { code, status, message } = yield (0, teacher_1.getTeachersAllActive)(insID);
+        const { code, status, message } = yield (0, Teacher_1.getTeachersAllActive)(insID);
         return res.status(code).json({
             status: status,
             message: message,
@@ -68,7 +68,7 @@ exports.InstitueTeacherRoutes.get("/get/all", [authMiddleware_1.validateToken, a
     try {
         const page = req.query.page || 1;
         const insID = req.userid;
-        const { code, status, message, totalPage, totalRow } = yield (0, teacher_1.getInstituteTeacher)(page, insID);
+        const { code, status, message, totalPage, totalRow } = yield (0, Teacher_1.getInstituteTeacher)(page, insID);
         return res.status(code).json({
             status: status,
             message: message,
@@ -85,7 +85,7 @@ exports.InstitueTeacherRoutes.get("/get/search", [authMiddleware_1.validateToken
         const page = req.query.page || 1;
         const insID = req.userid;
         const query = req.query.query || null;
-        const { code, status, message, totalPage, totalRow } = yield (0, teacher_1.InstituteteacherSeach)(page, query, insID);
+        const { code, status, message, totalPage, totalRow } = yield (0, Teacher_1.InstituteteacherSeach)(page, query, insID);
         return res.status(code).json({
             status: status,
             message: message,
@@ -109,7 +109,7 @@ exports.InstitueTeacherRoutes.put("/update/:id", [authMiddleware_1.validateToken
                 .status(422)
                 .json({ status: "error", message: (_d = reqError.error) === null || _d === void 0 ? void 0 : _d.message });
         }
-        const { code, status, message } = yield (0, teacher_1.TeacherStatusUpdate)(req.params.id, req.body.status);
+        const { code, status, message } = yield (0, Teacher_1.TeacherStatusUpdate)(req.params.id, req.body.status);
         return res.status(200).json({ status, message });
     }
     catch (e) {
@@ -125,7 +125,7 @@ exports.InstitueTeacherRoutes.delete("/delete/:id", [authMiddleware_1.validateTo
                 .status(422)
                 .json({ status: "error", message: (_e = reqError.error) === null || _e === void 0 ? void 0 : _e.message });
         }
-        const { code, status, message } = yield (0, teacher_1.teacherDelete)(req.params.id);
+        const { code, status, message } = yield (0, Teacher_1.teacherDelete)(req.params.id);
         return res.status(200).json({ status, message });
     }
     catch (e) {
@@ -141,7 +141,7 @@ exports.InstitueTeacherRoutes.put("/edit/:id", [authMiddleware_1.validateToken, 
                 .status(422)
                 .json({ status: "error", message: (_f = reqError.error) === null || _f === void 0 ? void 0 : _f.message });
         }
-        const { code, status, message } = yield (0, teacher_1.editInstituteTeache)(req.params.id, req.body);
+        const { code, status, message } = yield (0, Teacher_1.editInstituteTeache)(req.params.id, req.body);
         return res.status(code).json({ status, message });
     }
     catch (e) {
@@ -150,7 +150,7 @@ exports.InstitueTeacherRoutes.put("/edit/:id", [authMiddleware_1.validateToken, 
 }));
 exports.InstitueTeacherRoutes.get("/get/student/:id", [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { code, status, message } = yield (0, teacher_1.getTeacher)(req.params.id);
+        const { code, status, message } = yield (0, Teacher_1.getTeacher)(req.params.id);
         return res.status(code).json({ status: status, message: message });
     }
     catch (e) {

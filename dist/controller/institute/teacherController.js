@@ -16,7 +16,7 @@ exports.createBulkTeacherController = exports.institutecreateTeacher = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const institute_1 = require("../../model/institute/institute");
 const moment_1 = __importDefault(require("moment"));
-const teacher_1 = require("../../model/teacher/teacher");
+const Teacher_1 = require("../../model/Teacher/Teacher");
 const institutecreateTeacher = (data, insId) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
     let inscode = yield (0, institute_1.getInstituesById)(insId);
@@ -24,10 +24,12 @@ const institutecreateTeacher = (data, insId) => __awaiter(void 0, void 0, void 0
         return {
             code: 403,
             status: "error",
-            message: "Invalid Institute Id"
+            message: "Invalid Institute Id",
         };
     }
-    let maintancepassword = ((_a = process === null || process === void 0 ? void 0 : process.env) === null || _a === void 0 ? void 0 : _a.MAINTANCE_PASSWORD) ? (_b = process === null || process === void 0 ? void 0 : process.env) === null || _b === void 0 ? void 0 : _b.MAINTANCE_PASSWORD : "12345678";
+    let maintancepassword = ((_a = process === null || process === void 0 ? void 0 : process.env) === null || _a === void 0 ? void 0 : _a.MAINTANCE_PASSWORD)
+        ? (_b = process === null || process === void 0 ? void 0 : process.env) === null || _b === void 0 ? void 0 : _b.MAINTANCE_PASSWORD
+        : "12345678";
     let datas = {
         firstname: data.firstname,
         lastname: data.lastname,
@@ -42,9 +44,9 @@ const institutecreateTeacher = (data, insId) => __awaiter(void 0, void 0, void 0
         city: data.city,
         address: data.address,
         pin: data.pin,
-        instituteId: insId
+        instituteId: insId,
     };
-    const { code, status, message } = yield (0, teacher_1.createTeacherWithAddress)(datas);
+    const { code, status, message } = yield (0, Teacher_1.createTeacherWithAddress)(datas);
     return { code, status, message };
 });
 exports.institutecreateTeacher = institutecreateTeacher;
@@ -54,7 +56,7 @@ const createBulkTeacherController = (data, instid) => __awaiter(void 0, void 0, 
         return {
             code: 422,
             status: "error",
-            message: "data not define"
+            message: "data not define",
         };
     }
     let inscode = yield (0, institute_1.getInstituesById)(instid);
@@ -62,13 +64,15 @@ const createBulkTeacherController = (data, instid) => __awaiter(void 0, void 0, 
         return {
             code: 403,
             status: "error",
-            message: "Invalid Institute Id"
+            message: "Invalid Institute Id",
         };
     }
     let bulkData = [];
-    let maintancepassword = ((_c = process === null || process === void 0 ? void 0 : process.env) === null || _c === void 0 ? void 0 : _c.MAINTANCE_PASSWORD) ? (_d = process === null || process === void 0 ? void 0 : process.env) === null || _d === void 0 ? void 0 : _d.MAINTANCE_PASSWORD : "12345678";
+    let maintancepassword = ((_c = process === null || process === void 0 ? void 0 : process.env) === null || _c === void 0 ? void 0 : _c.MAINTANCE_PASSWORD)
+        ? (_d = process === null || process === void 0 ? void 0 : process.env) === null || _d === void 0 ? void 0 : _d.MAINTANCE_PASSWORD
+        : "12345678";
     let admissionId = 0;
-    let prefix = `${inscode.message.code}FY${(0, moment_1.default)().format('YY')}-${(0, moment_1.default)().add(1, 'year').format('YY')}`;
+    let prefix = `${inscode.message.code}FY${(0, moment_1.default)().format("YY")}-${(0, moment_1.default)().add(1, "year").format("YY")}`;
     data.map((e) => __awaiter(void 0, void 0, void 0, function* () {
         bulkData.push({
             firstName: e.firstName,
@@ -82,7 +86,7 @@ const createBulkTeacherController = (data, instid) => __awaiter(void 0, void 0, 
         });
         admissionId++;
     }));
-    const { code, status, message } = yield (0, teacher_1.createBulkTeacher)(bulkData);
+    const { code, status, message } = yield (0, Teacher_1.createBulkTeacher)(bulkData);
     return { code, status, message };
 });
 exports.createBulkTeacherController = createBulkTeacherController;

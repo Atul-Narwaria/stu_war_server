@@ -13,13 +13,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.resetPassword = exports.loginTeacher = void 0;
-const teacher_1 = require("../../model/teacher/teacher");
+const Teacher_1 = require("../../model/Teacher/Teacher");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const loginTeacher = (email, password) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
-        let checkUser = yield (0, teacher_1.getTeacherPassword)(email);
+        let checkUser = yield (0, Teacher_1.getTeacherPassword)(email);
         if (checkUser.status == "error") {
             return {
                 code: checkUser.code,
@@ -52,14 +52,14 @@ exports.loginTeacher = loginTeacher;
 const resetPassword = (id) => __awaiter(void 0, void 0, void 0, function* () {
     var _b, _c;
     try {
-        const { code, status, message } = yield (0, teacher_1.getteacherById)(id);
+        const { code, status, message } = yield (0, Teacher_1.getteacherById)(id);
         if (status === "error") {
             return { code, status, message };
         }
         let maintancepassword = ((_b = process === null || process === void 0 ? void 0 : process.env) === null || _b === void 0 ? void 0 : _b.MAINTANCE_PASSWORD)
             ? (_c = process === null || process === void 0 ? void 0 : process.env) === null || _c === void 0 ? void 0 : _c.MAINTANCE_PASSWORD
             : "12345678";
-        const update = yield (0, teacher_1.updateteacherPassword)(id, bcrypt_1.default.hashSync(maintancepassword, 10));
+        const update = yield (0, Teacher_1.updateteacherPassword)(id, bcrypt_1.default.hashSync(maintancepassword, 10));
         return {
             code: update.code,
             status: update.status,
