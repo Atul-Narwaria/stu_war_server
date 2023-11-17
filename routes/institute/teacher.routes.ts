@@ -23,7 +23,7 @@ import {
   getTeacher,
   getTeachersAllActive,
   teacherDelete,
-} from "../../model/teacher/teacher";
+} from "../../model/Teacher/Teacher";
 import { resetPassword } from "../../controller/teacher/Teacher.controller";
 
 export const InstitueTeacherRoutes = Router();

@@ -5,7 +5,7 @@ import { isInstitute, validateToken } from "../../middleware/authMiddleware";
 import {
   getInstituteTeacher,
   getTeachersActive,
-} from "../../model/teacher/teacher";
+} from "../../model/Teacher/Teacher";
 
 export const teacherRoutes = Router();
 

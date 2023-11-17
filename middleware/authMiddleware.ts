@@ -5,7 +5,7 @@ import { CheckinstituteExistance } from "../model/institute/institute";
 import {
   getTeacherInstituteId,
   isTeacherExist,
-} from "../model/teacher/teacher";
+} from "../model/Teacher/Teacher";
 
 const secret_key: string = process.env.APP_KEY!;
 

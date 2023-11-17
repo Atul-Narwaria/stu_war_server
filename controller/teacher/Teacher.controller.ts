@@ -3,7 +3,7 @@ import {
   getTeacherPassword,
   getteacherById,
   updateteacherPassword,
-} from "../../model/teacher/teacher";
+} from "../../model/Teacher/Teacher";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
