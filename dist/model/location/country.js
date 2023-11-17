@@ -25,7 +25,9 @@ const checkCountryName = (name) => __awaiter(void 0, void 0, void 0, function* (
         return { code: 200, status: 'success', message: get };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.checkCountryName = checkCountryName;
@@ -41,7 +43,9 @@ const getCountry = () => __awaiter(void 0, void 0, void 0, function* () {
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.getCountry = getCountry;
@@ -60,7 +64,9 @@ const getActiveCountry = () => __awaiter(void 0, void 0, void 0, function* () {
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.getActiveCountry = getActiveCountry;
@@ -79,7 +85,9 @@ const createCountry = (name) => __awaiter(void 0, void 0, void 0, function* () {
         return { code: 200, status: "success", message: "country created successfully" };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.createCountry = createCountry;
@@ -111,7 +119,9 @@ const getCountryStateCityAll = () => __awaiter(void 0, void 0, void 0, function*
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.getCountryStateCityAll = getCountryStateCityAll;
@@ -127,7 +137,9 @@ const getCountrybyId = (id) => __awaiter(void 0, void 0, void 0, function* () {
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.getCountrybyId = getCountrybyId;
@@ -148,7 +160,9 @@ const updateCountry = (id, status) => __awaiter(void 0, void 0, void 0, function
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.updateCountry = updateCountry;
@@ -166,7 +180,9 @@ const countryDelete = (id) => __awaiter(void 0, void 0, void 0, function* () {
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.countryDelete = countryDelete;

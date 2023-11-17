@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express';
 import { isInstitute, validateToken } from '../../middleware/authMiddleware';
 import { instituteCourseCreateSchema, instituteCourseStatusSchema } from '../../middleware/requestValidation';
-import { InstituteCourseSeach, createCourse, deleteCourse, editCourse, getActiveCourse, getAllCourse, getCourseById, updateCourseStatus } from '../../model/course/course';
+import { InstituteCourseSeach, createCourse, deleteCourse, editCourse, getActiveCourse, getAllCourse, getCourseById, getSubCourseListByCourse, updateCourseStatus } from '../../model/course/course';
 
 
 
@@ -85,6 +85,15 @@ CourseRoutes.get("/get/search", [validateToken, isInstitute], async (req: Reques
         const query: any = req.query.query || null;
         const { code, status, message, totalPage, totalRow } = await InstituteCourseSeach(page, query, insID);
         return res.status(code).json({ status: status, message: message, totalPage: totalPage, totalRow: totalRow });
+    } catch (e: any) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+})
+
+CourseRoutes.get("/get/sub-course-list/:id", [validateToken, isInstitute], async (req: Request, res: Response) => {
+    try {
+        const { code, status, message } = await getSubCourseListByCourse(req.params.id);
+        return res.status(code).json({ status: status, message: message });
     } catch (e: any) {
         return res.status(500).json({ status: "error", message: e.message });
     }

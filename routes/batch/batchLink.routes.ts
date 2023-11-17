@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express';
 import { isInstitute, validateToken } from '../../middleware/authMiddleware';
 import { instituteBatchLinkCreateSchema } from '../../middleware/requestValidation';
-import { createBatchBulkLink, createBatchLink, deleteBatchLink } from '../../model/batch/batchLink';
+import { BatchStudentsSearch, createBatchBulkLink, createBatchLink, deleteBatchLink, getBatchStudents } from '../../model/batch/batchLink';
 
 
 export const batchLinkRoutes = Router();
@@ -34,7 +34,7 @@ batchLinkRoutes.post('/create/bulk',[validateToken, isInstitute],async (req: Req
                     fk_bacth_id:e.fk_batch_id,
                     status:true
                 })
-            })
+            }) 
         }
         if(data.length != 0){
             let { code, status, message } = await createBatchBulkLink(data)
@@ -55,3 +55,29 @@ batchLinkRoutes.delete('/delete/:id',[validateToken, isInstitute],async (req: Re
         return res.status(500).json({ status: "error", message: e.message });
     }
 })
+
+batchLinkRoutes.get('/get/all/:id',[validateToken, isInstitute],async (req: Request, res: Response) => {
+    try {
+        const page: any = req.query.page || 1;
+        const insID: string = req.userid;
+        if(!req.params.id){
+            return res.status(200).json({ status: "error", message: "batch id not found" });  
+        }
+        const { code, status, message, totalPage, totalRow } = await getBatchStudents(page,req.params.id,req.userid)
+        return res.status(code).json({ status: status, message: message, totalPage: totalPage, totalRow });
+    } catch (e: any) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+})
+batchLinkRoutes.get("/get/search/:id", [validateToken, isInstitute], async (req: Request, res: Response) => {
+    try {
+        const page: any = req.query.page || 1;
+        const insID: string = req.userid;
+        const query: any = req.query.query || null;
+        const { code, status, message, totalPage, totalRow } = await BatchStudentsSearch(page, query,req.params.id, insID);
+        return res.status(code).json({ status: status, message: message, totalPage: totalPage, totalRow: totalRow });
+    } catch (e: any) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+})
+// 

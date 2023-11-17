@@ -14,7 +14,9 @@ export const createCity = async (countryId: string, stateId: string, city: strin
         })
         return { code: 200, status: "success", message: "city created successfully" }
     } catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     }
 }
 
@@ -33,7 +35,9 @@ export const getCity = async (countryId: string, stateId: string) => {
             })
         }
     } catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     }
 }
 export const getActiveCity = async (countryId: string, stateId: string) => {
@@ -52,7 +56,9 @@ export const getActiveCity = async (countryId: string, stateId: string) => {
             })
         }
     } catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     }
 }
 export const getCitybyId = async (id: string) => {
@@ -66,7 +72,9 @@ export const getCitybyId = async (id: string) => {
             })
         }
     } catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     }
 }
 export const updatecity = async (id: string, status: boolean) => {
@@ -85,7 +93,9 @@ export const updatecity = async (id: string, status: boolean) => {
             message: `${get.message.cityName} city status updated`
         }
     } catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     }
 }
 export const cityDelete = async (id: string) => {
@@ -101,7 +111,9 @@ export const cityDelete = async (id: string) => {
             message: `${get.message.cityName} city deleted`
         }
     } catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     }
 }
 
@@ -133,6 +145,8 @@ export const getCityWithStateCountry = async () => {
             })
         }
     } catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     }
 } 

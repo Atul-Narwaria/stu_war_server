@@ -25,7 +25,9 @@ const createCity = (countryId, stateId, city) => __awaiter(void 0, void 0, void 
         return { code: 200, status: "success", message: "city created successfully" };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.createCity = createCity;
@@ -45,7 +47,9 @@ const getCity = (countryId, stateId) => __awaiter(void 0, void 0, void 0, functi
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.getCity = getCity;
@@ -66,7 +70,9 @@ const getActiveCity = (countryId, stateId) => __awaiter(void 0, void 0, void 0, 
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.getActiveCity = getActiveCity;
@@ -82,7 +88,9 @@ const getCitybyId = (id) => __awaiter(void 0, void 0, void 0, function* () {
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.getCitybyId = getCitybyId;
@@ -103,7 +111,9 @@ const updatecity = (id, status) => __awaiter(void 0, void 0, void 0, function* (
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.updatecity = updatecity;
@@ -121,7 +131,9 @@ const cityDelete = (id) => __awaiter(void 0, void 0, void 0, function* () {
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.cityDelete = cityDelete;
@@ -152,7 +164,9 @@ const getCityWithStateCountry = () => __awaiter(void 0, void 0, void 0, function
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.getCityWithStateCountry = getCityWithStateCountry;

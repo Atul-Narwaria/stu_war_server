@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.editInstituteTeache = exports.InstituteteacherSeach = exports.getInstituteTeacher = exports.teacherDelete = exports.TeacherStatusUpdate = exports.editTeacherAddress = exports.editTeachert = exports.getTeacher = exports.createBulkTeacher = exports.createTeacherWithAddress = void 0;
+exports.getTeacherInstituteId = exports.isTeacherExist = exports.getteacherById = exports.updateteacherPassword = exports.getTeachersAllActive = exports.getTeachersActive = exports.editInstituteTeache = exports.InstituteteacherSeach = exports.getInstituteTeacher = exports.teacherDelete = exports.TeacherStatusUpdate = exports.editTeacherAddress = exports.editTeachert = exports.getTeacher = exports.getTeacherPassword = exports.createBulkTeacher = exports.createTeacherWithAddress = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const createTeacherWithAddress = (data) => __awaiter(void 0, void 0, void 0, function* () {
@@ -31,12 +31,16 @@ const createTeacherWithAddress = (data) => __awaiter(void 0, void 0, void 0, fun
                         fkstateId: data.state,
                         fkcityId: data.city,
                         Address: data.address,
-                        pin: data.pin
-                    }
-                }
-            }
+                        pin: data.pin,
+                    },
+                },
+            },
         });
-        return { code: 200, status: "success", message: "teacher created successfully" };
+        return {
+            code: 200,
+            status: "success",
+            message: "teacher created successfully",
+        };
     }
     catch (prismaError) {
         return { code: 500, status: "error", message: prismaError.message };
@@ -45,22 +49,54 @@ const createTeacherWithAddress = (data) => __awaiter(void 0, void 0, void 0, fun
 exports.createTeacherWithAddress = createTeacherWithAddress;
 const createBulkTeacher = (bulkData) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log(bulkData);
         yield prisma.teacherMaster.createMany({
             data: bulkData,
             skipDuplicates: true,
         });
-        return { code: 200, status: "success", message: "teacher created successfully" };
+        return {
+            code: 200,
+            status: "success",
+            message: "teacher created successfully",
+        };
     }
     catch (prismaError) {
         return { code: 500, status: "error", message: prismaError.message };
     }
 });
 exports.createBulkTeacher = createBulkTeacher;
+const getTeacherPassword = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        return {
+            code: 200,
+            status: "success",
+            message: yield prisma.teacherMaster.findFirst({
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    password: true,
+                    phone: true,
+                    dob: true,
+                    gender: true,
+                },
+                where: {
+                    email: email,
+                },
+            }),
+        };
+    }
+    catch (e) {
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: e.message };
+    }
+});
+exports.getTeacherPassword = getTeacherPassword;
 const getTeacher = (id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         return {
-            code: 200, status: "success",
+            code: 200,
+            status: "success",
             message: yield prisma.teacherMaster.findFirst({
                 select: {
                     firstName: true,
@@ -75,18 +111,20 @@ const getTeacher = (id) => __awaiter(void 0, void 0, void 0, function* () {
                             fkcountryId: true,
                             fkstateId: true,
                             Address: true,
-                            pin: true
-                        }
-                    }
+                            pin: true,
+                        },
+                    },
                 },
                 where: {
-                    id: id
-                }
-            })
+                    email: id,
+                },
+            }),
         };
     }
-    catch (prismaError) {
-        return { code: 500, status: "error", message: prismaError.message };
+    catch (e) {
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: e.message };
     }
 });
 exports.getTeacher = getTeacher;
@@ -102,8 +140,8 @@ const editTeachert = (data) => __awaiter(void 0, void 0, void 0, function* () {
                 profileImg: data.profileImg,
             },
             where: {
-                id: data.id
-            }
+                id: data.id,
+            },
         });
         return { status: "success", message: ` teacher updated` };
     }
@@ -123,13 +161,16 @@ const editTeacherAddress = (data) => __awaiter(void 0, void 0, void 0, function*
                 fkstateId: data.state,
                 fkcityId: data.city,
                 Address: data.address,
-                pin: data.pin
+                pin: data.pin,
             },
             where: {
-                id: data.id
-            }
+                id: data.id,
+            },
         });
-        return { status: "success", message: `${user.firstname} ${user.lastname}   teacher address updated` };
+        return {
+            status: "success",
+            message: `${user.firstname} ${user.lastname}   teacher address updated`,
+        };
     }
     catch (prismaError) {
         return { status: "error", message: prismaError.message };
@@ -137,7 +178,6 @@ const editTeacherAddress = (data) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.editTeacherAddress = editTeacherAddress;
 const TeacherStatusUpdate = (id, status) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
     try {
         let user = yield (0, exports.getTeacher)(id);
         if (!user) {
@@ -145,13 +185,17 @@ const TeacherStatusUpdate = (id, status) => __awaiter(void 0, void 0, void 0, fu
         }
         yield prisma.teacherMaster.update({
             data: {
-                status: status
+                status: status,
             },
             where: {
-                id: id
-            }
+                id: id,
+            },
         });
-        return { code: 200, status: "success", message: `${(_a = user.message) === null || _a === void 0 ? void 0 : _a.firstName} ${(_b = user.message) === null || _b === void 0 ? void 0 : _b.lastName}   teacher status  updated` };
+        return {
+            code: 200,
+            status: "success",
+            message: `   teacher status  updated`,
+        };
     }
     catch (prismaError) {
         return { code: 500, status: "error", message: prismaError.message };
@@ -166,10 +210,14 @@ const teacherDelete = (id) => __awaiter(void 0, void 0, void 0, function* () {
         }
         yield prisma.teacherMaster.delete({
             where: {
-                id: id
-            }
+                id: id,
+            },
         });
-        return { code: 200, status: "success", message: `${user.message.firstName} ${user.message.lastName}   teacher delete   ` };
+        return {
+            code: 200,
+            status: "success",
+            message: `${user.message.firstName} ${user.message.lastName}   teacher delete   `,
+        };
     }
     catch (prismaError) {
         return { code: 500, status: "error", message: prismaError.message };
@@ -181,13 +229,15 @@ const getInstituteTeacher = (page, insID) => __awaiter(void 0, void 0, void 0, f
         const skip = (page - 1) * 10;
         let totalPage = yield prisma.teacherMaster.count({
             where: {
-                fk_institute_id: insID
-            }
+                fk_institute_id: insID,
+            },
         });
         let totalRow = totalPage;
         totalPage = Math.ceil(totalPage / 10);
         return {
-            code: 200, status: "success", message: yield prisma.teacherMaster.findMany({
+            code: 200,
+            status: "success",
+            message: yield prisma.teacherMaster.findMany({
                 select: {
                     id: true,
                     firstName: true,
@@ -202,18 +252,20 @@ const getInstituteTeacher = (page, insID) => __awaiter(void 0, void 0, void 0, f
                 skip: skip,
                 take: 10,
                 where: {
-                    fk_institute_id: insID
+                    fk_institute_id: insID,
                 },
                 orderBy: {
-                    createAt: 'desc'
-                }
+                    updatedAt: "desc",
+                },
             }),
             totalPage: totalPage,
-            totalRow: totalRow
+            totalRow: totalRow,
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.getInstituteTeacher = getInstituteTeacher;
@@ -226,36 +278,38 @@ const InstituteteacherSeach = (page, query, insID) => __awaiter(void 0, void 0, 
                 OR: [
                     {
                         firstName: {
-                            contains: query
-                        }
+                            contains: query,
+                        },
                     },
                     {
                         lastName: {
-                            contains: query
-                        }
+                            contains: query,
+                        },
                     },
                     {
                         email: {
-                            contains: query
-                        }
+                            contains: query,
+                        },
                     },
                     {
                         phone: {
-                            contains: query
-                        }
+                            contains: query,
+                        },
                     },
                     {
                         gender: {
-                            contains: query
-                        }
-                    }
+                            contains: query,
+                        },
+                    },
                 ],
-            }
+            },
         });
         let totalRow = totalPage;
         totalPage = Math.ceil(totalPage / 10);
         return {
-            code: 200, status: "success", message: yield prisma.teacherMaster.findMany({
+            code: 200,
+            status: "success",
+            message: yield prisma.teacherMaster.findMany({
                 select: {
                     id: true,
                     firstName: true,
@@ -266,7 +320,7 @@ const InstituteteacherSeach = (page, query, insID) => __awaiter(void 0, void 0, 
                     dob: true,
                     status: true,
                     createAt: true,
-                    updatedAt: true
+                    updatedAt: true,
                 },
                 skip: skip,
                 take: 10,
@@ -275,38 +329,40 @@ const InstituteteacherSeach = (page, query, insID) => __awaiter(void 0, void 0, 
                     OR: [
                         {
                             firstName: {
-                                contains: query
-                            }
+                                contains: query,
+                            },
                         },
                         {
                             lastName: {
-                                contains: query
-                            }
+                                contains: query,
+                            },
                         },
                         {
                             email: {
-                                contains: query
-                            }
+                                contains: query,
+                            },
                         },
                         {
                             phone: {
-                                contains: query
-                            }
+                                contains: query,
+                            },
                         },
                         {
                             gender: {
-                                contains: query
-                            }
-                        }
+                                contains: query,
+                            },
+                        },
                     ],
-                }
+                },
             }),
             totalPage: totalPage,
-            totalRow: totalRow
+            totalRow: totalRow,
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.InstituteteacherSeach = InstituteteacherSeach;
@@ -322,19 +378,19 @@ const editInstituteTeache = (userid, data) => __awaiter(void 0, void 0, void 0, 
                 gender: data.gender,
             },
             where: {
-                id: userid
-            }
+                id: userid,
+            },
         });
         yield prisma.teacherAddress.upsert({
             where: {
-                fkTeacherId: userid
+                fkTeacherId: userid,
             },
             update: {
                 fkcountryId: data.country,
                 fkstateId: data.state,
                 fkcityId: data.city,
                 Address: data.address,
-                pin: data.pin
+                pin: data.pin,
             },
             create: {
                 fkcountryId: data.country,
@@ -342,13 +398,198 @@ const editInstituteTeache = (userid, data) => __awaiter(void 0, void 0, void 0, 
                 fkcityId: data.city,
                 Address: data.address,
                 pin: data.pin,
-                fkTeacherId: userid
-            }
+                fkTeacherId: userid,
+            },
         });
         return { code: 200, status: "success", message: "teacher updated" };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.editInstituteTeache = editInstituteTeache;
+const getTeachersActive = (page, insID) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const skip = (page - 1) * 10;
+        let totalPage = yield prisma.teacherMaster.count({
+            where: {
+                fk_institute_id: insID,
+                status: true,
+            },
+        });
+        let totalRow = totalPage;
+        totalPage = Math.ceil(totalPage / 10);
+        return {
+            code: 200,
+            status: "success",
+            message: yield prisma.teacherMaster.findMany({
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    phone: true,
+                    createAt: true,
+                },
+                skip: skip,
+                take: 10,
+                where: {
+                    fk_institute_id: insID,
+                    status: true,
+                },
+                orderBy: {
+                    createAt: "desc",
+                },
+            }),
+            totalPage: totalPage,
+            totalRow: totalRow,
+        };
+    }
+    catch (e) {
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
+    }
+});
+exports.getTeachersActive = getTeachersActive;
+const getTeachersAllActive = (insID) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        return {
+            code: 200,
+            status: "success",
+            message: yield prisma.teacherMaster.findMany({
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    phone: true,
+                    createAt: true,
+                },
+                where: {
+                    fk_institute_id: insID,
+                    status: true,
+                },
+                orderBy: {
+                    createAt: "desc",
+                },
+            }),
+        };
+    }
+    catch (e) {
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
+    }
+});
+exports.getTeachersAllActive = getTeachersAllActive;
+const updateteacherPassword = (id, passowrd) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield prisma.teacherMaster.update({
+            data: {
+                password: passowrd,
+            },
+            where: {
+                id: id,
+            },
+        });
+        return {
+            code: 200,
+            status: "success",
+            message: "password updated successfully",
+        };
+    }
+    catch (e) {
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[1] };
+    }
+});
+exports.updateteacherPassword = updateteacherPassword;
+const getteacherById = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let check = yield prisma.teacherMaster.findFirst({
+            select: {
+                firstName: true,
+                lastName: true,
+                email: true,
+                phone: true,
+                dob: true,
+                gender: true,
+            },
+            where: {
+                id: id,
+            },
+        });
+        if (!check) {
+            return {
+                code: 403,
+                status: "error",
+                message: "teacher not found",
+            };
+        }
+        return {
+            code: 200,
+            status: "success",
+            message: check,
+        };
+    }
+    catch (e) {
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[1] };
+    }
+});
+exports.getteacherById = getteacherById;
+const isTeacherExist = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const find = yield prisma.teacherMaster.count({
+            where: {
+                OR: [
+                    {
+                        id: id,
+                    },
+                    {
+                        email: id,
+                    },
+                ],
+            },
+        });
+        return {
+            code: 200,
+            status: "success",
+            message: find,
+        };
+    }
+    catch (e) {
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[1] };
+    }
+});
+exports.isTeacherExist = isTeacherExist;
+const getTeacherInstituteId = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const get = yield prisma.teacherMaster.findFirst({
+            select: {
+                fk_institute_id: true,
+            },
+            where: {
+                id: id,
+                status: true,
+            },
+        });
+        if (!get) {
+            return { code: 403, status: "error", message: "invalid user" };
+        }
+        return { code: 200, status: "success", message: get.fk_institute_id };
+    }
+    catch (e) {
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[1] };
+    }
+});
+exports.getTeacherInstituteId = getTeacherInstituteId;

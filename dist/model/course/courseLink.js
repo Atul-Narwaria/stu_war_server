@@ -9,21 +9,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteCourseLink = exports.createCourseLink = void 0;
+exports.getStudentCourses = exports.createStudentCourse = exports.deleteCourseLink = exports.createCourseLink = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
-const createCourseLink = (fk_course_id, fk_sub_course_id) => __awaiter(void 0, void 0, void 0, function* () {
+const createCourseLink = (data) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield prisma.courselinks.create({
-            data: {
-                fk_course_id: fk_course_id,
-                fk_sub_course_id: fk_sub_course_id
-            }
+        yield prisma.courselinks.createMany({
+            data: data,
+            skipDuplicates: true
         });
         return { code: 200, status: "success", message: `course linked successfully` };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.createCourseLink = createCourseLink;
@@ -37,7 +37,59 @@ const deleteCourseLink = (id) => __awaiter(void 0, void 0, void 0, function* () 
         return { code: 200, status: "success", message: `link deleted successfully` };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.deleteCourseLink = deleteCourseLink;
+const createStudentCourse = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield prisma.studentCourse.createMany({
+            data: data,
+        });
+        return { code: 200, status: "success", message: "students courses created successfully" };
+    }
+    catch (e) {
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
+    }
+});
+exports.createStudentCourse = createStudentCourse;
+const getStudentCourses = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const get = yield prisma.studentCourse.findMany({
+            select: {
+                id: true,
+                courses: {
+                    select: {
+                        id: true,
+                        name: true,
+                        amount: true,
+                        durantion: true,
+                        image: true
+                    }
+                },
+                subCourses: {
+                    select: {
+                        id: true,
+                        name: true,
+                        amount: true,
+                        duration: true,
+                        image: true
+                    }
+                }
+            },
+            where: {
+                fk_stundet_id: id,
+            }
+        });
+    }
+    catch (e) {
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
+    }
+});
+exports.getStudentCourses = getStudentCourses;

@@ -8,10 +8,40 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.editInstituteStudent = exports.InstituteStudentSeach = exports.getInstituteStudents = exports.getstudentAddmissionIds = exports.studentDelete = exports.StudentStatusUpdate = exports.editStudentAddress = exports.editStudent = exports.getstundet = exports.createBulkStudent = exports.createStudentWithAddress = void 0;
+exports.getstudentsByDate = exports.editInstituteStudent = exports.InstituteStudentSeach = exports.getInstituteStudentsActive = exports.getInstituteStudents = exports.getstudentAddmissionIds = exports.studentDelete = exports.StudentStatusUpdate = exports.editStudentAddress = exports.editStudent = exports.getstundet = exports.createBulkStudent = exports.createStudentWithAddress = exports.getStudentByEmail = void 0;
 const client_1 = require("@prisma/client");
+const moment_1 = __importDefault(require("moment"));
 const prisma = new client_1.PrismaClient();
+const getStudentByEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        console.log(email);
+        const get = yield prisma.studentMaster.findFirst({
+            where: {
+                email: email,
+            },
+        });
+        if (!get) {
+            return {
+                code: 403,
+                status: "success",
+                message: "email not found",
+            };
+        }
+        return {
+            code: 200,
+            status: "success",
+            message: get,
+        };
+    }
+    catch (prismaError) {
+        return { code: 500, status: "error", message: prismaError.message };
+    }
+});
+exports.getStudentByEmail = getStudentByEmail;
 const createStudentWithAddress = (data) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield prisma.studentMaster.create({
@@ -32,12 +62,16 @@ const createStudentWithAddress = (data) => __awaiter(void 0, void 0, void 0, fun
                         fkstateId: data.state,
                         fkcityId: data.city,
                         Address: data.address,
-                        pin: data.pin
-                    }
-                }
-            }
+                        pin: data.pin,
+                    },
+                },
+            },
         });
-        return { code: 200, status: "success", message: "student created successfully" };
+        return {
+            code: 200,
+            status: "success",
+            message: "student created successfully",
+        };
     }
     catch (prismaError) {
         return { code: 500, status: "error", message: prismaError.message };
@@ -50,7 +84,11 @@ const createBulkStudent = (bulkData) => __awaiter(void 0, void 0, void 0, functi
             data: bulkData,
             skipDuplicates: true,
         });
-        return { code: 200, status: "success", message: "student created successfully" };
+        return {
+            code: 200,
+            status: "success",
+            message: "student created successfully",
+        };
     }
     catch (prismaError) {
         return { code: 500, status: "error", message: prismaError.message };
@@ -60,7 +98,8 @@ exports.createBulkStudent = createBulkStudent;
 const getstundet = (id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         return {
-            code: 200, status: "success",
+            code: 200,
+            status: "success",
             message: yield prisma.studentMaster.findFirst({
                 select: {
                     firstName: true,
@@ -75,14 +114,14 @@ const getstundet = (id) => __awaiter(void 0, void 0, void 0, function* () {
                             fkcountryId: true,
                             fkstateId: true,
                             Address: true,
-                            pin: true
-                        }
-                    }
+                            pin: true,
+                        },
+                    },
                 },
                 where: {
-                    id: id
-                }
-            })
+                    id: id,
+                },
+            }),
         };
     }
     catch (prismaError) {
@@ -102,8 +141,8 @@ const editStudent = (data) => __awaiter(void 0, void 0, void 0, function* () {
                 profileImg: data.profileImg,
             },
             where: {
-                id: data.id
-            }
+                id: data.id,
+            },
         });
         return { status: "success", message: ` student updated` };
     }
@@ -123,13 +162,16 @@ const editStudentAddress = (data) => __awaiter(void 0, void 0, void 0, function*
                 fkstateId: data.state,
                 fkcityId: data.city,
                 Address: data.address,
-                pin: data.pin
+                pin: data.pin,
             },
             where: {
-                id: data.id
-            }
+                id: data.id,
+            },
         });
-        return { status: "success", message: `${user.firstname} ${user.lastname}   student address updated` };
+        return {
+            status: "success",
+            message: `${user.firstname} ${user.lastname}   student address updated`,
+        };
     }
     catch (prismaError) {
         return { status: "error", message: prismaError.message };
@@ -145,13 +187,17 @@ const StudentStatusUpdate = (id, status) => __awaiter(void 0, void 0, void 0, fu
         }
         yield prisma.studentMaster.update({
             data: {
-                status: status
+                status: status,
             },
             where: {
-                id: id
-            }
+                id: id,
+            },
         });
-        return { code: 200, status: "success", message: `${(_a = user.message) === null || _a === void 0 ? void 0 : _a.firstName} ${(_b = user.message) === null || _b === void 0 ? void 0 : _b.lastName}   student status  updated` };
+        return {
+            code: 200,
+            status: "success",
+            message: `${(_a = user.message) === null || _a === void 0 ? void 0 : _a.firstName} ${(_b = user.message) === null || _b === void 0 ? void 0 : _b.lastName}   student status  updated`,
+        };
     }
     catch (prismaError) {
         return { code: 500, status: "error", message: prismaError.message };
@@ -166,10 +212,14 @@ const studentDelete = (id) => __awaiter(void 0, void 0, void 0, function* () {
         }
         yield prisma.studentMaster.delete({
             where: {
-                id: id
-            }
+                id: id,
+            },
         });
-        return { code: 200, status: "success", message: `${user.message.firstName} ${user.message.lastName}   student delete   ` };
+        return {
+            code: 200,
+            status: "success",
+            message: `${user.message.firstName} ${user.message.lastName}   student delete   `,
+        };
     }
     catch (prismaError) {
         return { code: 500, status: "error", message: prismaError.message };
@@ -179,21 +229,24 @@ exports.studentDelete = studentDelete;
 const getstudentAddmissionIds = (id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         return {
-            code: 200, status: "success",
+            code: 200,
+            status: "success",
             message: yield prisma.studentMaster.findMany({
                 select: {
-                    admissionId: true
+                    admissionId: true,
                 },
                 where: {
                     admissionId: {
-                        contains: id
-                    }
-                }
-            })
+                        contains: id,
+                    },
+                },
+            }),
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.getstudentAddmissionIds = getstudentAddmissionIds;
@@ -202,13 +255,15 @@ const getInstituteStudents = (page, insID) => __awaiter(void 0, void 0, void 0, 
         const skip = (page - 1) * 10;
         let totalPage = yield prisma.studentMaster.count({
             where: {
-                fk_institute_id: insID
-            }
+                fk_institute_id: insID,
+            },
         });
         let totalRow = totalPage;
         totalPage = Math.ceil(totalPage / 10);
         return {
-            code: 200, status: "success", message: yield prisma.studentMaster.findMany({
+            code: 200,
+            status: "success",
+            message: yield prisma.studentMaster.findMany({
                 select: {
                     id: true,
                     firstName: true,
@@ -224,21 +279,67 @@ const getInstituteStudents = (page, insID) => __awaiter(void 0, void 0, void 0, 
                 skip: skip,
                 take: 10,
                 where: {
-                    fk_institute_id: insID
+                    fk_institute_id: insID,
                 },
                 orderBy: {
-                    createAt: 'desc'
-                }
+                    createAt: "desc",
+                },
             }),
             totalPage: totalPage,
-            totalRow: totalRow
+            totalRow: totalRow,
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.getInstituteStudents = getInstituteStudents;
+const getInstituteStudentsActive = (page, insID) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const skip = (page - 1) * 10;
+        let totalPage = yield prisma.studentMaster.count({
+            where: {
+                fk_institute_id: insID,
+                status: true,
+            },
+        });
+        let totalRow = totalPage;
+        totalPage = Math.ceil(totalPage / 10);
+        return {
+            code: 200,
+            status: "success",
+            message: yield prisma.studentMaster.findMany({
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    phone: true,
+                    createAt: true,
+                },
+                skip: skip,
+                take: 10,
+                where: {
+                    fk_institute_id: insID,
+                    status: true,
+                },
+                orderBy: {
+                    createAt: "desc",
+                },
+            }),
+            totalPage: totalPage,
+            totalRow: totalRow,
+        };
+    }
+    catch (e) {
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
+    }
+});
+exports.getInstituteStudentsActive = getInstituteStudentsActive;
 const InstituteStudentSeach = (page, query, insID) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const skip = (page - 1) * 10;
@@ -248,36 +349,33 @@ const InstituteStudentSeach = (page, query, insID) => __awaiter(void 0, void 0, 
                 OR: [
                     {
                         firstName: {
-                            contains: query
-                        }
+                            contains: query,
+                        },
                     },
                     {
                         lastName: {
-                            contains: query
-                        }
+                            contains: query,
+                        },
                     },
                     {
                         email: {
-                            contains: query
-                        }
+                            contains: query,
+                        },
                     },
                     {
                         phone: {
-                            contains: query
-                        }
+                            contains: query,
+                        },
                     },
-                    {
-                        gender: {
-                            contains: query
-                        }
-                    }
                 ],
-            }
+            },
         });
         let totalRow = totalPage;
         totalPage = Math.ceil(totalPage / 10);
         return {
-            code: 200, status: "success", message: yield prisma.studentMaster.findMany({
+            code: 200,
+            status: "success",
+            message: yield prisma.studentMaster.findMany({
                 select: {
                     id: true,
                     firstName: true,
@@ -289,7 +387,7 @@ const InstituteStudentSeach = (page, query, insID) => __awaiter(void 0, void 0, 
                     admissionId: true,
                     status: true,
                     createAt: true,
-                    updatedAt: true
+                    updatedAt: true,
                 },
                 skip: skip,
                 take: 10,
@@ -298,38 +396,40 @@ const InstituteStudentSeach = (page, query, insID) => __awaiter(void 0, void 0, 
                     OR: [
                         {
                             firstName: {
-                                contains: query
-                            }
+                                contains: query,
+                            },
                         },
                         {
                             lastName: {
-                                contains: query
-                            }
+                                contains: query,
+                            },
                         },
                         {
                             email: {
-                                contains: query
-                            }
+                                contains: query,
+                            },
                         },
                         {
                             phone: {
-                                contains: query
-                            }
+                                contains: query,
+                            },
                         },
                         {
                             gender: {
-                                contains: query
-                            }
-                        }
+                                contains: query,
+                            },
+                        },
                     ],
-                }
+                },
             }),
             totalPage: totalPage,
-            totalRow: totalRow
+            totalRow: totalRow,
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.InstituteStudentSeach = InstituteStudentSeach;
@@ -343,22 +443,22 @@ const editInstituteStudent = (userid, data) => __awaiter(void 0, void 0, void 0,
                 phone: data.phone,
                 dob: new Date(data.dob),
                 gender: data.gender,
-                studentAddress: {}
+                studentAddress: {},
             },
             where: {
-                id: userid
-            }
+                id: userid,
+            },
         });
         yield prisma.studentAddress.upsert({
             where: {
-                fkStudentId: userid
+                fkStudentId: userid,
             },
             update: {
                 fkcountryId: data.country,
                 fkstateId: data.state,
                 fkcityId: data.city,
                 Address: data.address,
-                pin: data.pin
+                pin: data.pin,
             },
             create: {
                 fkcountryId: data.country,
@@ -366,13 +466,76 @@ const editInstituteStudent = (userid, data) => __awaiter(void 0, void 0, void 0,
                 fkcityId: data.city,
                 Address: data.address,
                 pin: data.pin,
-                fkStudentId: userid
-            }
+                fkStudentId: userid,
+            },
         });
         return { code: 200, status: "success", message: "student updated" };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.editInstituteStudent = editInstituteStudent;
+const getstudentsByDate = (page, insID, startDate, endDate) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let enddate = endDate;
+        if (!endDate) {
+            enddate = (0, moment_1.default)().add(1, "days");
+        }
+        else {
+            enddate = (0, moment_1.default)(endDate, "YYYY-MM-DD").add(1, "days");
+        }
+        const skip = (page - 1) * 10;
+        let totalPage = yield prisma.studentMaster.count({
+            where: {
+                fk_institute_id: insID,
+                createAt: {
+                    lte: new Date(enddate),
+                    gte: new Date(startDate),
+                },
+            },
+        });
+        let totalRow = totalPage;
+        totalPage = Math.ceil(totalPage / 10);
+        return {
+            code: 200,
+            status: "success",
+            message: yield prisma.studentMaster.findMany({
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    phone: true,
+                    gender: true,
+                    dob: true,
+                    admissionId: true,
+                    status: true,
+                    createAt: true,
+                },
+                skip: skip,
+                take: 10,
+                where: {
+                    fk_institute_id: insID,
+                    createAt: {
+                        lte: new Date(enddate),
+                        gte: new Date(startDate),
+                    },
+                },
+                orderBy: {
+                    createAt: "desc",
+                },
+            }),
+            totalPage: totalPage,
+            totalRow: totalRow,
+        };
+    }
+    catch (e) {
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
+    }
+});
+exports.getstudentsByDate = getstudentsByDate;

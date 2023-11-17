@@ -24,7 +24,9 @@ const createState = (countryId, state) => __awaiter(void 0, void 0, void 0, func
         return { code: 200, status: "success", message: "state created successfully" };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.createState = createState;
@@ -48,7 +50,9 @@ const getStateByCountry = (countryId) => __awaiter(void 0, void 0, void 0, funct
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.getStateByCountry = getStateByCountry;
@@ -72,7 +76,9 @@ const getActiveStateByCountry = (countryId) => __awaiter(void 0, void 0, void 0,
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.getActiveStateByCountry = getActiveStateByCountry;
@@ -102,7 +108,9 @@ const getStateCityByCountry = (countryId) => __awaiter(void 0, void 0, void 0, f
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.getStateCityByCountry = getStateCityByCountry;
@@ -133,7 +141,9 @@ const getActiveStateCityByCountry = (countryId) => __awaiter(void 0, void 0, voi
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.getActiveStateCityByCountry = getActiveStateCityByCountry;
@@ -149,7 +159,9 @@ const getStatebyId = (id) => __awaiter(void 0, void 0, void 0, function* () {
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.getStatebyId = getStatebyId;
@@ -170,7 +182,9 @@ const updateState = (id, status) => __awaiter(void 0, void 0, void 0, function* 
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.updateState = updateState;
@@ -188,7 +202,9 @@ const stateDelete = (id) => __awaiter(void 0, void 0, void 0, function* () {
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.stateDelete = stateDelete;
@@ -215,7 +231,9 @@ const AllState = () => __awaiter(void 0, void 0, void 0, function* () {
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.AllState = AllState;

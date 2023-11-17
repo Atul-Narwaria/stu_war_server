@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteBatchLink = exports.createBatchBulkLink = exports.createBatchLink = void 0;
+exports.getBatchDetailByStudent = exports.BatchStudentsSearch = exports.getBatchStudents = exports.deleteBatchLink = exports.createBatchBulkLink = exports.createBatchLink = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const createBatchLink = (data, fk_institute_id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -25,7 +25,9 @@ const createBatchLink = (data, fk_institute_id) => __awaiter(void 0, void 0, voi
         return { code: 200, status: "success", message: ` student linked successfully` };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.createBatchLink = createBatchLink;
@@ -38,7 +40,9 @@ const createBatchBulkLink = (datas) => __awaiter(void 0, void 0, void 0, functio
         return { code: 200, status: "success", message: ` students linked successfully` };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.createBatchBulkLink = createBatchBulkLink;
@@ -52,19 +56,186 @@ const deleteBatchLink = (id) => __awaiter(void 0, void 0, void 0, function* () {
         return { code: 200, status: "success", message: `students linked deleted successfully` };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.deleteBatchLink = deleteBatchLink;
-// export const deleteManyBatchLink = async (data:any) => {
-//     try{
-//         await prisma.batchLink.deleteMany({
-//             where: {
-//                 id: data,
-//             }
-//         })
-//         return { code: 200, status: "success", message: `students linked deleted successfully` }
-//     }catch (e: any) {
-//         return { code: 500, status: 'error', message: e.message }
-//     } 
-// }
+const getBatchStudents = (page, batchId, insID) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const skip = (page - 1) * 10;
+        let totalPage = yield prisma.batchLink.count({
+            where: {
+                fk_institute_id: insID,
+                fk_bacth_id: batchId,
+            }
+        });
+        let totalRow = totalPage;
+        totalPage = Math.ceil(totalPage / 10);
+        return {
+            code: 200, status: "success", message: yield prisma.batchLink.findMany({
+                select: {
+                    id: true,
+                    fk_student_id: true,
+                    fk_bacth_id: true,
+                    status: true,
+                    stundetmaster: {
+                        select: {
+                            id: true,
+                            firstName: true,
+                            lastName: true,
+                            email: true,
+                            phone: true,
+                        }
+                    }
+                },
+                where: {
+                    fk_institute_id: insID,
+                    fk_bacth_id: batchId,
+                },
+                skip: skip,
+                take: 10,
+                orderBy: {
+                    updatedAt: "desc"
+                }
+            }),
+            totalPage: totalPage,
+            totalRow: totalRow
+        };
+    }
+    catch (e) {
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
+    }
+});
+exports.getBatchStudents = getBatchStudents;
+const BatchStudentsSearch = (page, query, batchId, insID) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const skip = (page - 1) * 10;
+        let totalPage = yield prisma.batchLink.count({
+            where: {
+                fk_institute_id: insID,
+                fk_bacth_id: batchId,
+                OR: [
+                    {
+                        stundetmaster: {
+                            OR: [
+                                {
+                                    firstName: {
+                                        contains: query
+                                    },
+                                },
+                                {
+                                    lastName: {
+                                        contains: query
+                                    },
+                                },
+                                {
+                                    email: {
+                                        contains: query
+                                    },
+                                },
+                                {
+                                    phone: {
+                                        contains: query
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        });
+        let totalRow = totalPage;
+        totalPage = Math.ceil(totalPage / 10);
+        return {
+            code: 200, status: "success", message: yield prisma.batchLink.findMany({
+                select: {
+                    id: true,
+                    fk_student_id: true,
+                    fk_bacth_id: true,
+                    status: true,
+                    stundetmaster: {
+                        select: {
+                            id: true,
+                            firstName: true,
+                            lastName: true,
+                            email: true,
+                            phone: true,
+                        }
+                    }
+                },
+                skip: skip,
+                take: 10,
+                where: {
+                    fk_institute_id: insID,
+                    fk_bacth_id: batchId,
+                    OR: [
+                        {
+                            stundetmaster: {
+                                OR: [
+                                    {
+                                        firstName: {
+                                            contains: query
+                                        },
+                                    },
+                                    {
+                                        lastName: {
+                                            contains: query
+                                        },
+                                    },
+                                    {
+                                        email: {
+                                            contains: query
+                                        },
+                                    },
+                                    {
+                                        phone: {
+                                            contains: query
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }),
+            totalPage: totalPage,
+            totalRow: totalRow
+        };
+    }
+    catch (e) {
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
+    }
+});
+exports.BatchStudentsSearch = BatchStudentsSearch;
+const getBatchDetailByStudent = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const get = yield prisma.batchLink.findMany({
+            select: {
+                id: true,
+                bactch: {
+                    select: {
+                        name: true,
+                        end_time: true,
+                        start_time: true,
+                        weekdays: true,
+                    }
+                }
+            },
+            where: {
+                fk_student_id: id
+            }
+        });
+    }
+    catch (e) {
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
+    }
+});
+exports.getBatchDetailByStudent = getBatchDetailByStudent;

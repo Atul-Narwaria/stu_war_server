@@ -9,10 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.salesTeamRoutes = void 0;
+exports.teacherRoutes = void 0;
 const express_1 = require("express");
-exports.salesTeamRoutes = (0, express_1.Router)();
-exports.salesTeamRoutes.post('/registration', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const requestValidation_1 = require("../../middleware/requestValidation");
+const Teacher_controller_1 = require("../../controller/teacher/Teacher.controller");
+const authMiddleware_1 = require("../../middleware/authMiddleware");
+const teacher_1 = require("../../model/teacher/teacher");
+exports.teacherRoutes = (0, express_1.Router)();
+exports.teacherRoutes.post("/registration", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { name, email, phone, password, dob, fkdesgination } = req.body;
         //   const reqError = SalesTeamRegistrationSchema.validate(req.body);
@@ -22,20 +26,52 @@ exports.salesTeamRoutes.post('/registration', (req, res) => __awaiter(void 0, vo
         //   return res.status(200).json(await RegisterSalesTeam(name,email,phone,password,dob,fkdesgination))
     }
     catch (e) {
-        return res.status(500).json({ "status": "error", message: e.message });
+        return res.status(500).json({ status: "error", message: e.message });
     }
 }));
-exports.salesTeamRoutes.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.teacherRoutes.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, password } = req.body;
-        //   const {error,value}  = SalesTeamLoginSchema.validate(req.body);
-        //   if(error){
-        //     return res.status(200).json({status:"error", message:error?.message});
-        //   }
-        //   let login = await loginSalesTeam(email,password)
-        //   return res.status(200).json(login)
+        const { error, value } = requestValidation_1.AdminLogin.validate(req.body);
+        if (error) {
+            return res.status(200).json({ status: "error", message: error === null || error === void 0 ? void 0 : error.message });
+        }
+        let { code, status, message, token } = yield (0, Teacher_controller_1.loginTeacher)(email, password);
+        return res.status(code).json({ status, message, token, role: "teacher" });
     }
     catch (e) {
-        return res.status(500).json({ "status": "error", message: e.message });
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+}));
+exports.teacherRoutes.get("/get/Active", [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const page = req.query.page || 1;
+        const insID = req.userid;
+        const { code, status, message, totalPage, totalRow } = yield (0, teacher_1.getTeachersActive)(page, insID);
+        return res.status(code).json({
+            status: status,
+            message: message,
+            totalPage: totalPage,
+            totalRow,
+        });
+    }
+    catch (e) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+}));
+exports.teacherRoutes.get("/get", [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const page = req.query.page || 1;
+        const insID = req.userid;
+        const { code, status, message, totalPage, totalRow } = yield (0, teacher_1.getInstituteTeacher)(page, insID);
+        return res.status(code).json({
+            status: status,
+            message: message,
+            totalPage: totalPage,
+            totalRow,
+        });
+    }
+    catch (e) {
+        return res.status(500).json({ status: "error", message: e.message });
     }
 }));

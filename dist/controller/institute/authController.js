@@ -12,10 +12,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginInstitue = void 0;
+exports.loginStudent = exports.loginInstitue = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const institute_1 = require("../../model/institute/institute");
+const student_1 = require("../../model/student/student");
 const loginInstitue = (email, password) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
@@ -29,11 +30,45 @@ const loginInstitue = (email, password) => __awaiter(void 0, void 0, void 0, fun
             return { code: 401, status: "error", message: "incorrect password" };
         }
         let key = process.env.APP_KEY;
-        let createtoken = jsonwebtoken_1.default.sign({ userid: message.id }, key, { expiresIn: "7d" });
-        return { code: 200, status: "success", message: "user logged in", token: createtoken };
+        let createtoken = jsonwebtoken_1.default.sign({ userid: message.id, role: "institute" }, key, {
+            expiresIn: "7d",
+        });
+        return {
+            code: 200,
+            status: "success",
+            message: "user logged in",
+            token: createtoken,
+        };
     }
     catch (e) {
         return { code: 500, status: "error", message: e.message };
     }
 });
 exports.loginInstitue = loginInstitue;
+const loginStudent = (email, password) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { code, status, message } = yield (0, student_1.getStudentByEmail)(email);
+        if (status === "error") {
+            return { code, status, message };
+        }
+        let passwords = message === null || message === void 0 ? void 0 : message.password;
+        let checkPassword = bcrypt_1.default.compareSync(password, passwords);
+        if (!checkPassword) {
+            return { code: 401, status: "error", message: "incorrect password" };
+        }
+        let key = process.env.APP_KEY;
+        let createtoken = jsonwebtoken_1.default.sign({ userid: message.id, role: "student" }, key, {
+            expiresIn: "7d",
+        });
+        return {
+            code: 200,
+            status: "success",
+            message: "user logged in",
+            token: createtoken,
+        };
+    }
+    catch (e) {
+        return { code: 500, status: "error", message: e.message };
+    }
+});
+exports.loginStudent = loginStudent;

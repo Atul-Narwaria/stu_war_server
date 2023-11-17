@@ -107,3 +107,12 @@ exports.CourseRoutes.get("/get/search", [authMiddleware_1.validateToken, authMid
         return res.status(500).json({ status: "error", message: e.message });
     }
 }));
+exports.CourseRoutes.get("/get/sub-course-list/:id", [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { code, status, message } = yield (0, course_1.getSubCourseListByCourse)(req.params.id);
+        return res.status(code).json({ status: status, message: message });
+    }
+    catch (e) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+}));

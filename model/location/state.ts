@@ -13,7 +13,9 @@ export const createState = async (countryId: string, state: string) => {
         })
         return { code: 200, status: "success", message: "state created successfully" }
     } catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     }
 }
 
@@ -36,7 +38,9 @@ export const getStateByCountry = async (countryId: string) => {
             })
         }
     } catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     }
 }
 export const getActiveStateByCountry = async (countryId: string) => {
@@ -58,7 +62,9 @@ export const getActiveStateByCountry = async (countryId: string) => {
             })
         }
     } catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     }
 }
 export const getStateCityByCountry = async (countryId: string) => {
@@ -86,7 +92,9 @@ export const getStateCityByCountry = async (countryId: string) => {
             })
         }
     } catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     }
 }
 
@@ -116,7 +124,9 @@ export const getActiveStateCityByCountry = async (countryId: string) => {
             })
         }
     } catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     }
 }
 export const getStatebyId = async (id: string) => {
@@ -130,7 +140,9 @@ export const getStatebyId = async (id: string) => {
             })
         }
     } catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     }
 }
 export const updateState = async (id: string, status: boolean) => {
@@ -149,7 +161,9 @@ export const updateState = async (id: string, status: boolean) => {
             message: `${get.message.stateName} state status updated`
         }
     } catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     }
 }
 export const stateDelete = async (id: string) => {
@@ -165,7 +179,9 @@ export const stateDelete = async (id: string) => {
             message: `${get.message.stateName} state deleted`
         }
     } catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     }
 }
 
@@ -191,6 +207,8 @@ export const AllState = async () => {
             })
         }
     } catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     }
 }

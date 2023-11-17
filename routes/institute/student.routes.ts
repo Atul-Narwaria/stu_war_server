@@ -2,7 +2,7 @@ import { Request, Response, Router } from 'express';
 import { isAdmin, isInstitute, validateToken } from '../../middleware/authMiddleware';
 import { InstituteCreateSchema, InstituteDeleteSchema, InstituteUpdateStatusSchema, instituteCreateStudentSchema } from '../../middleware/requestValidation';
 import { createBulkStundentController, institutecreateStudent } from '../../controller/institute/studentController';
-import { InstituteStudentSeach, StudentStatusUpdate, editInstituteStudent, getInstituteStudents, getstundet, studentDelete } from '../../model/student/student';
+import { InstituteStudentSeach, StudentStatusUpdate, editInstituteStudent, getInstituteStudents, getInstituteStudentsActive, getstudentsByDate, getstundet, studentDelete } from '../../model/student/student';
 
 
 export const InstitueStudentRoutes = Router();
@@ -45,12 +45,37 @@ InstitueStudentRoutes.get("/get/all", [validateToken, isInstitute], async (req: 
         return res.status(500).json({ status: "error", message: e.message });
     }
 })
+InstitueStudentRoutes.get("/get/active", [validateToken, isInstitute], async (req: Request, res: Response) => {
+    try {
+        const page: any = req.query.page || 1;
+        const insID: string = req.userid;
+        const { code, status, message, totalPage, totalRow } = await getInstituteStudentsActive(page, insID);
+        return res.status(code).json({ status: status, message: message, totalPage: totalPage, totalRow });
+    } catch (e: any) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+})
 InstitueStudentRoutes.get("/get/search", [validateToken, isInstitute], async (req: Request, res: Response) => {
     try {
         const page: any = req.query.page || 1;
         const insID: string = req.userid;
-        const query: any = req.query.query || null;
+        let query: any = req.query.query ;
+        if(query === '' || query === undefined || query === null){
+            query = '';
+        }
         const { code, status, message, totalPage, totalRow } = await InstituteStudentSeach(page, query, insID);
+        return res.status(code).json({ status: status, message: message, totalPage: totalPage, totalRow: totalRow });
+    } catch (e: any) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+})
+InstitueStudentRoutes.get("/get/search/daterange", [validateToken, isInstitute], async (req: Request, res: Response) => {
+    try {
+        const page: any = req.query.page || 1;
+        const insID: string = req.userid;
+        const startDate: any = req.query.startDate || null;
+        const endDate: any = req.query.endDate || null;
+        const { code, status, message, totalPage, totalRow } = await getstudentsByDate(page, insID, startDate, endDate);
         return res.status(code).json({ status: status, message: message, totalPage: totalPage, totalRow: totalRow });
     } catch (e: any) {
         return res.status(500).json({ status: "error", message: e.message });
@@ -105,3 +130,4 @@ InstitueStudentRoutes.get("/get/student/:id", [validateToken, isInstitute], asyn
         return res.status(500).json({ status: "error", message: e.message });
     }
 })
+

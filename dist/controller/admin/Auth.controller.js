@@ -32,15 +32,24 @@ const loginAdmin = (email, password) => __awaiter(void 0, void 0, void 0, functi
     try {
         let checkUser = yield (0, admin_1.getAdmin)(email);
         if (checkUser.status == "error") {
-            return { code: checkUser.code, status: checkUser.status, message: checkUser.message };
+            return {
+                code: checkUser.code,
+                status: checkUser.status,
+                message: checkUser.message,
+            };
         }
         let checkPassword = bcrypt_1.default.compareSync(password, (_a = checkUser.message) === null || _a === void 0 ? void 0 : _a.password);
         if (!checkPassword) {
             return { code: 401, status: "error", message: "incorrect password" };
         }
         let key = process.env.APP_KEY;
-        let createtoken = jsonwebtoken_1.default.sign({ userid: checkUser.message.id }, key, { expiresIn: "7d" });
-        return { code: 200, status: "success", message: "user logged in", token: createtoken };
+        let createtoken = jsonwebtoken_1.default.sign({ userid: checkUser.message.id, role: "admin" }, key, { expiresIn: "7d" });
+        return {
+            code: 200,
+            status: "success",
+            message: "user logged in",
+            token: createtoken,
+        };
     }
     catch (e) {
         return { code: 500, status: "error", message: e.message };

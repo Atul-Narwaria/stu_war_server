@@ -21,7 +21,9 @@ exports.cityRoutes.post("/create", [authMiddleware_1.validateToken, authMiddlewa
         console.log(req.body);
         const reqError = requestValidation_1.cityCreateSchema.validate(req.body);
         if (reqError === null || reqError === void 0 ? void 0 : reqError.error) {
-            return res.status(200).json({ status: "error", message: (_a = reqError.error) === null || _a === void 0 ? void 0 : _a.message });
+            return res
+                .status(200)
+                .json({ status: "error", message: (_a = reqError.error) === null || _a === void 0 ? void 0 : _a.message });
         }
         const { countryId, stateId, city } = req.body;
         let { code, status, message } = yield (0, city_1.createCity)(countryId, stateId, city);
@@ -36,7 +38,9 @@ exports.cityRoutes.get("/get", [authMiddleware_1.validateToken, authMiddleware_1
     try {
         const reqError = requestValidation_1.cityGetSchema.validate(req.body);
         if (reqError === null || reqError === void 0 ? void 0 : reqError.error) {
-            return res.status(200).json({ status: "error", message: (_b = reqError.error) === null || _b === void 0 ? void 0 : _b.message });
+            return res
+                .status(200)
+                .json({ status: "error", message: (_b = reqError.error) === null || _b === void 0 ? void 0 : _b.message });
         }
         const { countryId, stateId, city } = req.body;
         let { code, status, message } = yield (0, city_1.getCity)(countryId, stateId);
@@ -60,7 +64,9 @@ exports.cityRoutes.get("/get/active/:countryId/:stateId", [authMiddleware_1.vali
     try {
         const reqError = requestValidation_1.cityGetSchema.validate(req.params);
         if (reqError === null || reqError === void 0 ? void 0 : reqError.error) {
-            return res.status(200).json({ status: "error", message: (_c = reqError.error) === null || _c === void 0 ? void 0 : _c.message });
+            return res
+                .status(200)
+                .json({ status: "error", message: (_c = reqError.error) === null || _c === void 0 ? void 0 : _c.message });
         }
         const { countryId, stateId } = req.params;
         let { code, status, message } = yield (0, city_1.getActiveCity)(countryId, stateId);
@@ -85,7 +91,9 @@ exports.cityRoutes.put("/update/status", [authMiddleware_1.validateToken, authMi
     try {
         const reqError = requestValidation_1.cityUpdateSchema.validate(req.body);
         if (reqError === null || reqError === void 0 ? void 0 : reqError.error) {
-            return res.status(200).json({ status: "error", message: (_d = reqError.error) === null || _d === void 0 ? void 0 : _d.message });
+            return res
+                .status(200)
+                .json({ status: "error", message: (_d = reqError.error) === null || _d === void 0 ? void 0 : _d.message });
         }
         let { code, status, message } = yield (0, city_1.updatecity)(req.body.cityId, req.body.status);
         return res.status(code).json({ status, message });
@@ -99,7 +107,9 @@ exports.cityRoutes.delete("/delete/:id", [authMiddleware_1.validateToken, authMi
     try {
         const reqError = requestValidation_1.cityIdSchema.validate(req.params);
         if (reqError === null || reqError === void 0 ? void 0 : reqError.error) {
-            return res.status(200).json({ status: "error", message: (_e = reqError.error) === null || _e === void 0 ? void 0 : _e.message });
+            return res
+                .status(200)
+                .json({ status: "error", message: (_e = reqError.error) === null || _e === void 0 ? void 0 : _e.message });
         }
         let { code, status, message } = yield (0, city_1.cityDelete)(req.params.id);
         return res.status(code).json({ status, message });

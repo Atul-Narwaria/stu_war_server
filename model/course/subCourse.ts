@@ -31,7 +31,9 @@ export const createSubCourse =async (data:{
         })
         return { code: 200, status: "success", message: `${data.name}   course created successfully` }
     }  catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     } 
 }
 export const updateSubCourseStatus = async (courseId:string, status:boolean)=>{
@@ -46,7 +48,9 @@ export const updateSubCourseStatus = async (courseId:string, status:boolean)=>{
         })
         return { code: 200, status: "success", message: ` course updated successfully` }
     }catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     } 
 } 
 export const getActiveSubCourse =async (fk_institute_id:string) => {
@@ -61,7 +65,9 @@ export const getActiveSubCourse =async (fk_institute_id:string) => {
                 })
         }
     }catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     } 
 }
 export const getAllSubCourse =async (page: number,fk_institute_id:string) => {
@@ -88,7 +94,9 @@ export const getAllSubCourse =async (page: number,fk_institute_id:string) => {
                 totalRow: totalRow
         }
     }catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     } 
 }
 export const getAllSubCourseWithCourse =async (page: number,fk_institute_id:string) => {
@@ -123,7 +131,9 @@ export const getAllSubCourseWithCourse =async (page: number,fk_institute_id:stri
                 totalRow: totalRow
         }
     }catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     } 
 }
 export const getSubCourseById =async (id:string) => {
@@ -137,7 +147,9 @@ export const getSubCourseById =async (id:string) => {
                 })
         }
     }catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     } 
 }
 export const editSubCourse =async (data:{
@@ -165,7 +177,9 @@ export const editSubCourse =async (data:{
         })
         return { code: 200, status: "success", message: ` course updated successfully` }
     }catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     } 
 }
 
@@ -233,6 +247,8 @@ export const InstituteSubCourseSeach = async (page: number, query: string, insID
             totalRow: totalRow
         }
     } catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     }
 }

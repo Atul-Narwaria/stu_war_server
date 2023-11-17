@@ -35,7 +35,9 @@ export const createInstitue = async (datas: { name: string, email: string, phone
         })
         return { code: 200, status: "success", message: "institute created successfully" }
     } catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     }
 }
 
@@ -55,7 +57,9 @@ export const getAllCode = async (fy: string) => {
                 })
         }
     } catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     }
 }
 
@@ -95,7 +99,9 @@ export const getInstitutes = async () => {
                 })
         }
     } catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     }
 }
 
@@ -110,7 +116,9 @@ export const getInstituesById = async (id: string) => {
             })
         }
     } catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     }
 }
 
@@ -138,7 +146,9 @@ export const updateInstituteStatus = async (id: string, status: boolean) => {
         })
         return { code: 200, status: "success", message: `${getname.name}  status updated successfully` }
     } catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     }
 }
 

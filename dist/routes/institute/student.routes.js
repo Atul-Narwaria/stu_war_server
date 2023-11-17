@@ -57,12 +57,39 @@ exports.InstitueStudentRoutes.get("/get/all", [authMiddleware_1.validateToken, a
         return res.status(500).json({ status: "error", message: e.message });
     }
 }));
+exports.InstitueStudentRoutes.get("/get/active", [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const page = req.query.page || 1;
+        const insID = req.userid;
+        const { code, status, message, totalPage, totalRow } = yield (0, student_1.getInstituteStudentsActive)(page, insID);
+        return res.status(code).json({ status: status, message: message, totalPage: totalPage, totalRow });
+    }
+    catch (e) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+}));
 exports.InstitueStudentRoutes.get("/get/search", [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const page = req.query.page || 1;
         const insID = req.userid;
-        const query = req.query.query || null;
+        let query = req.query.query;
+        if (query === '' || query === undefined || query === null) {
+            query = '';
+        }
         const { code, status, message, totalPage, totalRow } = yield (0, student_1.InstituteStudentSeach)(page, query, insID);
+        return res.status(code).json({ status: status, message: message, totalPage: totalPage, totalRow: totalRow });
+    }
+    catch (e) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+}));
+exports.InstitueStudentRoutes.get("/get/search/daterange", [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const page = req.query.page || 1;
+        const insID = req.userid;
+        const startDate = req.query.startDate || null;
+        const endDate = req.query.endDate || null;
+        const { code, status, message, totalPage, totalRow } = yield (0, student_1.getstudentsByDate)(page, insID, startDate, endDate);
         return res.status(code).json({ status: status, message: message, totalPage: totalPage, totalRow: totalRow });
     }
     catch (e) {

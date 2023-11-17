@@ -31,16 +31,20 @@ const dotenv = __importStar(require("dotenv"));
 const cors_1 = __importDefault(require("cors"));
 const helmet_1 = __importDefault(require("helmet"));
 const routes_1 = require("./routes");
+const redis_config_1 = __importDefault(require("./config/redis.config"));
+const queue_config_1 = require("./config/queue.config");
 dotenv.config();
 const app = (0, express_1.default)();
 app.use((0, helmet_1.default)());
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
+queue_config_1.queueEvents.on("completed", () => { });
 const PORT = process.env.PORT || 8000;
 app.get("/", (req, res) => {
-    res.send("Hello Typescript with Node.js!!!");
+    res.send("Hello Typescript with1 Node.js!!!");
 });
-app.use('/api', routes_1.APIRoutes);
+app.use("/api", routes_1.APIRoutes);
 app.listen(PORT, () => {
+    redis_config_1.default.on("connect", () => console.log("redis connected!"));
     console.log(`Server Running here 👉 http://localhost:${PORT}`);
 });

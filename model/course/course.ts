@@ -32,7 +32,9 @@ export const createCourse =async (data:{
         })
         return { code: 200, status: "success", message: `${data.name} course created successfully` }
     }  catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     } 
 }
 export const updateCourseStatus = async (courseId:string, status:boolean)=>{
@@ -47,7 +49,9 @@ export const updateCourseStatus = async (courseId:string, status:boolean)=>{
         })
         return { code: 200, status: "success", message: ` course updated successfully` }
     }catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     } 
 } 
 export const getActiveCourse =async (InstituteId:string) => {
@@ -62,7 +66,9 @@ export const getActiveCourse =async (InstituteId:string) => {
                 })
         }
     }catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     } 
 }
 export const getAllCourse =async (page: number,insID:string) => {
@@ -81,6 +87,8 @@ export const getAllCourse =async (page: number,insID:string) => {
                     where:{
                         fk_institute_id:insID
                     },
+                    skip: skip,
+                    take: 10,
                     orderBy:{
                         updatedAt:"desc"
                     }
@@ -89,7 +97,9 @@ export const getAllCourse =async (page: number,insID:string) => {
                 totalRow: totalRow
         }
     }catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     } 
 }
 export const getCourseById =async (courseId:string) => {
@@ -103,7 +113,9 @@ export const getCourseById =async (courseId:string) => {
                 })
         }
     }catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     } 
 }
 export const editCourse =async (data:{
@@ -130,7 +142,9 @@ export const editCourse =async (data:{
         })
         return { code: 200, status: "success", message: ` course updated successfully` }
     }catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     } 
 }
 
@@ -199,6 +213,39 @@ export const InstituteCourseSeach = async (page: number, query: string, insID: s
             totalRow: totalRow
         }
     } catch (e: any) {
-        return { code: 500, status: 'error', message: e.message }
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
+    }
+}
+
+export const getSubCourseListByCourse =async (courseId:string) => {
+    try{
+        return {
+            code: 200, status: "success", message:
+               await prisma.courselinks.findMany({
+                select:{
+                    id:true,
+                    fk_course_id:true,
+                    fk_sub_course_id:true,
+                    subCourses:{
+                        select:{
+                            id:true,
+                            name:true,
+                            amount:true,
+                            image:true,
+                            duration:true
+                        }
+                    }
+                },
+                where:{
+                    fk_course_id:courseId
+                }
+               })
+        }
+    }catch(e:any){
+        let split = e.message.split(".")
+            split = split.slice(-2)
+        return { code:500,status: "error", message: split[0] };
     }
 }

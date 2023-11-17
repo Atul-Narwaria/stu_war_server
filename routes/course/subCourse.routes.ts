@@ -57,8 +57,8 @@ SubCourseRoutes.get('/get/all/',[validateToken, isInstitute],async (req: Request
     try {
         const page: any = req.query.page || 1;
         const insID: string = req.userid;
-        let { code, status, message } = await getAllSubCourse(page,req.userid)
-        return res.status(code).json({ status, message })
+        let { code, status, message, totalPage, totalRow } = await getAllSubCourse(page,req.userid)
+        return res.status(code).json({ status: status, message: message, totalPage: totalPage, totalRow });
     } catch (e: any) {
         return res.status(500).json({ status: "error", message: e.message });
     }

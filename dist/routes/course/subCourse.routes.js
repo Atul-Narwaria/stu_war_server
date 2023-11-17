@@ -71,8 +71,8 @@ exports.SubCourseRoutes.get('/get/all/', [authMiddleware_1.validateToken, authMi
     try {
         const page = req.query.page || 1;
         const insID = req.userid;
-        let { code, status, message } = yield (0, subCourse_1.getAllSubCourse)(page, req.userid);
-        return res.status(code).json({ status, message });
+        let { code, status, message, totalPage, totalRow } = yield (0, subCourse_1.getAllSubCourse)(page, req.userid);
+        return res.status(code).json({ status: status, message: message, totalPage: totalPage, totalRow });
     }
     catch (e) {
         return res.status(500).json({ status: "error", message: e.message });

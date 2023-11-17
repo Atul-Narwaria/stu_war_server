@@ -65,3 +65,30 @@ exports.batchLinkRoutes.delete('/delete/:id', [authMiddleware_1.validateToken, a
         return res.status(500).json({ status: "error", message: e.message });
     }
 }));
+exports.batchLinkRoutes.get('/get/all/:id', [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const page = req.query.page || 1;
+        const insID = req.userid;
+        if (!req.params.id) {
+            return res.status(200).json({ status: "error", message: "batch id not found" });
+        }
+        const { code, status, message, totalPage, totalRow } = yield (0, batchLink_1.getBatchStudents)(page, req.params.id, req.userid);
+        return res.status(code).json({ status: status, message: message, totalPage: totalPage, totalRow });
+    }
+    catch (e) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+}));
+exports.batchLinkRoutes.get("/get/search/:id", [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const page = req.query.page || 1;
+        const insID = req.userid;
+        const query = req.query.query || null;
+        const { code, status, message, totalPage, totalRow } = yield (0, batchLink_1.BatchStudentsSearch)(page, query, req.params.id, insID);
+        return res.status(code).json({ status: status, message: message, totalPage: totalPage, totalRow: totalRow });
+    }
+    catch (e) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+}));
+// 

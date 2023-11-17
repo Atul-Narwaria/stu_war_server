@@ -36,7 +36,9 @@ const createSubCourse = (data, fk_institute_id) => __awaiter(void 0, void 0, voi
         return { code: 200, status: "success", message: `${data.name}   course created successfully` };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.createSubCourse = createSubCourse;
@@ -53,7 +55,9 @@ const updateSubCourseStatus = (courseId, status) => __awaiter(void 0, void 0, vo
         return { code: 200, status: "success", message: ` course updated successfully` };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.updateSubCourseStatus = updateSubCourseStatus;
@@ -69,7 +73,9 @@ const getActiveSubCourse = (fk_institute_id) => __awaiter(void 0, void 0, void 0
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.getActiveSubCourse = getActiveSubCourse;
@@ -97,7 +103,9 @@ const getAllSubCourse = (page, fk_institute_id) => __awaiter(void 0, void 0, voi
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.getAllSubCourse = getAllSubCourse;
@@ -132,7 +140,9 @@ const getAllSubCourseWithCourse = (page, fk_institute_id) => __awaiter(void 0, v
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.getAllSubCourseWithCourse = getAllSubCourseWithCourse;
@@ -147,7 +157,9 @@ const getSubCourseById = (id) => __awaiter(void 0, void 0, void 0, function* () 
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.getSubCourseById = getSubCourseById;
@@ -169,7 +181,9 @@ const editSubCourse = (data, subCourseId) => __awaiter(void 0, void 0, void 0, f
         return { code: 200, status: "success", message: ` course updated successfully` };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.editSubCourse = editSubCourse;
@@ -232,7 +246,9 @@ const InstituteSubCourseSeach = (page, query, insID) => __awaiter(void 0, void 0
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.InstituteSubCourseSeach = InstituteSubCourseSeach;

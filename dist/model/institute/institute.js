@@ -45,7 +45,9 @@ const createInstitue = (datas) => __awaiter(void 0, void 0, void 0, function* ()
         return { code: 200, status: "success", message: "institute created successfully" };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.createInstitue = createInstitue;
@@ -65,7 +67,9 @@ const getAllCode = (fy) => __awaiter(void 0, void 0, void 0, function* () {
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.getAllCode = getAllCode;
@@ -103,7 +107,9 @@ const getInstitutes = () => __awaiter(void 0, void 0, void 0, function* () {
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.getInstitutes = getInstitutes;
@@ -119,7 +125,9 @@ const getInstituesById = (id) => __awaiter(void 0, void 0, void 0, function* () 
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.getInstituesById = getInstituesById;
@@ -147,7 +155,9 @@ const updateInstituteStatus = (id, status) => __awaiter(void 0, void 0, void 0, 
         return { code: 200, status: "success", message: `${getname.name}  status updated successfully` };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.updateInstituteStatus = updateInstituteStatus;

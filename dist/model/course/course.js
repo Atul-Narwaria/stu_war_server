@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.InstituteCourseSeach = exports.deleteCourse = exports.editCourse = exports.getCourseById = exports.getAllCourse = exports.getActiveCourse = exports.updateCourseStatus = exports.createCourse = void 0;
+exports.getSubCourseListByCourse = exports.InstituteCourseSeach = exports.deleteCourse = exports.editCourse = exports.getCourseById = exports.getAllCourse = exports.getActiveCourse = exports.updateCourseStatus = exports.createCourse = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const createCourse = (data, instituteId) => __awaiter(void 0, void 0, void 0, function* () {
@@ -36,7 +36,9 @@ const createCourse = (data, instituteId) => __awaiter(void 0, void 0, void 0, fu
         return { code: 200, status: "success", message: `${data.name} course created successfully` };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.createCourse = createCourse;
@@ -53,7 +55,9 @@ const updateCourseStatus = (courseId, status) => __awaiter(void 0, void 0, void 
         return { code: 200, status: "success", message: ` course updated successfully` };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.updateCourseStatus = updateCourseStatus;
@@ -69,7 +73,9 @@ const getActiveCourse = (InstituteId) => __awaiter(void 0, void 0, void 0, funct
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.getActiveCourse = getActiveCourse;
@@ -88,6 +94,8 @@ const getAllCourse = (page, insID) => __awaiter(void 0, void 0, void 0, function
                 where: {
                     fk_institute_id: insID
                 },
+                skip: skip,
+                take: 10,
                 orderBy: {
                     updatedAt: "desc"
                 }
@@ -97,7 +105,9 @@ const getAllCourse = (page, insID) => __awaiter(void 0, void 0, void 0, function
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.getAllCourse = getAllCourse;
@@ -112,7 +122,9 @@ const getCourseById = (courseId) => __awaiter(void 0, void 0, void 0, function* 
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.getCourseById = getCourseById;
@@ -134,7 +146,9 @@ const editCourse = (data, courseId) => __awaiter(void 0, void 0, void 0, functio
         return { code: 200, status: "success", message: ` course updated successfully` };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.editCourse = editCourse;
@@ -197,7 +211,40 @@ const InstituteCourseSeach = (page, query, insID) => __awaiter(void 0, void 0, v
         };
     }
     catch (e) {
-        return { code: 500, status: 'error', message: e.message };
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
     }
 });
 exports.InstituteCourseSeach = InstituteCourseSeach;
+const getSubCourseListByCourse = (courseId) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        return {
+            code: 200, status: "success", message: yield prisma.courselinks.findMany({
+                select: {
+                    id: true,
+                    fk_course_id: true,
+                    fk_sub_course_id: true,
+                    subCourses: {
+                        select: {
+                            id: true,
+                            name: true,
+                            amount: true,
+                            image: true,
+                            duration: true
+                        }
+                    }
+                },
+                where: {
+                    fk_course_id: courseId
+                }
+            })
+        };
+    }
+    catch (e) {
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
+    }
+});
+exports.getSubCourseListByCourse = getSubCourseListByCourse;
