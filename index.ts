@@ -17,6 +17,7 @@ declare module "express-serve-static-core" {
     role: string;
   }
 }
+// quque management
 // queueEvents.on("completed", () => {});
 const PORT = process.env.PORT || 8000;
 app.get("/", (req: Request, res: Response): void => {
