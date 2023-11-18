@@ -6,6 +6,7 @@ import {
   getTeacherInstituteId,
   isTeacherExist,
 } from "../model/Teacher/Teacher";
+import { isStudentExist } from "../model/student/student";
 
 const secret_key: string = process.env.APP_KEY!;
 
@@ -72,6 +73,22 @@ export const isTeacher = async (
     return res.status(401).json({ message: "Invalid token" });
   }
   const check: any = await isTeacherExist(id);
+  if (check.message == 0) {
+    return res.status(401).json({ message: "teacher role required" });
+  }
+  next();
+};
+export const isStudent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  let id: string = req.userid;
+  console.log(req.userid);
+  if (!id) {
+    return res.status(401).json({ message: "Invalid token" });
+  }
+  const check: any = await isStudentExist(id);
   if (check.message == 0) {
     return res.status(401).json({ message: "teacher role required" });
   }

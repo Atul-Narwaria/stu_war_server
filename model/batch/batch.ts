@@ -236,14 +236,19 @@ export const InstituteBatchSeach = async (
 };
 export const getBatchById = async (id: string) => {
   try {
+    const get = await prisma.batchMaster.findFirst({
+      where: {
+        id: id,
+      },
+    });
+    if (!get) {
+      return { code: 422, status: "error", message: "batch not found" };
+    }
+
     return {
       code: 200,
       status: "success",
-      message: await prisma.batchMaster.findFirst({
-        where: {
-          id: id,
-        },
-      }),
+      message: get,
     };
   } catch (e: any) {
     let split = e.message.split(".");

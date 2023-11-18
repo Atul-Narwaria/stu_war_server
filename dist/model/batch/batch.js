@@ -237,14 +237,18 @@ const InstituteBatchSeach = (page, query, insID) => __awaiter(void 0, void 0, vo
 exports.InstituteBatchSeach = InstituteBatchSeach;
 const getBatchById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const get = yield prisma.batchMaster.findFirst({
+            where: {
+                id: id,
+            },
+        });
+        if (!get) {
+            return { code: 422, status: "error", message: "batch not found" };
+        }
         return {
             code: 200,
             status: "success",
-            message: yield prisma.batchMaster.findFirst({
-                where: {
-                    id: id,
-                },
-            }),
+            message: get,
         };
     }
     catch (e) {

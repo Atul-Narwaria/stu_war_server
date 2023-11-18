@@ -2,6 +2,7 @@ import { Request, Response, Router } from "express";
 import { isInstitute, validateToken } from "../middleware/authMiddleware";
 import { ZoomMeetingCreateSchema } from "../middleware/requestValidation";
 import {
+  createBatchZoomClass,
   createZoomMeeting,
   getMeetingList,
 } from "../controller/zoom/zoomController";
@@ -52,6 +53,20 @@ ZoomInstitueRoutes.post(
   async (req: Request, res: Response) => {
     try {
       let get = await getMeetingList();
+      return res.status(200).json(get);
+    } catch (e: any) {
+      return res.status(500).json({ status: "error", message: e.message });
+    }
+  }
+);
+// createBatchZoomClass
+
+ZoomInstitueRoutes.post(
+  "/create/batch/class",
+  [validateToken],
+  async (req: Request, res: Response) => {
+    try {
+      let get = await createBatchZoomClass(req.body.batchId);
       return res.status(200).json(get);
     } catch (e: any) {
       return res.status(500).json({ status: "error", message: e.message });

@@ -104,3 +104,18 @@ export const updateStatusBatchLiveClass = async (
     return { code: 500, status: "error", message: split[0] };
   }
 };
+
+export const getTotalStudentBatchCount = async (id: string) => {
+  try {
+    let check = await prisma.batchLink.count({
+      where: {
+        fk_student_id: id,
+      },
+    });
+    return { code: 200, status: "success", message: check };
+  } catch (e: any) {
+    let split = e.message.split(".");
+    split = split.slice(-2);
+    return { code: 500, status: "error", message: split[0] };
+  }
+};

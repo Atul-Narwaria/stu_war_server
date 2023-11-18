@@ -14,13 +14,17 @@ const express_1 = require("express");
 const authMiddleware_1 = require("../../middleware/authMiddleware");
 const requestValidation_1 = require("../../middleware/requestValidation");
 const batchLink_1 = require("../../model/batch/batchLink");
+const batchStudent_controller_1 = require("../../controller/batch/batchStudent/batchStudent.controller");
+const batchLiveClass_1 = require("../../model/batch/batchLiveClass");
 exports.batchLinkRoutes = (0, express_1.Router)();
-exports.batchLinkRoutes.post('/create', [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.batchLinkRoutes.post("/create", [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
         const reqError = requestValidation_1.instituteBatchLinkCreateSchema.validate(req.body);
         if (reqError === null || reqError === void 0 ? void 0 : reqError.error) {
-            return res.status(200).json({ status: "error", message: (_a = reqError.error) === null || _a === void 0 ? void 0 : _a.message });
+            return res
+                .status(200)
+                .json({ status: "error", message: (_a = reqError.error) === null || _a === void 0 ? void 0 : _a.message });
         }
         let { code, status, message } = yield (0, batchLink_1.createBatchLink)(req.body, req.userid);
         return res.status(code).json({ status, message });
@@ -29,10 +33,12 @@ exports.batchLinkRoutes.post('/create', [authMiddleware_1.validateToken, authMid
         return res.status(500).json({ status: "error", message: e.message });
     }
 }));
-exports.batchLinkRoutes.post('/create/bulk', [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.batchLinkRoutes.post("/create/bulk", [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (!req.body || !req.body.data) {
-            return res.status(200).json({ status: "error", message: "data not found" });
+            return res
+                .status(200)
+                .json({ status: "error", message: "data not found" });
         }
         let data = [];
         let bodyData = req.body.data;
@@ -42,7 +48,7 @@ exports.batchLinkRoutes.post('/create/bulk', [authMiddleware_1.validateToken, au
                     fk_institute_id: req.userid,
                     fk_student_id: e.fk_student_id,
                     fk_bacth_id: e.fk_batch_id,
-                    status: true
+                    status: true,
                 });
             });
         }
@@ -50,13 +56,15 @@ exports.batchLinkRoutes.post('/create/bulk', [authMiddleware_1.validateToken, au
             let { code, status, message } = yield (0, batchLink_1.createBatchBulkLink)(data);
             return res.status(code).json({ status, message });
         }
-        return res.status(422).json({ status: "error", message: "something went wrong" });
+        return res
+            .status(422)
+            .json({ status: "error", message: "something went wrong" });
     }
     catch (e) {
         return res.status(500).json({ status: "error", message: e.message });
     }
 }));
-exports.batchLinkRoutes.delete('/delete/:id', [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.batchLinkRoutes.delete("/delete/:id", [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let { code, status, message } = yield (0, batchLink_1.deleteBatchLink)(req.params.id);
         return res.status(code).json({ status, message });
@@ -65,15 +73,22 @@ exports.batchLinkRoutes.delete('/delete/:id', [authMiddleware_1.validateToken, a
         return res.status(500).json({ status: "error", message: e.message });
     }
 }));
-exports.batchLinkRoutes.get('/get/all/:id', [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.batchLinkRoutes.get("/get/all/:id", [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const page = req.query.page || 1;
         const insID = req.userid;
         if (!req.params.id) {
-            return res.status(200).json({ status: "error", message: "batch id not found" });
+            return res
+                .status(200)
+                .json({ status: "error", message: "batch id not found" });
         }
         const { code, status, message, totalPage, totalRow } = yield (0, batchLink_1.getBatchStudents)(page, req.params.id, req.userid);
-        return res.status(code).json({ status: status, message: message, totalPage: totalPage, totalRow });
+        return res.status(code).json({
+            status: status,
+            message: message,
+            totalPage: totalPage,
+            totalRow,
+        });
     }
     catch (e) {
         return res.status(500).json({ status: "error", message: e.message });
@@ -85,10 +100,48 @@ exports.batchLinkRoutes.get("/get/search/:id", [authMiddleware_1.validateToken, 
         const insID = req.userid;
         const query = req.query.query || null;
         const { code, status, message, totalPage, totalRow } = yield (0, batchLink_1.BatchStudentsSearch)(page, query, req.params.id, insID);
-        return res.status(code).json({ status: status, message: message, totalPage: totalPage, totalRow: totalRow });
+        return res.status(code).json({
+            status: status,
+            message: message,
+            totalPage: totalPage,
+            totalRow: totalRow,
+        });
     }
     catch (e) {
         return res.status(500).json({ status: "error", message: e.message });
     }
 }));
-// 
+//
+exports.batchLinkRoutes.get("/get/batch/remaning/count", [authMiddleware_1.validateToken, authMiddleware_1.isStudent], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const studentId = req.userid;
+        const { code, status, message } = yield (0, batchStudent_controller_1.StudentTodayRemainingBatch)(studentId);
+        // console.log(message);
+        return res.status(code).json({ status: status, message: message });
+    }
+    catch (e) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+}));
+exports.batchLinkRoutes.get("/get/batch/count", [authMiddleware_1.validateToken, authMiddleware_1.isStudent], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const teacherId = req.userid;
+        const { code, status, message } = yield (0, batchLiveClass_1.getTotalStudentBatchCount)(teacherId);
+        // console.log(message);
+        return res.status(code).json({ status: status, message: message });
+    }
+    catch (e) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+}));
+exports.batchLinkRoutes.get("/get/batch", [authMiddleware_1.validateToken, authMiddleware_1.isStudent], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const studentId = req.userid;
+        const { code, status, message } = yield (0, batchStudent_controller_1.StudentBatchListDashboard)(studentId);
+        // console.log(message);
+        return res.status(code).json({ status: status, message: message });
+    }
+    catch (e) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+}));

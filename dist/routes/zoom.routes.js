@@ -50,3 +50,13 @@ exports.ZoomInstitueRoutes.post("/signature", [authMiddleware_1.validateToken], 
         return res.status(500).json({ status: "error", message: e.message });
     }
 }));
+// createBatchZoomClass
+exports.ZoomInstitueRoutes.post("/create/batch/class", [authMiddleware_1.validateToken], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let get = yield (0, zoomController_1.createBatchZoomClass)(req.body.batchId);
+        return res.status(200).json(get);
+    }
+    catch (e) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+}));

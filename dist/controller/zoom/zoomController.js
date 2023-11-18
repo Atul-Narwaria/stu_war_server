@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.signature = exports.createbatchLiveClass = exports.getMeetingList = exports.createZoomMeeting = void 0;
+exports.createBatchZoomClass = exports.signature = exports.createbatchLiveClass = exports.getMeetingList = exports.createZoomMeeting = void 0;
 const moment = require("moment-timezone");
 const randomChar_1 = require("../../helper/randomChar");
 const batch_1 = require("../../model/batch/batch");
@@ -29,47 +29,60 @@ const config = {
     },
 };
 const createZoomMeeting = (topic, start_time, duration, password) => __awaiter(void 0, void 0, void 0, function* () {
-    let authResponse = null;
-    yield axios
-        .request(config)
-        .then((response) => {
-        authResponse = response.data;
-    })
-        .catch((error) => {
-        return { code: 500, status: "error", message: error.message };
-    });
-    const access_token = authResponse.access_token;
-    const headers = {
-        Authorization: `Bearer ${access_token}`,
-        "Content-Type": "application/json",
-    };
-    let data = JSON.stringify({
-        topic: topic,
-        type: 2,
-        start_time: start_time,
-        duration: duration,
-        password: password ? password : "Atul@1234",
-        settings: {
-            join_before_host: true,
-            waiting_room: true,
-        },
-    });
-    const meetingResponse = yield axios.post(`${process.env.Zoom_BASE_URL}/users/me/meetings`, data, { headers });
-    if (meetingResponse.status !== 201) {
-        return {
-            code: 500,
-            status: "error",
-            message: "Unable to generate meeting link",
-        };
-    }
-    const response_data = meetingResponse.data;
+    // let authResponse: any = null;
+    // await axios
+    //   .request(config)
+    //   .then((response: any) => {
+    //     authResponse = response.data;
+    //   })
+    //   .catch((error: any) => {
+    //     return { code: 500, status: "error", message: error.message };
+    //   });
+    // const access_token: string = authResponse.access_token;
+    // const headers = {
+    //   Authorization: `Bearer ${access_token}`,
+    //   "Content-Type": "application/json",
+    // };
+    // let data: any = JSON.stringify({
+    //   topic: topic,
+    //   type: 2,
+    //   start_time: start_time,
+    //   duration: duration,
+    //   password: password ? password : "Atul@1234",
+    //   settings: {
+    //     join_before_host: true,
+    //     waiting_room: true,
+    //   },
+    // });
+    // const meetingResponse: any = await axios.post(
+    //   `${process.env.Zoom_BASE_URL}/users/me/meetings`,
+    //   data,
+    //   { headers }
+    // );
+    // if (meetingResponse.status !== 201) {
+    //   return {
+    //     code: 500,
+    //     status: "error",
+    //     message: "Unable to generate meeting link",
+    //   };
+    // }
+    // const response_data = meetingResponse.data;
+    // const content = {
+    //   meeting_url: response_data.join_url,
+    //   meeting_number: response_data.id,
+    //   meetingTime: response_data.start_time,
+    //   purpose: response_data.topic,
+    //   duration: response_data.duration,
+    //   password: response_data.password,
+    //   status: 1,
+    // };
     const content = {
-        meeting_url: response_data.join_url,
-        meeting_number: response_data.id,
-        meetingTime: response_data.start_time,
-        purpose: response_data.topic,
-        duration: response_data.duration,
-        password: response_data.password,
+        meeting_url: "https://lms.stellarflux.in/student/test-series",
+        meeting_number: 876092322,
+        meetingTime: "13:00",
+        purpose: "MFW CLASS",
+        duration: 30,
+        password: "ewruwi",
         status: 1,
     };
     return {
@@ -174,3 +187,43 @@ const signature = (meetingNumber, role) => __awaiter(void 0, void 0, void 0, fun
     };
 });
 exports.signature = signature;
+const createBatchZoomClass = (batchId) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const get = yield (0, batch_1.getBatchById)(batchId);
+        if (get.status !== "success") {
+            return { code: get.code, status: get.status, message: get.message };
+        }
+        var startMoment = moment(get.start_time, "HH:mm:ss");
+        var endMoment = moment(get.end_time, "HH:mm:ss");
+        var duration = endMoment.diff(startMoment, "minutes");
+        var minutes = duration;
+        if (minutes > 30) {
+            minutes = 30;
+        }
+        const todayIST = moment.tz("Asia/Kolkata");
+        const today = todayIST.format("yyyy-MM-DD");
+        const dayNameIST = todayIST.format("dddd").toUpperCase();
+        let startTime = today + "T" + get.start_time + ":00";
+        let weeks = get.weekdays.split(",");
+        let password = yield (0, randomChar_1.generateRandomString)(8);
+        if (lodash_1.default.includes(weeks, dayNameIST)) {
+            let checkMeeting = yield (0, batchLiveClass_1.getCheckMeeting)(get.id);
+            if (checkMeeting.message === 0) {
+                const createMeeting = yield (0, exports.createZoomMeeting)(get.name, startTime, minutes, password);
+                console.log(createMeeting);
+                if (createMeeting.status === "success") {
+                    try {
+                        let id = yield (0, batchLiveClass_1.createLiveClass)(createMeeting.message.purpose, createMeeting.message.meetingTime, createMeeting.message.duration, createMeeting.message.password, createMeeting.message.meeting_url, get.id, createMeeting.message.meeting_number.toString());
+                    }
+                    catch (e) {
+                        console.log(e.message);
+                    }
+                }
+            }
+        }
+    }
+    catch (e) {
+        return { code: 500, status: "error", message: e.message };
+    }
+});
+exports.createBatchZoomClass = createBatchZoomClass;

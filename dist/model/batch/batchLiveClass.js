@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateStatusBatchLiveClass = exports.getCheckMeeting = exports.deleteBatchLiveClass = exports.createLiveClass = void 0;
+exports.getTotalStudentBatchCount = exports.updateStatusBatchLiveClass = exports.getCheckMeeting = exports.deleteBatchLiveClass = exports.createLiveClass = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const createLiveClass = (topic, start_time, duration, password, meeting_url, fk_batch_id, meeting_number) => __awaiter(void 0, void 0, void 0, function* () {
@@ -108,3 +108,19 @@ const updateStatusBatchLiveClass = (id, status) => __awaiter(void 0, void 0, voi
     }
 });
 exports.updateStatusBatchLiveClass = updateStatusBatchLiveClass;
+const getTotalStudentBatchCount = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let check = yield prisma.batchLink.count({
+            where: {
+                fk_student_id: id,
+            },
+        });
+        return { code: 200, status: "success", message: check };
+    }
+    catch (e) {
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
+    }
+});
+exports.getTotalStudentBatchCount = getTotalStudentBatchCount;

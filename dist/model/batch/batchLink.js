@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getBatchDetailByStudent = exports.BatchStudentsSearch = exports.getBatchStudents = exports.deleteBatchLink = exports.createBatchBulkLink = exports.createBatchLink = void 0;
+exports.StudentheckTodayRemainingBatch = exports.getBatchDetailByStudent = exports.BatchStudentsSearch = exports.getBatchStudents = exports.deleteBatchLink = exports.createBatchBulkLink = exports.createBatchLink = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const createBatchLink = (data, fk_institute_id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -19,10 +19,14 @@ const createBatchLink = (data, fk_institute_id) => __awaiter(void 0, void 0, voi
                 fk_institute_id: fk_institute_id,
                 fk_student_id: data.fk_student_id,
                 fk_bacth_id: data.fk_batch_id,
-                status: true
-            }
+                status: true,
+            },
         });
-        return { code: 200, status: "success", message: ` student linked successfully` };
+        return {
+            code: 200,
+            status: "success",
+            message: ` student linked successfully`,
+        };
     }
     catch (e) {
         let split = e.message.split(".");
@@ -37,7 +41,11 @@ const createBatchBulkLink = (datas) => __awaiter(void 0, void 0, void 0, functio
             data: datas,
             skipDuplicates: true,
         });
-        return { code: 200, status: "success", message: ` students linked successfully` };
+        return {
+            code: 200,
+            status: "success",
+            message: ` students linked successfully`,
+        };
     }
     catch (e) {
         let split = e.message.split(".");
@@ -51,9 +59,13 @@ const deleteBatchLink = (id) => __awaiter(void 0, void 0, void 0, function* () {
         yield prisma.batchLink.delete({
             where: {
                 id: id,
-            }
+            },
         });
-        return { code: 200, status: "success", message: `students linked deleted successfully` };
+        return {
+            code: 200,
+            status: "success",
+            message: `students linked deleted successfully`,
+        };
     }
     catch (e) {
         let split = e.message.split(".");
@@ -69,12 +81,14 @@ const getBatchStudents = (page, batchId, insID) => __awaiter(void 0, void 0, voi
             where: {
                 fk_institute_id: insID,
                 fk_bacth_id: batchId,
-            }
+            },
         });
         let totalRow = totalPage;
         totalPage = Math.ceil(totalPage / 10);
         return {
-            code: 200, status: "success", message: yield prisma.batchLink.findMany({
+            code: 200,
+            status: "success",
+            message: yield prisma.batchLink.findMany({
                 select: {
                     id: true,
                     fk_student_id: true,
@@ -87,8 +101,8 @@ const getBatchStudents = (page, batchId, insID) => __awaiter(void 0, void 0, voi
                             lastName: true,
                             email: true,
                             phone: true,
-                        }
-                    }
+                        },
+                    },
                 },
                 where: {
                     fk_institute_id: insID,
@@ -97,11 +111,11 @@ const getBatchStudents = (page, batchId, insID) => __awaiter(void 0, void 0, voi
                 skip: skip,
                 take: 10,
                 orderBy: {
-                    updatedAt: "desc"
-                }
+                    updatedAt: "desc",
+                },
             }),
             totalPage: totalPage,
-            totalRow: totalRow
+            totalRow: totalRow,
         };
     }
     catch (e) {
@@ -124,34 +138,36 @@ const BatchStudentsSearch = (page, query, batchId, insID) => __awaiter(void 0, v
                             OR: [
                                 {
                                     firstName: {
-                                        contains: query
+                                        contains: query,
                                     },
                                 },
                                 {
                                     lastName: {
-                                        contains: query
+                                        contains: query,
                                     },
                                 },
                                 {
                                     email: {
-                                        contains: query
+                                        contains: query,
                                     },
                                 },
                                 {
                                     phone: {
-                                        contains: query
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                ]
-            }
+                                        contains: query,
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                ],
+            },
         });
         let totalRow = totalPage;
         totalPage = Math.ceil(totalPage / 10);
         return {
-            code: 200, status: "success", message: yield prisma.batchLink.findMany({
+            code: 200,
+            status: "success",
+            message: yield prisma.batchLink.findMany({
                 select: {
                     id: true,
                     fk_student_id: true,
@@ -164,8 +180,8 @@ const BatchStudentsSearch = (page, query, batchId, insID) => __awaiter(void 0, v
                             lastName: true,
                             email: true,
                             phone: true,
-                        }
-                    }
+                        },
+                    },
                 },
                 skip: skip,
                 take: 10,
@@ -178,32 +194,32 @@ const BatchStudentsSearch = (page, query, batchId, insID) => __awaiter(void 0, v
                                 OR: [
                                     {
                                         firstName: {
-                                            contains: query
+                                            contains: query,
                                         },
                                     },
                                     {
                                         lastName: {
-                                            contains: query
+                                            contains: query,
                                         },
                                     },
                                     {
                                         email: {
-                                            contains: query
+                                            contains: query,
                                         },
                                     },
                                     {
                                         phone: {
-                                            contains: query
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    ]
-                }
+                                            contains: query,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
             }),
             totalPage: totalPage,
-            totalRow: totalRow
+            totalRow: totalRow,
         };
     }
     catch (e) {
@@ -224,12 +240,12 @@ const getBatchDetailByStudent = (id) => __awaiter(void 0, void 0, void 0, functi
                         end_time: true,
                         start_time: true,
                         weekdays: true,
-                    }
-                }
+                    },
+                },
             },
             where: {
-                fk_student_id: id
-            }
+                fk_student_id: id,
+            },
         });
     }
     catch (e) {
@@ -239,3 +255,46 @@ const getBatchDetailByStudent = (id) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.getBatchDetailByStudent = getBatchDetailByStudent;
+const StudentheckTodayRemainingBatch = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let check = yield prisma.batchLink.findMany({
+            select: {
+                id: true,
+                bactch: {
+                    select: {
+                        id: true,
+                        name: true,
+                        start_time: true,
+                        end_time: true,
+                        weekdays: true,
+                        haveLiveClass: true,
+                        batchLiveClass: {
+                            select: {
+                                id: true,
+                                meeting_url: true,
+                                meeting_number: true,
+                                password: true,
+                            },
+                        },
+                        subCourses: {
+                            select: {
+                                id: true,
+                                name: true,
+                            },
+                        },
+                    },
+                },
+            },
+            where: {
+                fk_student_id: id,
+            },
+        });
+        return { code: 200, status: "success", message: check };
+    }
+    catch (e) {
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
+    }
+});
+exports.StudentheckTodayRemainingBatch = StudentheckTodayRemainingBatch;

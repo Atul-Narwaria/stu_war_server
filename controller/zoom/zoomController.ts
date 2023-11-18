@@ -1,6 +1,9 @@
 const moment = require("moment-timezone");
 import { generateRandomString } from "../../helper/randomChar";
-import { getAllBatchWithliveClass } from "../../model/batch/batch";
+import {
+  getAllBatchWithliveClass,
+  getBatchById,
+} from "../../model/batch/batch";
 import _ from "lodash";
 import {
   createLiveClass,
@@ -28,58 +31,67 @@ export const createZoomMeeting = async (
   duration: number,
   password?: any
 ) => {
-  let authResponse: any = null;
-  await axios
-    .request(config)
-    .then((response: any) => {
-      authResponse = response.data;
-    })
-    .catch((error: any) => {
-      return { code: 500, status: "error", message: error.message };
-    });
+  // let authResponse: any = null;
+  // await axios
+  //   .request(config)
+  //   .then((response: any) => {
+  //     authResponse = response.data;
+  //   })
+  //   .catch((error: any) => {
+  //     return { code: 500, status: "error", message: error.message };
+  //   });
 
-  const access_token: string = authResponse.access_token;
-  const headers = {
-    Authorization: `Bearer ${access_token}`,
-    "Content-Type": "application/json",
-  };
+  // const access_token: string = authResponse.access_token;
+  // const headers = {
+  //   Authorization: `Bearer ${access_token}`,
+  //   "Content-Type": "application/json",
+  // };
 
-  let data: any = JSON.stringify({
-    topic: topic,
-    type: 2,
-    start_time: start_time,
-    duration: duration,
-    password: password ? password : "Atul@1234",
-    settings: {
-      join_before_host: true,
-      waiting_room: true,
-    },
-  });
-  const meetingResponse: any = await axios.post(
-    `${process.env.Zoom_BASE_URL}/users/me/meetings`,
-    data,
-    { headers }
-  );
-  if (meetingResponse.status !== 201) {
-    return {
-      code: 500,
-      status: "error",
-      message: "Unable to generate meeting link",
-    };
-  }
+  // let data: any = JSON.stringify({
+  //   topic: topic,
+  //   type: 2,
+  //   start_time: start_time,
+  //   duration: duration,
+  //   password: password ? password : "Atul@1234",
+  //   settings: {
+  //     join_before_host: true,
+  //     waiting_room: true,
+  //   },
+  // });
+  // const meetingResponse: any = await axios.post(
+  //   `${process.env.Zoom_BASE_URL}/users/me/meetings`,
+  //   data,
+  //   { headers }
+  // );
+  // if (meetingResponse.status !== 201) {
+  //   return {
+  //     code: 500,
+  //     status: "error",
+  //     message: "Unable to generate meeting link",
+  //   };
+  // }
 
-  const response_data = meetingResponse.data;
+  // const response_data = meetingResponse.data;
+
+  // const content = {
+  //   meeting_url: response_data.join_url,
+  //   meeting_number: response_data.id,
+  //   meetingTime: response_data.start_time,
+  //   purpose: response_data.topic,
+  //   duration: response_data.duration,
+  //   password: response_data.password,
+  //   status: 1,
+  // };
 
   const content = {
-    meeting_url: response_data.join_url,
-    meeting_number: response_data.id,
-    meetingTime: response_data.start_time,
-    purpose: response_data.topic,
-    duration: response_data.duration,
-    password: response_data.password,
+    meeting_url: "https://lms.stellarflux.in/student/test-series",
+    meeting_number: 876092322,
+    meetingTime: "13:00",
+    purpose: "MFW CLASS",
+    duration: 30,
+    password: "ewruwi",
     status: 1,
   };
-
   return {
     code: 200,
     status: "success",
@@ -193,4 +205,55 @@ export const signature = async (meetingNumber: any, role: any) => {
     appKey: process.env.ZOOM_MEETING_SDK_KEY,
     tokenExp: iat + 60 * 60 * 2,
   };
+};
+
+export const createBatchZoomClass = async (batchId: string) => {
+  try {
+    const get: any = await getBatchById(batchId);
+    if (get.status !== "success") {
+      return { code: get.code, status: get.status, message: get.message };
+    }
+    var startMoment = moment(get.start_time, "HH:mm:ss");
+    var endMoment = moment(get.end_time, "HH:mm:ss");
+    var duration = endMoment.diff(startMoment, "minutes");
+    var minutes = duration;
+    if (minutes > 30) {
+      minutes = 30;
+    }
+    const todayIST = moment.tz("Asia/Kolkata");
+    const today = todayIST.format("yyyy-MM-DD");
+    const dayNameIST = todayIST.format("dddd").toUpperCase();
+    let startTime = today + "T" + get.start_time + ":00";
+    let weeks = get.weekdays.split(",");
+    let password = await generateRandomString(8);
+    if (_.includes(weeks, dayNameIST)) {
+      let checkMeeting: any = await getCheckMeeting(get.id);
+      if (checkMeeting.message === 0) {
+        const createMeeting: any = await createZoomMeeting(
+          get.name,
+          startTime,
+          minutes,
+          password
+        );
+        console.log(createMeeting);
+        if (createMeeting.status === "success") {
+          try {
+            let id = await createLiveClass(
+              createMeeting.message.purpose,
+              createMeeting.message.meetingTime,
+              createMeeting.message.duration,
+              createMeeting.message.password,
+              createMeeting.message.meeting_url,
+              get.id,
+              createMeeting.message.meeting_number.toString()
+            );
+          } catch (e: any) {
+            console.log(e.message);
+          }
+        }
+      }
+    }
+  } catch (e: any) {
+    return { code: 500, status: "error", message: e.message };
+  }
 };

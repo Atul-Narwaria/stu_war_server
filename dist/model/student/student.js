@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getstudentsByDate = exports.editInstituteStudent = exports.InstituteStudentSeach = exports.getInstituteStudentsActive = exports.getInstituteStudents = exports.getstudentAddmissionIds = exports.studentDelete = exports.StudentStatusUpdate = exports.editStudentAddress = exports.editStudent = exports.getstundet = exports.createBulkStudent = exports.createStudentWithAddress = exports.getStudentByEmail = void 0;
+exports.isStudentExist = exports.getstudentsByDate = exports.editInstituteStudent = exports.InstituteStudentSeach = exports.getInstituteStudentsActive = exports.getInstituteStudents = exports.getstudentAddmissionIds = exports.studentDelete = exports.StudentStatusUpdate = exports.editStudentAddress = exports.editStudent = exports.getstundet = exports.createBulkStudent = exports.createStudentWithAddress = exports.getStudentByEmail = void 0;
 const client_1 = require("@prisma/client");
 const moment_1 = __importDefault(require("moment"));
 const prisma = new client_1.PrismaClient();
@@ -539,3 +539,30 @@ const getstudentsByDate = (page, insID, startDate, endDate) => __awaiter(void 0,
     }
 });
 exports.getstudentsByDate = getstudentsByDate;
+const isStudentExist = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const find = yield prisma.studentMaster.count({
+            where: {
+                OR: [
+                    {
+                        id: id,
+                    },
+                    {
+                        email: id,
+                    },
+                ],
+            },
+        });
+        return {
+            code: 200,
+            status: "success",
+            message: find,
+        };
+    }
+    catch (e) {
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[1] };
+    }
+});
+exports.isStudentExist = isStudentExist;

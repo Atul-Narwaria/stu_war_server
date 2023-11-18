@@ -566,3 +566,29 @@ export const getstudentsByDate = async (
     return { code: 500, status: "error", message: split[0] };
   }
 };
+
+export const isStudentExist = async (id: string) => {
+  try {
+    const find = await prisma.studentMaster.count({
+      where: {
+        OR: [
+          {
+            id: id,
+          },
+          {
+            email: id,
+          },
+        ],
+      },
+    });
+    return {
+      code: 200,
+      status: "success",
+      message: find,
+    };
+  } catch (e: any) {
+    let split = e.message.split(".");
+    split = split.slice(-2);
+    return { code: 500, status: "error", message: split[1] };
+  }
+};
