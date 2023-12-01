@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isStudentExist = exports.getstudentsByDate = exports.editInstituteStudent = exports.InstituteStudentSeach = exports.getInstituteStudentsActive = exports.getInstituteStudents = exports.getstudentAddmissionIds = exports.studentDelete = exports.StudentStatusUpdate = exports.editStudentAddress = exports.editStudent = exports.getstundet = exports.createBulkStudent = exports.createStudentWithAddress = exports.getStudentByEmail = void 0;
+exports.getStudentInstituteId = exports.isStudentExist = exports.getstudentsByDate = exports.editInstituteStudent = exports.InstituteStudentSeach = exports.getInstituteStudentsActive = exports.getInstituteStudents = exports.getstudentAddmissionIds = exports.studentDelete = exports.StudentStatusUpdate = exports.editStudentAddress = exports.editStudent = exports.getstundet = exports.createBulkStudent = exports.createStudentWithAddress = exports.getStudentByEmail = void 0;
 const client_1 = require("@prisma/client");
 const moment_1 = __importDefault(require("moment"));
 const prisma = new client_1.PrismaClient();
@@ -566,3 +566,26 @@ const isStudentExist = (id) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.isStudentExist = isStudentExist;
+const getStudentInstituteId = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const get = yield prisma.studentMaster.findFirst({
+            select: {
+                fk_institute_id: true,
+            },
+            where: {
+                id: id,
+                status: true,
+            },
+        });
+        if (!get) {
+            return { code: 403, status: "error", message: "invalid user" };
+        }
+        return { code: 200, status: "success", message: get.fk_institute_id };
+    }
+    catch (e) {
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[1] };
+    }
+});
+exports.getStudentInstituteId = getStudentInstituteId;

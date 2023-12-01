@@ -97,6 +97,10 @@ const commonAccess = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
         let id = yield (0, Teacher_1.getTeacherInstituteId)(req.userid);
         req.userid = id.message;
     }
+    else if (role === "student") {
+        let id = yield (0, student_1.getStudentInstituteId)(req.userid);
+        req.userid = id.message;
+    }
     next();
 });
 exports.commonAccess = commonAccess;

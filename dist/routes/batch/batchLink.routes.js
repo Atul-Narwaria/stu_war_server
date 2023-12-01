@@ -16,6 +16,8 @@ const requestValidation_1 = require("../../middleware/requestValidation");
 const batchLink_1 = require("../../model/batch/batchLink");
 const batchStudent_controller_1 = require("../../controller/batch/batchStudent/batchStudent.controller");
 const batchLiveClass_1 = require("../../model/batch/batchLiveClass");
+const assignmentStudent_1 = require("../../model/batch/assignmentStudent");
+const batch_1 = require("../../model/batch/batch");
 exports.batchLinkRoutes = (0, express_1.Router)();
 exports.batchLinkRoutes.post("/create", [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
@@ -139,6 +141,67 @@ exports.batchLinkRoutes.get("/get/batch", [authMiddleware_1.validateToken, authM
         const studentId = req.userid;
         const { code, status, message } = yield (0, batchStudent_controller_1.StudentBatchListDashboard)(studentId);
         // console.log(message);
+        return res.status(code).json({ status: status, message: message });
+    }
+    catch (e) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+}));
+exports.batchLinkRoutes.get("/get/batch/fulldetail/:id", [authMiddleware_1.validateToken, authMiddleware_1.isStudent], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { code, status, message } = yield (0, batchLink_1.getBatchFullDetailByStudent)(req.params.id);
+        return res.status(code).json({ status: status, message: message });
+    }
+    catch (e) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+}));
+exports.batchLinkRoutes.get("/get/batch/assignments/:id", [authMiddleware_1.validateToken, authMiddleware_1.isStudent], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const page = req.query.page || 1;
+        const userid = req.userid;
+        const { code, status, message } = yield (0, assignmentStudent_1.getAssignmentListStudent)(req.params.id, page, userid);
+        return res.status(code).json({ status: status, message: message });
+    }
+    catch (e) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+}));
+exports.batchLinkRoutes.get("/get/batch/assignments/:id", [authMiddleware_1.validateToken, authMiddleware_1.isStudent], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const page = req.query.page || 1;
+        const userid = req.userid;
+        const query = req.query.query || null;
+        const { code, status, message } = yield (0, assignmentStudent_1.getAssignmentListStudentSearch)(req.params.id, page, userid, query);
+        return res.status(code).json({ status: status, message: message });
+    }
+    catch (e) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+}));
+exports.batchLinkRoutes.get("/get/batches", [authMiddleware_1.validateToken, authMiddleware_1.isStudent], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const userid = req.userid;
+        const { code, status, message } = yield (0, batchLink_1.getBatchDetailByStudent)(userid);
+        return res.status(code).json({ status: status, message: message });
+    }
+    catch (e) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+}));
+exports.batchLinkRoutes.get("/get/batche/detail/:id", [authMiddleware_1.validateToken, authMiddleware_1.isStudent], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const userid = req.userid;
+        const { code, status, message } = yield (0, batch_1.getBatchById)(req.params.id);
+        return res.status(code).json({ status: status, message: message });
+    }
+    catch (e) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+}));
+exports.batchLinkRoutes.get("/get/batch/:id", [authMiddleware_1.validateToken, authMiddleware_1.isStudent], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { code, status, message } = yield (0, batch_1.getBatchById)(req.params.id);
         return res.status(code).json({ status: status, message: message });
     }
     catch (e) {

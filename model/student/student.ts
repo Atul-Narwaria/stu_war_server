@@ -592,3 +592,25 @@ export const isStudentExist = async (id: string) => {
     return { code: 500, status: "error", message: split[1] };
   }
 };
+export const getStudentInstituteId = async (id: string) => {
+  try {
+    const get = await prisma.studentMaster.findFirst({
+      select: {
+        fk_institute_id: true,
+      },
+      where: {
+        id: id,
+        status: true,
+      },
+    });
+    if (!get) {
+      return { code: 403, status: "error", message: "invalid user" };
+    }
+
+    return { code: 200, status: "success", message: get.fk_institute_id };
+  } catch (e: any) {
+    let split = e.message.split(".");
+    split = split.slice(-2);
+    return { code: 500, status: "error", message: split[1] };
+  }
+};

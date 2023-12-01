@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.StudentheckTodayRemainingBatch = exports.getBatchDetailByStudent = exports.BatchStudentsSearch = exports.getBatchStudents = exports.deleteBatchLink = exports.createBatchBulkLink = exports.createBatchLink = void 0;
+exports.getBatchFullDetailByStudent = exports.StudentheckTodayRemainingBatch = exports.getBatchDetailByStudent = exports.BatchStudentsSearch = exports.getBatchStudents = exports.deleteBatchLink = exports.createBatchBulkLink = exports.createBatchLink = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const createBatchLink = (data, fk_institute_id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -236,6 +236,7 @@ const getBatchDetailByStudent = (id) => __awaiter(void 0, void 0, void 0, functi
                 id: true,
                 bactch: {
                     select: {
+                        id: true,
                         name: true,
                         end_time: true,
                         start_time: true,
@@ -247,6 +248,7 @@ const getBatchDetailByStudent = (id) => __awaiter(void 0, void 0, void 0, functi
                 fk_student_id: id,
             },
         });
+        return { code: 200, status: "success", message: get };
     }
     catch (e) {
         let split = e.message.split(".");
@@ -298,3 +300,50 @@ const StudentheckTodayRemainingBatch = (id) => __awaiter(void 0, void 0, void 0,
     }
 });
 exports.StudentheckTodayRemainingBatch = StudentheckTodayRemainingBatch;
+const getBatchFullDetailByStudent = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const get = yield prisma.batchLink.findMany({
+            select: {
+                id: true,
+                bactch: {
+                    select: {
+                        name: true,
+                        end_time: true,
+                        start_time: true,
+                        weekdays: true,
+                        subCourses: {
+                            select: {
+                                id: true,
+                                name: true,
+                            },
+                        },
+                        batchTeacherLink: {
+                            select: {
+                                id: true,
+                                teacherId: {
+                                    select: {
+                                        id: true,
+                                        firstName: true,
+                                        lastName: true,
+                                        email: true,
+                                        phone: true,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            where: {
+                fk_student_id: id,
+            },
+        });
+        return { code: 200, status: "success", message: get };
+    }
+    catch (e) {
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
+    }
+});
+exports.getBatchFullDetailByStudent = getBatchFullDetailByStudent;

@@ -153,3 +153,12 @@ exports.batchRoutes.put("/update/live-class/:id", [authMiddleware_1.validateToke
         return res.status(500).json({ status: "error", message: e.message });
     }
 }));
+exports.batchRoutes.get("/get/liveClass/:id", [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { code, status, message } = yield (0, batchLiveClass_1.liveClassDetail)(req.params.id);
+        return res.status(code).json({ status: status, message: message });
+    }
+    catch (e) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+}));

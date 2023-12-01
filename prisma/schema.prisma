@@ -83,27 +83,28 @@ model admin {
 }
 
 model studentMaster {
-  id                String             @id @default(uuid()) @db.Uuid
-  firstName         String
-  lastName          String
-  email             String             @unique
-  phone             String             @unique
-  password          String
-  gender            String
-  dob               DateTime           @db.Date
-  admissionId       String             @unique
-  profileImg        String?
-  status            Boolean            @default(true)
-  instituteMasterId instituteMaster    @relation(fields: [fk_institute_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  fk_institute_id   String             @db.Uuid
-  password_reset    Boolean            @default(false)
-  createAt          DateTime           @default(now())
-  updatedAt         DateTime           @updatedAt
-  studentDetail     studentDocuments[]
-  studentAddress    studentAddress[]
-  batchLink         batchLink[]
-  StudentCourse     StudentCourse[]
-  assignmentWork    assignmentWork[]
+  id                      String                    @id @default(uuid()) @db.Uuid
+  firstName               String
+  lastName                String
+  email                   String                    @unique
+  phone                   String                    @unique
+  password                String
+  gender                  String
+  dob                     DateTime                  @db.Date
+  admissionId             String                    @unique
+  profileImg              String?
+  status                  Boolean                   @default(true)
+  instituteMasterId       instituteMaster           @relation(fields: [fk_institute_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  fk_institute_id         String                    @db.Uuid
+  password_reset          Boolean                   @default(false)
+  createAt                DateTime                  @default(now())
+  updatedAt               DateTime                  @updatedAt
+  studentDetail           studentDocuments[]
+  studentAddress          studentAddress[]
+  batchLink               batchLink[]
+  StudentCourse           StudentCourse[]
+  assignmentWork          assignmentWork[]
+  batchStudentsAssignment batchStudentsAssignment[]
 
   @@schema("students")
 }
@@ -163,6 +164,7 @@ model teacherMaster {
   teacherAddress    teacherAddress[]
   teacherExprience  teacherExprience[]
   batchTeacherLink  batchTeacherLink[]
+  batchAssignments  batchAssignments[]
 
   @@schema("teacher")
 }
@@ -287,6 +289,7 @@ model batchMaster {
   batchLink        batchLink[]
   batchTeacherLink batchTeacherLink[]
   batchLiveClass   batchLiveClass?
+  batchAssignments batchAssignments[]
 
   @@schema("institute")
 }
@@ -464,4 +467,38 @@ model events {
 
   @@unique([fk_institute_id, name])
   @@schema("public")
+}
+
+model batchAssignments {
+  id                      String                    @id @default(uuid()) @db.Uuid
+  fk_teacher_id           String                    @db.Uuid
+  teacherMaster           teacherMaster             @relation(fields: [fk_teacher_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  fk_batch_id             String                    @db.Uuid
+  batchMaster             batchMaster               @relation(fields: [fk_batch_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  contents                String?
+  media                   String?
+  name                    String
+  assignment_date         DateTime                  @db.Date
+  submission_date         DateTime                  @db.Date
+  createAt                DateTime                  @default(now())
+  updatedAt               DateTime                  @updatedAt
+  batchStudentsAssignment batchStudentsAssignment[]
+
+  @@schema("institute")
+}
+
+model batchStudentsAssignment {
+  id                     String           @id @default(uuid()) @db.Uuid
+  fk_student_id          String           @db.Uuid
+  studenntMaster         studentMaster    @relation(fields: [fk_student_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  fk_batch_assignment_id String           @db.Uuid
+  batchAssignemnt        batchAssignments @relation(fields: [fk_batch_assignment_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  contents               String?
+  media                  String?
+  submission_date        DateTime         @db.Date
+  createAt               DateTime         @default(now())
+  updatedAt              DateTime         @updatedAt
+
+  @@unique([fk_batch_assignment_id, fk_student_id])
+  @@schema("institute")
 }

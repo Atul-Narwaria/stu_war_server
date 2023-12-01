@@ -8,14 +8,27 @@ import {
   createBatchTeacherLink,
   deleteBatchTeacherLink,
   getAllStudentCount,
+  getAllTeacherBatches,
+  getBatchAllStudent,
   getTeacherFromBatch,
   getTotalteacherBatchCount,
 } from "../../model/batch/batchTeacherLink";
-import { instituteBatchTeacher } from "../../middleware/requestValidation";
+import {
+  createBatchAssignemntSchema,
+  instituteBatchTeacher,
+} from "../../middleware/requestValidation";
 import {
   BatchListDashboard,
   TodayRemainingBatch,
 } from "../../controller/batch/batchTeacher/batchTeacher.controller";
+import {
+  createBatchAssignment,
+  deletebatchAssignment,
+  getBatchAssignments,
+  getBatchAssignmentsCount,
+  getBatchAssignmentsearch,
+} from "../../model/batch/assignmentTeacher";
+import { getBatchById } from "../../model/batch/batch";
 
 export const batchTeacher = Router();
 
@@ -122,6 +135,175 @@ batchTeacher.delete(
         req.params.id
       );
       return res.status(code).json({ status, message });
+    } catch (e: any) {
+      return res.status(500).json({ status: "error", message: e.message });
+    }
+  }
+);
+
+batchTeacher.get(
+  "/get/assignments/:batch_id",
+  [validateToken, isTeacher],
+  async (req: Request, res: Response) => {
+    try {
+      if (!req.params.batch_id) {
+        return res
+          .status(422)
+          .json({ status: "error", message: "batch id required" });
+      }
+      const teacherId = req.userid;
+      const page: any = req.query.page || 1;
+      const { code, status, message, totalPage, totalRow } =
+        await getBatchAssignments(req.params.batch_id, teacherId, page);
+      // console.log(message);
+      return res
+        .status(code)
+        .json({ status: status, message: message, totalPage, totalRow });
+    } catch (e: any) {
+      return res.status(500).json({ status: "error", message: e.message });
+    }
+  }
+);
+batchTeacher.get(
+  "/get/assignments/search/:batch_id",
+  [validateToken, isTeacher],
+  async (req: Request, res: Response) => {
+    try {
+      if (!req.params.batch_id) {
+        return res
+          .status(422)
+          .json({ status: "error", message: "batch id required" });
+      }
+      const teacherId = req.userid;
+      const page: any = req.query.page || 1;
+      const query: any = req.query.query || null;
+      const { code, status, message, totalPage, totalRow } =
+        await getBatchAssignmentsearch(
+          req.params.batch_id,
+          teacherId,
+          page,
+          query
+        );
+      // console.log(message);
+      return res
+        .status(code)
+        .json({ status: status, message: message, totalPage, totalRow });
+    } catch (e: any) {
+      return res.status(500).json({ status: "error", message: e.message });
+    }
+  }
+);
+batchTeacher.get(
+  "/get/assignments/count/:batch_id",
+  [validateToken, isTeacher],
+  async (req: Request, res: Response) => {
+    try {
+      if (!req.params.batch_id) {
+        return res
+          .status(422)
+          .json({ status: "error", message: "batch id required" });
+      }
+      const teacherId = req.userid;
+
+      const { code, status, message } = await getBatchAssignmentsCount(
+        req.params.batch_id,
+        teacherId
+      );
+      // console.log(message);
+      return res.status(code).json({ status: status, message: message });
+    } catch (e: any) {
+      return res.status(500).json({ status: "error", message: e.message });
+    }
+  }
+);
+
+batchTeacher.post(
+  "/create/assigment",
+  [validateToken, isTeacher],
+  async (req: Request, res: Response) => {
+    try {
+      const reqError = createBatchAssignemntSchema.validate(req.body);
+      if (reqError?.error) {
+        return res
+          .status(422)
+          .json({ status: "error", message: reqError.error?.message });
+      }
+      let teacherId = req.userid;
+      let { code, status, message } = await createBatchAssignment(
+        req.body.name,
+        teacherId,
+        req.body.fk_batch_id,
+        req.body.contents,
+        req.body.media,
+        req.body.submission_date
+      );
+      return res.status(code).json({ status, message });
+    } catch (e: any) {
+      return res.status(500).json({ status: "error", message: e.message });
+    }
+  }
+);
+
+batchTeacher.delete(
+  "/delete/assignment/:id",
+  [validateToken, isInstitute],
+  async (req: Request, res: Response) => {
+    try {
+      let { code, status, message } = await deletebatchAssignment(
+        req.params.id
+      );
+      return res.status(code).json({ status, message });
+    } catch (e: any) {
+      return res.status(500).json({ status: "error", message: e.message });
+    }
+  }
+);
+
+batchTeacher.get(
+  "/get/all/batches",
+  [validateToken, isTeacher],
+  async (req: Request, res: Response) => {
+    try {
+      const teacherId = req.userid;
+      const { code, status, message } = await getAllTeacherBatches(teacherId);
+      // console.log(message);
+      return res.status(code).json({ status: status, message: message });
+    } catch (e: any) {
+      return res.status(500).json({ status: "error", message: e.message });
+    }
+  }
+);
+
+batchTeacher.get(
+  "/get/batch/students/:batch_id",
+  [validateToken, isTeacher],
+  async (req: Request, res: Response) => {
+    try {
+      if (!req.params.batch_id) {
+        return res
+          .status(422)
+          .json({ status: "error", message: "batch id required" });
+      }
+      const teacherId = req.userid;
+      const { code, status, message } = await getBatchAllStudent(
+        teacherId,
+        req.params.batch_id
+      );
+      // console.log(message);
+      return res.status(code).json({ status: status, message: message });
+    } catch (e: any) {
+      return res.status(500).json({ status: "error", message: e.message });
+    }
+  }
+);
+
+batchTeacher.get(
+  "/get/batch/:id",
+  [validateToken, isTeacher],
+  async (req: Request, res: Response) => {
+    try {
+      const { code, status, message } = await getBatchById(req.params.id);
+      return res.status(code).json({ status: status, message: message });
     } catch (e: any) {
       return res.status(500).json({ status: "error", message: e.message });
     }

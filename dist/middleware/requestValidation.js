@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.eventsCreateSchema = exports.instituteBatchTeacher = exports.ZoomMeetingCreateSchema = exports.instituteAssignmentWotkCreate = exports.instituteAssignmentMasterEdit = exports.instituteAssignmentTypeCreate = exports.instituteAssignmentMasterCreate = exports.instituteCourselink = exports.instituteBatchLinkCreateSchema = exports.instituteBatchStatusSchema = exports.instituteBatchCreateSchema = exports.instituteSubCourseStatusSchema = exports.instituteSubCourseCreateSchema = exports.instituteCourseStatusSchema = exports.instituteCourseCreateSchema = exports.instituteCreateStudentSchema = exports.InstituteDeleteSchema = exports.InstituteUpdateStatusSchema = exports.InstituteCreateSchema = exports.cityIdSchema = exports.cityUpdateSchema = exports.cityGetSchema = exports.cityCreateSchema = exports.stateIdSchema = exports.stateUpdateSchema = exports.stateGetSchema = exports.stateCreateSchema = exports.countryUpdateSchema = exports.countryIdSchema = exports.countryCreateSchema = exports.AdminLogin = exports.AdminRegistration = void 0;
+exports.createBatchAssignemntSchema = exports.eventsCreateSchema = exports.instituteBatchTeacher = exports.ZoomMeetingCreateSchema = exports.instituteAssignmentWotkCreate = exports.instituteAssignmentMasterEdit = exports.instituteAssignmentTypeCreate = exports.instituteAssignmentMasterCreate = exports.instituteCourselink = exports.instituteBatchLinkCreateSchema = exports.instituteBatchStatusSchema = exports.instituteBatchCreateSchema = exports.instituteSubCourseStatusSchema = exports.instituteSubCourseCreateSchema = exports.instituteCourseStatusSchema = exports.instituteCourseCreateSchema = exports.instituteCreateStudentSchema = exports.InstituteDeleteSchema = exports.InstituteUpdateStatusSchema = exports.InstituteCreateSchema = exports.cityIdSchema = exports.cityUpdateSchema = exports.cityGetSchema = exports.cityCreateSchema = exports.stateIdSchema = exports.stateUpdateSchema = exports.stateGetSchema = exports.stateCreateSchema = exports.countryUpdateSchema = exports.countryIdSchema = exports.countryCreateSchema = exports.AdminLogin = exports.AdminRegistration = void 0;
 const joi_1 = __importDefault(require("joi"));
 exports.AdminRegistration = joi_1.default.object({
     name: joi_1.default.string().required().min(3),
@@ -165,8 +165,15 @@ exports.instituteBatchTeacher = joi_1.default.object({
     fkBatchId: joi_1.default.string().uuid().required(),
 });
 exports.eventsCreateSchema = joi_1.default.object({
-    name: joi_1.default.string().min(2).required(),
+    name: joi_1.default.string().uuid().required(),
     category: joi_1.default.string().min(2).required(),
     isleave: joi_1.default.boolean().required(),
     date: joi_1.default.date().required(),
+});
+exports.createBatchAssignemntSchema = joi_1.default.object({
+    contents: joi_1.default.optional(),
+    fk_batch_id: joi_1.default.string().uuid().required(),
+    submission_date: joi_1.default.date().required(),
+    media: joi_1.default.optional(),
+    name: joi_1.default.string().required(),
 });

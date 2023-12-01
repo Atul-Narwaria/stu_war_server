@@ -174,8 +174,16 @@ export const instituteBatchTeacher = Joi.object({
 });
 
 export const eventsCreateSchema = Joi.object({
-  name: Joi.string().min(2).required(),
+  name: Joi.string().uuid().required(),
   category: Joi.string().min(2).required(),
   isleave: Joi.boolean().required(),
   date: Joi.date().required(),
+});
+
+export const createBatchAssignemntSchema = Joi.object({
+  contents: Joi.optional(),
+  fk_batch_id: Joi.string().uuid().required(),
+  submission_date: Joi.date().required(),
+  media: Joi.optional(),
+  name: Joi.string().required(),
 });

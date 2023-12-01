@@ -186,3 +186,83 @@ export const getAllStudentCount = async (id: string) => {
     return { code: 500, status: "error", message: split[0] };
   }
 };
+
+export const getAllTeacherBatches = async (id: string) => {
+  try {
+    const get = await prisma.batchTeacherLink.findMany({
+      select: {
+        id: true,
+        batchId: {
+          select: {
+            id: true,
+            name: true,
+            start_time: true,
+            end_time: true,
+            weekdays: true,
+            haveLiveClass: true,
+            batchLiveClass: {
+              select: {
+                id: true,
+                meeting_url: true,
+                meeting_number: true,
+                password: true,
+              },
+            },
+            subCourses: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+      },
+      where: {
+        fk_teacher_id: id,
+      },
+    });
+    return { code: 200, status: "success", message: get };
+  } catch (e: any) {
+    let split = e.message.split(".");
+    split = split.slice(-2);
+    return { code: 500, status: "error", message: split[0] };
+  }
+};
+
+export const getBatchAllStudent = async (id: string, batchid: string) => {
+  try {
+    // const
+    const get = await prisma.batchTeacherLink.findMany({
+      select: {
+        id: true,
+        batchId: {
+          select: {
+            batchLink: {
+              select: {
+                stundetmaster: {
+                  select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    phone: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      where: {
+        fk_teacher_id: id,
+        fk_batch_id: batchid,
+      },
+    });
+
+    return { code: 200, status: "success", message: get };
+  } catch (e: any) {
+    let split = e.message.split(".");
+    split = split.slice(-2);
+    return { code: 500, status: "error", message: split[0] };
+  }
+};

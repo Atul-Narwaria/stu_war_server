@@ -14,7 +14,10 @@ import {
   getBatchById,
   updateBatchStatus,
 } from "../../model/batch/batch";
-import { updateStatusBatchLiveClass } from "../../model/batch/batchLiveClass";
+import {
+  liveClassDetail,
+  updateStatusBatchLiveClass,
+} from "../../model/batch/batchLiveClass";
 
 export const batchRoutes = Router();
 
@@ -185,6 +188,19 @@ batchRoutes.put(
         req.params.id,
         req.body.status
       );
+      return res.status(code).json({ status: status, message: message });
+    } catch (e: any) {
+      return res.status(500).json({ status: "error", message: e.message });
+    }
+  }
+);
+
+batchRoutes.get(
+  "/get/liveClass/:id",
+  [validateToken, isInstitute],
+  async (req: Request, res: Response) => {
+    try {
+      const { code, status, message } = await liveClassDetail(req.params.id);
       return res.status(code).json({ status: status, message: message });
     } catch (e: any) {
       return res.status(500).json({ status: "error", message: e.message });

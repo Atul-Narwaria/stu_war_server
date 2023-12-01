@@ -10,6 +10,8 @@ import {
   createBatchBulkLink,
   createBatchLink,
   deleteBatchLink,
+  getBatchDetailByStudent,
+  getBatchFullDetailByStudent,
   getBatchStudents,
 } from "../../model/batch/batchLink";
 import {
@@ -17,6 +19,11 @@ import {
   StudentTodayRemainingBatch,
 } from "../../controller/batch/batchStudent/batchStudent.controller";
 import { getTotalStudentBatchCount } from "../../model/batch/batchLiveClass";
+import {
+  getAssignmentListStudent,
+  getAssignmentListStudentSearch,
+} from "../../model/batch/assignmentStudent";
+import { getBatchById } from "../../model/batch/batch";
 
 export const batchLinkRoutes = Router();
 
@@ -180,6 +187,98 @@ batchLinkRoutes.get(
         studentId
       );
       // console.log(message);
+      return res.status(code).json({ status: status, message: message });
+    } catch (e: any) {
+      return res.status(500).json({ status: "error", message: e.message });
+    }
+  }
+);
+batchLinkRoutes.get(
+  "/get/batch/fulldetail/:id",
+  [validateToken, isStudent],
+  async (req: Request, res: Response) => {
+    try {
+      const { code, status, message } = await getBatchFullDetailByStudent(
+        req.params.id
+      );
+      return res.status(code).json({ status: status, message: message });
+    } catch (e: any) {
+      return res.status(500).json({ status: "error", message: e.message });
+    }
+  }
+);
+batchLinkRoutes.get(
+  "/get/batch/assignments/:id",
+  [validateToken, isStudent],
+  async (req: Request, res: Response) => {
+    try {
+      const page: any = req.query.page || 1;
+      const userid: string = req.userid;
+      const { code, status, message } = await getAssignmentListStudent(
+        req.params.id,
+        page,
+        userid
+      );
+      return res.status(code).json({ status: status, message: message });
+    } catch (e: any) {
+      return res.status(500).json({ status: "error", message: e.message });
+    }
+  }
+);
+batchLinkRoutes.get(
+  "/get/batch/assignments/:id",
+  [validateToken, isStudent],
+  async (req: Request, res: Response) => {
+    try {
+      const page: any = req.query.page || 1;
+      const userid: string = req.userid;
+      const query: any = req.query.query || null;
+      const { code, status, message } = await getAssignmentListStudentSearch(
+        req.params.id,
+        page,
+        userid,
+        query
+      );
+      return res.status(code).json({ status: status, message: message });
+    } catch (e: any) {
+      return res.status(500).json({ status: "error", message: e.message });
+    }
+  }
+);
+batchLinkRoutes.get(
+  "/get/batches",
+  [validateToken, isStudent],
+  async (req: Request, res: Response) => {
+    try {
+      const userid: string = req.userid;
+      const { code, status, message } = await getBatchDetailByStudent(userid);
+      return res.status(code).json({ status: status, message: message });
+    } catch (e: any) {
+      return res.status(500).json({ status: "error", message: e.message });
+    }
+  }
+);
+
+batchLinkRoutes.get(
+  "/get/batche/detail/:id",
+  [validateToken, isStudent],
+  async (req: Request, res: Response) => {
+    try {
+      const userid: string = req.userid;
+      const { code, status, message } = await getBatchById(req.params.id);
+      return res.status(code).json({ status: status, message: message });
+    } catch (e: any) {
+      return res.status(500).json({ status: "error", message: e.message });
+    }
+  }
+);
+
+batchLinkRoutes.get(
+  "/get/batch/:id",
+  [validateToken, isStudent],
+  async (req: Request, res: Response) => {
+    try {
+      const { code, status, message } = await getBatchById(req.params.id);
       return res.status(code).json({ status: status, message: message });
     } catch (e: any) {
       return res.status(500).json({ status: "error", message: e.message });

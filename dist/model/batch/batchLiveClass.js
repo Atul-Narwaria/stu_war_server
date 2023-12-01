@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTotalStudentBatchCount = exports.updateStatusBatchLiveClass = exports.getCheckMeeting = exports.deleteBatchLiveClass = exports.createLiveClass = void 0;
+exports.liveClassDetail = exports.getTotalStudentBatchCount = exports.updateStatusBatchLiveClass = exports.getCheckMeeting = exports.deleteBatchLiveClass = exports.createLiveClass = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const createLiveClass = (topic, start_time, duration, password, meeting_url, fk_batch_id, meeting_number) => __awaiter(void 0, void 0, void 0, function* () {
@@ -60,9 +60,14 @@ const deleteBatchLiveClass = (id) => __awaiter(void 0, void 0, void 0, function*
 exports.deleteBatchLiveClass = deleteBatchLiveClass;
 const getCheckMeeting = (id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0);
         let check = yield prisma.batchLiveClass.count({
             where: {
                 fk_batch_id: id,
+                createAt: {
+                    gte: currentDate, // 'gte' means greater than or equal to the current date
+                },
             },
         });
         return {
@@ -124,3 +129,30 @@ const getTotalStudentBatchCount = (id) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.getTotalStudentBatchCount = getTotalStudentBatchCount;
+const liveClassDetail = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0);
+        let get = yield prisma.batchLiveClass.findMany({
+            select: {
+                meeting_number: true,
+                password: true,
+                meeting_url: true,
+                id: true,
+            },
+            where: {
+                fk_batch_id: id,
+                createAt: {
+                    gte: currentDate, // 'gte' means greater than or equal to the current date
+                },
+            },
+        });
+        return { code: 200, status: "success", message: get };
+    }
+    catch (e) {
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
+    }
+});
+exports.liveClassDetail = liveClassDetail;

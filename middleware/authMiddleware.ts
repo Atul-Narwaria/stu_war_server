@@ -6,7 +6,10 @@ import {
   getTeacherInstituteId,
   isTeacherExist,
 } from "../model/Teacher/Teacher";
-import { isStudentExist } from "../model/student/student";
+import {
+  getStudentInstituteId,
+  isStudentExist,
+} from "../model/student/student";
 
 const secret_key: string = process.env.APP_KEY!;
 
@@ -104,6 +107,9 @@ export const commonAccess = async (
     req.userid = req.userid;
   } else if (role === "teacher") {
     let id: any = await getTeacherInstituteId(req.userid);
+    req.userid = id.message;
+  } else if (role === "student") {
+    let id: any = await getStudentInstituteId(req.userid);
     req.userid = id.message;
   }
   next();

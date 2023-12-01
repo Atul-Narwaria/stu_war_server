@@ -236,6 +236,7 @@ export const getBatchDetailByStudent = async (id: string) => {
         id: true,
         bactch: {
           select: {
+            id: true,
             name: true,
             end_time: true,
             start_time: true,
@@ -247,6 +248,7 @@ export const getBatchDetailByStudent = async (id: string) => {
         fk_student_id: id,
       },
     });
+    return { code: 200, status: "success", message: get };
   } catch (e: any) {
     let split = e.message.split(".");
     split = split.slice(-2);
@@ -289,6 +291,52 @@ export const StudentheckTodayRemainingBatch = async (id: string) => {
       },
     });
     return { code: 200, status: "success", message: check };
+  } catch (e: any) {
+    let split = e.message.split(".");
+    split = split.slice(-2);
+    return { code: 500, status: "error", message: split[0] };
+  }
+};
+
+export const getBatchFullDetailByStudent = async (id: string) => {
+  try {
+    const get = await prisma.batchLink.findMany({
+      select: {
+        id: true,
+        bactch: {
+          select: {
+            name: true,
+            end_time: true,
+            start_time: true,
+            weekdays: true,
+            subCourses: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+            batchTeacherLink: {
+              select: {
+                id: true,
+                teacherId: {
+                  select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    phone: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      where: {
+        fk_student_id: id,
+      },
+    });
+    return { code: 200, status: "success", message: get };
   } catch (e: any) {
     let split = e.message.split(".");
     split = split.slice(-2);

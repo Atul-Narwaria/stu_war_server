@@ -56,9 +56,14 @@ export const deleteBatchLiveClass = async (id: string) => {
 
 export const getCheckMeeting = async (id: string) => {
   try {
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
     let check = await prisma.batchLiveClass.count({
       where: {
         fk_batch_id: id,
+        createAt: {
+          gte: currentDate, // 'gte' means greater than or equal to the current date
+        },
       },
     });
     return {
@@ -113,6 +118,33 @@ export const getTotalStudentBatchCount = async (id: string) => {
       },
     });
     return { code: 200, status: "success", message: check };
+  } catch (e: any) {
+    let split = e.message.split(".");
+    split = split.slice(-2);
+    return { code: 500, status: "error", message: split[0] };
+  }
+};
+
+export const liveClassDetail = async (id: any) => {
+  try {
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+
+    let get = await prisma.batchLiveClass.findMany({
+      select: {
+        meeting_number: true,
+        password: true,
+        meeting_url: true,
+        id: true,
+      },
+      where: {
+        fk_batch_id: id,
+        createAt: {
+          gte: currentDate, // 'gte' means greater than or equal to the current date
+        },
+      },
+    });
+    return { code: 200, status: "success", message: get };
   } catch (e: any) {
     let split = e.message.split(".");
     split = split.slice(-2);
