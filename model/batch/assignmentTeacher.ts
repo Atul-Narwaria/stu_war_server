@@ -218,3 +218,52 @@ export const getBatchAssignmentsCount = async (
     return { code: 500, status: "error", message: split[0] };
   }
 };
+export const showAssignmentTeacher =async (id:string) => {
+    try{
+      let get = await prisma.batchAssignments.findFirst({
+        where:{
+          id:id
+        }
+      })
+      return {
+        code: 200,
+        status: "success",
+        message: get,
+      };
+    }catch (e: any) {
+    let split = e.message.split(".");
+    split = split.slice(-2);
+    return { code: 500, status: "error", message: split[0] };
+  }
+}
+
+export const getSubmittedAssignemnt = async (id:string) => {
+    try{
+      let  get =await prisma.batchStudentsAssignment.findMany({
+        select:{
+          id:true,
+          media:true,
+          contents:true,
+          studenntMaster:{
+            select:{
+              id:true,
+              firstName:true,
+              lastName:true,
+              email:true,
+              phone:true
+            }
+          },
+          batchAssignemnt:{
+            select:{
+              id:true,
+              name:true,
+            }
+          }
+        }
+      })
+    }catch (e: any) {
+    let split = e.message.split(".");
+    split = split.slice(-2);
+    return { code: 500, status: "error", message: split[0] };
+  }
+}

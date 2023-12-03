@@ -103,7 +103,7 @@ exports.ZoomInstitueRoutes.post("/signature/test", (req, res) => __awaiter(void 
             appKey: "MjrUGJm9R72Wtqq1npLgZA",
             tokenExp: iat + 60 * 60 * 2,
         };
-        // console.log(oPayload);
+        console.log(oPayload);
         const sHeader = JSON.stringify(oHeader);
         const sPayload = JSON.stringify(oPayload);
         const signature = (_c = jsrsasign_1.KJUR === null || jsrsasign_1.KJUR === void 0 ? void 0 : jsrsasign_1.KJUR.jws) === null || _c === void 0 ? void 0 : _c.JWS.sign("HS256", sHeader, sPayload, "AT1NNLz50oiKEJRjUeKgm6o6GyFseDjj");

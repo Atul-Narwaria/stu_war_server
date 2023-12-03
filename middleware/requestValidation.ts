@@ -187,3 +187,9 @@ export const createBatchAssignemntSchema = Joi.object({
   media: Joi.optional(),
   name: Joi.string().required(),
 });
+
+export const createStudentBatchAssignemntSchema = Joi.object({
+  contents: Joi.optional(),
+  fk_assignment_id: Joi.string().uuid().required(),
+  media: Joi.optional(),
+});

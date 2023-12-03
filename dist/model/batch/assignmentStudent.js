@@ -8,9 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createBatchStudentAsignment = exports.getAssignmentListStudentSearch = exports.getAssignmentListStudent = void 0;
 const client_1 = require("@prisma/client");
+const moment_1 = __importDefault(require("moment"));
 const prisma = new client_1.PrismaClient();
 const getAssignmentListStudent = (batchid, page, userid) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -128,13 +132,13 @@ const getAssignmentListStudentSearch = (batchid, page, userid, query) => __await
     }
 });
 exports.getAssignmentListStudentSearch = getAssignmentListStudentSearch;
-const createBatchStudentAsignment = (fk_student_id, contents, submission_date, media, fk_batch_assignment_id) => __awaiter(void 0, void 0, void 0, function* () {
+const createBatchStudentAsignment = (fk_student_id, contents, media, fk_batch_assignment_id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield prisma.batchStudentsAssignment.create({
             data: {
                 fk_student_id,
                 contents,
-                submission_date: new Date(submission_date),
+                submission_date: new Date((0, moment_1.default)().format("YYYY-MM-DD")),
                 media,
                 fk_batch_assignment_id,
             },

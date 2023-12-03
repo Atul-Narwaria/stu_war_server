@@ -27,6 +27,7 @@ import {
   getBatchAssignments,
   getBatchAssignmentsCount,
   getBatchAssignmentsearch,
+  showAssignmentTeacher,
 } from "../../model/batch/assignmentTeacher";
 import { getBatchById } from "../../model/batch/batch";
 
@@ -246,7 +247,7 @@ batchTeacher.post(
 
 batchTeacher.delete(
   "/delete/assignment/:id",
-  [validateToken, isInstitute],
+  [validateToken, isTeacher],
   async (req: Request, res: Response) => {
     try {
       let { code, status, message } = await deletebatchAssignment(
@@ -258,7 +259,22 @@ batchTeacher.delete(
     }
   }
 );
+batchTeacher.get(
+  "/assignment/:id",
+  [validateToken, isTeacher],
+  async (req: Request, res: Response) => {
+    try {
+      let { code, status, message } = await showAssignmentTeacher(
+        req.params.id
+      );
+      return res.status(code).json({ status, message });
+    } catch (e: any) {
+      return res.status(500).json({ status: "error", message: e.message });
+    }
+  }
+);
 
+// showAssignmentTeacher
 batchTeacher.get(
   "/get/all/batches",
   [validateToken, isTeacher],

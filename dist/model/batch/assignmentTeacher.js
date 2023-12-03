@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getBatchAssignmentsCount = exports.getBatchAssignmentsearch = exports.getBatchAssignments = exports.deletebatchAssignment = exports.createBatchAssignment = void 0;
+exports.getSubmittedAssignemnt = exports.showAssignmentTeacher = exports.getBatchAssignmentsCount = exports.getBatchAssignmentsearch = exports.getBatchAssignments = exports.deletebatchAssignment = exports.createBatchAssignment = void 0;
 const client_1 = require("@prisma/client");
 const moment_1 = __importDefault(require("moment"));
 const prisma = new client_1.PrismaClient();
@@ -217,3 +217,55 @@ const getBatchAssignmentsCount = (fk_batch_id, fk_teacher_id) => __awaiter(void 
     }
 });
 exports.getBatchAssignmentsCount = getBatchAssignmentsCount;
+const showAssignmentTeacher = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let get = yield prisma.batchAssignments.findFirst({
+            where: {
+                id: id
+            }
+        });
+        return {
+            code: 200,
+            status: "success",
+            message: get,
+        };
+    }
+    catch (e) {
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
+    }
+});
+exports.showAssignmentTeacher = showAssignmentTeacher;
+const getSubmittedAssignemnt = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let get = yield prisma.batchStudentsAssignment.findMany({
+            select: {
+                id: true,
+                media: true,
+                contents: true,
+                studenntMaster: {
+                    select: {
+                        id: true,
+                        firstName: true,
+                        lastName: true,
+                        email: true,
+                        phone: true
+                    }
+                },
+                batchAssignemnt: {
+                    select: {
+                        id: true,
+                        name: true,
+                    }
+                }
+            }
+        });
+    }
+    catch (e) {
+        let split = e.message.split(".");
+        split = split.slice(-2);
+        return { code: 500, status: "error", message: split[0] };
+    }
+});
+exports.getSubmittedAssignemnt = getSubmittedAssignemnt;

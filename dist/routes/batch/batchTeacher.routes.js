@@ -168,7 +168,7 @@ exports.batchTeacher.post("/create/assigment", [authMiddleware_1.validateToken, 
         return res.status(500).json({ status: "error", message: e.message });
     }
 }));
-exports.batchTeacher.delete("/delete/assignment/:id", [authMiddleware_1.validateToken, authMiddleware_1.isInstitute], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.batchTeacher.delete("/delete/assignment/:id", [authMiddleware_1.validateToken, authMiddleware_1.isTeacher], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let { code, status, message } = yield (0, assignmentTeacher_1.deletebatchAssignment)(req.params.id);
         return res.status(code).json({ status, message });
@@ -177,6 +177,16 @@ exports.batchTeacher.delete("/delete/assignment/:id", [authMiddleware_1.validate
         return res.status(500).json({ status: "error", message: e.message });
     }
 }));
+exports.batchTeacher.get("/assignment/:id", [authMiddleware_1.validateToken, authMiddleware_1.isTeacher], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let { code, status, message } = yield (0, assignmentTeacher_1.showAssignmentTeacher)(req.params.id);
+        return res.status(code).json({ status, message });
+    }
+    catch (e) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+}));
+// showAssignmentTeacher
 exports.batchTeacher.get("/get/all/batches", [authMiddleware_1.validateToken, authMiddleware_1.isTeacher], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const teacherId = req.userid;

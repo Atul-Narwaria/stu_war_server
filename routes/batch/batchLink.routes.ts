@@ -4,7 +4,7 @@ import {
   isStudent,
   validateToken,
 } from "../../middleware/authMiddleware";
-import { instituteBatchLinkCreateSchema } from "../../middleware/requestValidation";
+import { createStudentBatchAssignemntSchema, instituteBatchLinkCreateSchema } from "../../middleware/requestValidation";
 import {
   BatchStudentsSearch,
   createBatchBulkLink,
@@ -20,6 +20,7 @@ import {
 } from "../../controller/batch/batchStudent/batchStudent.controller";
 import { getTotalStudentBatchCount } from "../../model/batch/batchLiveClass";
 import {
+  createBatchStudentAsignment,
   getAssignmentListStudent,
   getAssignmentListStudentSearch,
 } from "../../model/batch/assignmentStudent";
@@ -285,3 +286,23 @@ batchLinkRoutes.get(
     }
   }
 );
+batchLinkRoutes.post(
+  "/batch/assignment/create",
+  [validateToken, isStudent],
+  async (req: Request, res: Response) => {
+    try {
+      const reqError = createStudentBatchAssignemntSchema.validate(req.body);
+      if (reqError?.error) {
+        return res
+          .status(200)
+          .json({ status: "error", message: reqError.error?.message });
+      }
+      let userid:any = req.userid;
+      const { code, status, message } = await createBatchStudentAsignment(userid,req.body.contents,req.body.media,req.body.fk_assignment_id);
+      return res.status(code).json({ status: status, message: message });
+    } catch (e: any) {
+      return res.status(500).json({ status: "error", message: e.message });
+    }
+  }
+);
+// createBatchStudentAsignment

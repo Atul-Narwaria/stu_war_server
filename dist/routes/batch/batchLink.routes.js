@@ -208,3 +208,21 @@ exports.batchLinkRoutes.get("/get/batch/:id", [authMiddleware_1.validateToken, a
         return res.status(500).json({ status: "error", message: e.message });
     }
 }));
+exports.batchLinkRoutes.post("/batch/assignment/create", [authMiddleware_1.validateToken, authMiddleware_1.isStudent], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _b;
+    try {
+        const reqError = requestValidation_1.createStudentBatchAssignemntSchema.validate(req.body);
+        if (reqError === null || reqError === void 0 ? void 0 : reqError.error) {
+            return res
+                .status(200)
+                .json({ status: "error", message: (_b = reqError.error) === null || _b === void 0 ? void 0 : _b.message });
+        }
+        let userid = req.userid;
+        const { code, status, message } = yield (0, assignmentStudent_1.createBatchStudentAsignment)(userid, req.body.contents, req.body.media, req.body.fk_assignment_id);
+        return res.status(code).json({ status: status, message: message });
+    }
+    catch (e) {
+        return res.status(500).json({ status: "error", message: e.message });
+    }
+}));
+// createBatchStudentAsignment

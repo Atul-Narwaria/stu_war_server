@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import moment from "moment";
 
 const prisma = new PrismaClient();
 
@@ -129,9 +130,8 @@ export const getAssignmentListStudentSearch = async (
 
 export const createBatchStudentAsignment = async (
   fk_student_id: string,
-  contents: string,
-  submission_date: any,
-  media: string,
+  contents: any,
+  media: any,
   fk_batch_assignment_id: string
 ) => {
   try {
@@ -139,7 +139,7 @@ export const createBatchStudentAsignment = async (
       data: {
         fk_student_id,
         contents,
-        submission_date: new Date(submission_date),
+        submission_date: new Date(moment().format("YYYY-MM-DD")),
         media,
         fk_batch_assignment_id,
       },

@@ -126,7 +126,7 @@ ZoomInstitueRoutes.post(
         appKey: "MjrUGJm9R72Wtqq1npLgZA",
         tokenExp: iat + 60 * 60 * 2,
       };
-      // console.log(oPayload);
+      console.log(oPayload);
       const sHeader = JSON.stringify(oHeader);
       const sPayload = JSON.stringify(oPayload);
       const signature: any = KJUR?.jws?.JWS.sign(
